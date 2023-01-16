@@ -1,7 +1,10 @@
 import React from 'react'
+import './Footer.css'
 
 export default function Footer() {
   return (
-    <div>Footer</div>
+    <footer>
+      &copy; Jason Roundtree {new Date().getFullYear()}
+    </footer>
   )
 }

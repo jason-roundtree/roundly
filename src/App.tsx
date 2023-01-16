@@ -1,3 +1,4 @@
+import React from 'react'
 import Router from './Router';
 import { Header, Footer } from './layout'
 
