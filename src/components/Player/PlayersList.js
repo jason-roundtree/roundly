@@ -1,7 +1,19 @@
 import React from 'react'
 
-export default function PlayersList() {
+// interface PlayerListProps {
+//   players: Player[]
+// }
+
+export default function PlayersList({ players }) {
   return (
-    <div>PlayersList</div>
+    <ul>
+      {players.map(p => {
+        return (
+          <li key={p}>
+            {p}
+          </li>
+        )
+      })}
+    </ul>
   )
 }

@@ -1,41 +1,91 @@
 import { useState } from 'react'
 import Input from '../shared/Input'
+import { PointSetting } from '../../types'
+import { PlayersList } from '../../components/Player'
+
+interface LeagueState {
+    leagueName: string
+    endDate: string
+    playerName: string
+    players: string[]
+    // players: Player[]
+    pointType: string
+    pointsSettings: string[]
+    // pointsSettings: PointSetting[],
+    // dateInputFocused: boolean,
+}
+
+interface PreSubmitValidation {
+    pointType: boolean
+    playerName: boolean
+}
 
 export default function CreateLeague() {
-    const [state, setState] = useState({
+    const [state, setState] = useState<LeagueState>({
         leagueName: '',
         endDate: '',
         playerName: '',
         players: [],
         pointType: '',
-        // pointSettings: [],
+        pointsSettings: [],
         // dateInputFocused: false,
     })
+    const [inputError, setInputError] = useState<PreSubmitValidation>({
+        pointType: false,
+        playerName: false,
+    })
+
     function handleInputChange({ target }) {
         setState({ ...state, [target.name]: target.value })
     }
 
+    function addInputItemToList(e) {
+        e.preventDefault()
+        const { inputItem, inputList } = e.target.dataset
+        if (!state[inputItem]) {
+            setInputError({
+                ...inputError,
+                [inputItem]: true,
+            })
+        } else {
+            setInputError({
+                ...inputError,
+                [inputItem]: false,
+            })
+            setState({
+                ...state,
+                [inputList]: [...state[inputList], state[inputItem]],
+                // TODO: is it safe to clear input here? Safer to use previous state?
+                [inputItem]: '',
+            })
+        }
+    }
+
     return (
-        <form className="m-8">
-            <h1>Create New League</h1>
+        <form className="m-8 max-w-screen-md">
+            <h1 className="text-3xl font-bold">Create New League</h1>
             <Input
                 type="text"
                 name="leagueName"
                 label="League Name"
                 onChange={handleInputChange}
                 value={state.leagueName}
+                maxWidth="max-w-screen-sm"
+                isRequired={true}
             />
             <br />
 
             <Input
-                // type={this.state.dateInputFocused || this.state.endDate ? "date" : "text"}
+                // type={state.dateInputFocused || state.endDate ? "date" : "text"}
                 type="date"
                 name="endDate"
                 label="End Date"
                 onChange={handleInputChange}
                 value={state.endDate}
-                // onFocus={this.onFocus}
-                // onBlur={this.onBlur}
+                maxWidth="max-w-md"
+                isRequired={true}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
             />
             <br />
 
@@ -45,22 +95,29 @@ export default function CreateLeague() {
                 label="Player Name"
                 onChange={handleInputChange}
                 value={state.playerName}
+                maxWidth="max-w-screen-sm"
+                showEmptyInputError={inputError.playerName}
+                // isRequired={true}
             />
-            <br />
 
             <button
-                type="button"
-                // onClick={this.addPlayer}
-                // disabled={this.state.playerName === ''}
+                data-input-item="playerName"
+                data-input-list="players"
+                onClick={addInputItemToList}
+                // disabled={state.playerName === ''}
             >
                 Add Player
             </button>
-            {/* <PlayerList 
-                        players={this.state.players}
-                        deletePlayer={this.deletePlayer}
-                    /> */}
 
-            <h2>Points Settings</h2>
+            <PlayersList players={state.players} />
+
+            {/* TODO: tell Prettier to format commented code? */}
+            {/* <PlayerList 
+                players={state.players}
+                deletePlayer={deletePlayer}
+            /> */}
+
+            <h2 className="text-xl font-bold">Points Settings</h2>
             {/* TODO: Maybe put examples in a panel to free up some space? */}
             <p>
                 Add points and then select the Settings button to assign point
@@ -69,6 +126,7 @@ export default function CreateLeague() {
                 Birdie, Par, Bogey, Double Bogey, Break a Rule, Cursing,
                 Throw/Slam Club, you can get creative...
             </p>
+            <br />
 
             <Input
                 type="text"
@@ -76,29 +134,35 @@ export default function CreateLeague() {
                 name="pointType"
                 onChange={handleInputChange}
                 value={state.pointType}
+                maxWidth="max-w-screen-sm"
+                showEmptyInputError={inputError.pointType}
             />
-            <br />
+
             {/* TODO: Setup call to post point type and then forward point id to settings page */}
             {/* TODO: Setup Combobox to allow quick selection of commonly used types? https://ui.reach.tech/combobox */}
             <button
-            // onClick={this.addPointSetting}
-            // disabled={this.state.pointType === ''}
+                data-input-item="pointType"
+                data-input-list="pointsSettings"
+                onClick={addInputItemToList}
+                // disabled={state.pointType === ''}
             >
                 Add Point
             </button>
 
             {/* <PointSettingsList 
-                        pointSettings={this.state.pointSettings} 
-                        deletePoint={this.deletePointSetting}
-                    /> */}
-            <br />
+                    pointSettings={state.pointSettings} 
+                    deletePoint={deletePointSetting}
+                /> */}
 
-            {/* TODO: add validation to ensure league name has been added */}
-            <button
-            // onSubmit={null}
-            >
-                Save League
-            </button>
+            <div className="flex">
+                {/* TODO: add validation to ensure league name has been added */}
+                <button
+                    className="mx-auto"
+                    // onSubmit={null}
+                >
+                    Save League
+                </button>
+            </div>
         </form>
     )
 }
