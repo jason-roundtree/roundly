@@ -19,7 +19,7 @@ code {
 }
 
 :root {
-    --primary-color: rgb(130, 130, 50);
+    --primary-color: rgb(75, 184, 97);
     --secondary-color: whitesmoke;
 }
 
@@ -28,7 +28,11 @@ button {
     padding: 10px 15px;
     background: var(--primary-color);
     color: var(--secondary-color);
-    margin: 1em 0;
+    margin: 0.5em 0 1em;
+}
+
+button:hover {
+    filter: brightness(105%);
 }
 
 /* button:disabled {
@@ -36,3 +40,7 @@ button {
     background: rgb(245, 245, 245);
     color: grey;
 } */
+
+input::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
+}

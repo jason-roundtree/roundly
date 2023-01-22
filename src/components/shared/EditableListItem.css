@@ -1,0 +1,14 @@
+
+.editable-list-item {
+    border: 0.5px solid var(--primary-color);
+}
+.editable-list-item:hover {
+    cursor: pointer;
+}
+.editable-list-item span {
+    margin: 0 0 0 2.5em;
+}
+.editable-list-item button {
+    padding: 3px;
+    margin: 0 0 0 0.5em;
+}

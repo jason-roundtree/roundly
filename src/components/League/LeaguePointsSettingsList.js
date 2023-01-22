@@ -1,18 +1,19 @@
 import React from 'react'
 import EditableListItem from '../../components/shared/EditableListItem'
 
-// interface PlayerListProps {
-//   players: Player[]
+// interface PointSettingsProps {
+//   players: PointType[]
 // }
 
-export default function PlayersList({ players, listName, deleteItemFromList }) {
+export default function LeaguePointsSettingsList({ pointSettings, listName, deleteItemFromList }) {
+  console.log('pointSettings', pointSettings)
   return (
     <ul className="mb-3">
-      {players.map(({ id, playerName }) => {
+      {pointSettings.map(({ id, pointType }) => {
         return (
           <EditableListItem
             id={id}
-            text={playerName}
+            text={pointType}
             deleteItemFromList={deleteItemFromList}
             listName={listName}
           />
@@ -21,3 +22,4 @@ export default function PlayersList({ players, listName, deleteItemFromList }) {
     </ul>
   )
 }
+

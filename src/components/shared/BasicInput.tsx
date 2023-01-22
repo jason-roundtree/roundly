@@ -2,7 +2,7 @@ import React from 'react'
 
 type TextDateOrNumber = 'text' | 'date' | 'number'
 
-interface BasicInput<T extends TextDateOrNumber> {
+interface BasicInputProps<T extends TextDateOrNumber> {
     type: T
     // type: string
     name: string
@@ -14,7 +14,7 @@ interface BasicInput<T extends TextDateOrNumber> {
     isRequired?: boolean
 }
 
-export default function Input({
+export default function BasicInput({
     type,
     name,
     label,
@@ -23,11 +23,13 @@ export default function Input({
     maxWidth = '',
     showEmptyInputError,
     isRequired,
-}: BasicInput<typeof type>): JSX.Element {
+}: BasicInputProps<typeof type>): JSX.Element {
     console.log('showEmptyInputError', showEmptyInputError)
     return (
         <>
-            <label htmlFor={name}>{label}</label>
+            <label htmlFor={name} className="inline-block mt-2">
+                {label}
+            </label>
             <input
                 className={`border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${maxWidth}`}
                 type={type}
@@ -36,7 +38,9 @@ export default function Input({
                 value={value}
                 required={isRequired}
             />
-            {showEmptyInputError && <p>Please fill out this field</p>}
+            {showEmptyInputError && (
+                <p className="text-red-400 ml-2">Please fill out this field</p>
+            )}
         </>
     )
 }
