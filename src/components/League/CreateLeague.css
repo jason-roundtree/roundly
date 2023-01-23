@@ -1,0 +1,9 @@
+/* #createLeague > div {
+    border-radius: 0.5em;
+    padding: 5px;
+} */
+
+#createLeague h2 {
+    display: inline-block;
+    border-bottom: 1px solid #9cffcc;
+}

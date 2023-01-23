@@ -12,6 +12,7 @@ export default function PlayersList({ players, listName, deleteItemFromList }) {
         return (
           <EditableListItem
             id={id}
+            key={id}
             text={playerName}
             deleteItemFromList={deleteItemFromList}
             listName={listName}
