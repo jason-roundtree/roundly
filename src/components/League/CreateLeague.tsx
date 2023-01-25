@@ -106,7 +106,11 @@ export default function CreateLeague() {
     console.log('leagueState: ', leagueState)
   }
 
-  function updateListItem(id, list, updatedItem) {
+  //   TODO: how to make the parameter types reusable with list item components?
+  function updateListItem(id: string, list: string, updatedItem: any) {
+    console.log('id', id)
+    console.log('list', list)
+    console.log('updatedItem', updatedItem)
     const updatedList = leagueState[list].map((item) =>
       item.id === id ? updatedItem : item
     )
@@ -165,9 +169,7 @@ export default function CreateLeague() {
           listName="players"
           players={leagueState.players}
           deleteItemFromList={deleteItemFromList}
-          // editListItem={editListItem}
-          // handleInputChange={handleInputChange}
-          // statePointValue={leagueState.playerName}
+          updateListItem={updateListItem}
         />
       </div>
 
@@ -216,9 +218,6 @@ export default function CreateLeague() {
           pointsSettings={leagueState.pointsSettings}
           deleteItemFromList={deleteItemFromList}
           updateListItem={updateListItem}
-          // editListItem={editListItem}
-          // handleInputChange={handleInputChange}
-          // statePointValue={leagueState.pointValue}
         />
       </div>
 

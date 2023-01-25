@@ -17,9 +17,12 @@ export interface User {
 }
 
 export interface Player {
-  user: User
-  displayName: string
-  rounds?: Round[]
+  // TODO: ids in types??
+  id: string
+  playerName: string
+  //   user: User
+  //   displayName: string
+  //   rounds?: Round[]
 }
 
 export interface Round {
@@ -45,4 +48,10 @@ export interface PointEarned {
   round: Round
   // holeEarned?: 1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18
   holeEarned?: number
+}
+
+export interface ListEditProps {
+  listName: string
+  updateListItem: (id: string, list: string, updatedItem: any) => void
+  deleteItemFromList: (id: string, list: string) => void
 }
