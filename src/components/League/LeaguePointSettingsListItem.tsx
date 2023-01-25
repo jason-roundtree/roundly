@@ -30,6 +30,7 @@ export default function LeaguePointSettingsListItem({
     setUpdatedPointSetting(defaultState)
   }
 
+  //   TODO: move basic handleInputChange to shared hook
   function handleInputChange({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
@@ -38,8 +39,20 @@ export default function LeaguePointSettingsListItem({
 
   return (
     <li className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item">
-      <span className="editableListText">{pointType}</span>
-      <span className="editableListPointValue">
+      <span className="">
+        {isBeingEdited ? (
+          <input
+            type="text"
+            name="pointType"
+            value={updatedPointSetting.pointType}
+            onChange={handleInputChange}
+          />
+        ) : (
+          pointType
+        )}
+      </span>
+
+      <span className="">
         {isBeingEdited ? (
           <input
             type="number"

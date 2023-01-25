@@ -16,6 +16,8 @@ export interface User {
   leagues?: League[]
 }
 
+// TODO: simplify some of these property names like `playerName`, `pointType`, `pointValue` to not use the main object (e.g. `player`)in the names? If so then leagueState will need to be reworked/separated
+
 export interface Player {
   // TODO: ids in types??
   id: string

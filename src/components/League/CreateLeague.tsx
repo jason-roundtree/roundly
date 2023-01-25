@@ -25,7 +25,7 @@ interface PreSubmitValidation {
   playerName: boolean
 }
 
-// TODO: add Enter event listeners for add player and pointType?
+// TODO: add Enter keypress event listeners for add player and pointType?
 export default function CreateLeague() {
   const [leagueState, setLeagueState] = useState<LeagueState>({
     leagueName: '',
