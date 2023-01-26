@@ -4,6 +4,8 @@ import { LeaguePointSettingsListItem } from './'
 
 interface PointSettingsProps extends ListEditProps {
   pointsSettings: PointSetting[]
+  twEditInputs: string
+  twListItems: string
 }
 
 export default function LeaguePointsSettingsList({
@@ -11,6 +13,8 @@ export default function LeaguePointsSettingsList({
   updateListItem,
   deleteItemFromList,
   listName,
+  twEditInputs,
+  twListItems,
 }: PointSettingsProps): JSX.Element {
   return (
     <ul className="mb-3">
@@ -22,6 +26,8 @@ export default function LeaguePointsSettingsList({
             updateListItem={updateListItem}
             deleteItemFromList={deleteItemFromList}
             listName={listName}
+            twEditInputs={twEditInputs}
+            twListItems={twListItems}
           />
         )
       })}

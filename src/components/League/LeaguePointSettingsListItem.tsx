@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Modal from '../shared/Modal'
 
 interface EditableLeaguePointSetting {
   pointType: string
@@ -14,6 +15,8 @@ export default function LeaguePointSettingsListItem({
   listName,
   updateListItem,
   deleteItemFromList,
+  twEditInputs,
+  twListItems,
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
@@ -38,37 +41,31 @@ export default function LeaguePointSettingsListItem({
   }
 
   return (
-    <li className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item">
-      <span className="">
-        {isBeingEdited ? (
-          <input
-            type="text"
-            name="pointType"
-            value={updatedPointSetting.pointType}
-            onChange={handleInputChange}
-          />
-        ) : (
-          pointType
-        )}
-      </span>
+    <>
+      {isBeingEdited && (
+        <Modal title="Edit Point Setting">
+          <div>
+            <label htmlFor="pointType">Point Type</label>
+            <input
+              className={`${twEditInputs} w-72`}
+              type="text"
+              name="pointType"
+              value={updatedPointSetting.pointType}
+              onChange={handleInputChange}
+            />
+          </div>
 
-      <span className="">
-        {isBeingEdited ? (
-          <input
-            type="number"
-            name="pointValue"
-            value={updatedPointSetting.pointValue}
-            onChange={handleInputChange}
-          />
-        ) : (
-          pointValue
-        )}
-      </span>
-      <span>
-        {!isBeingEdited && (
-          <button onClick={() => handleEditingState(pointSetting)}>Edit</button>
-        )}
-        {isBeingEdited && (
+          <div>
+            <label htmlFor="pointType">Point Value</label>
+            <input
+              className={`${twEditInputs} w-24`}
+              type="number"
+              name="pointValue"
+              value={updatedPointSetting.pointValue}
+              onChange={handleInputChange}
+            />
+          </div>
+
           <button
             onClick={() =>
               handleUpdatePointSetting(id, listName, updatedPointSetting)
@@ -76,9 +73,18 @@ export default function LeaguePointSettingsListItem({
           >
             Save
           </button>
-        )}
-        <button onClick={() => deleteItemFromList(id, listName)}>Delete</button>
-      </span>
-    </li>
+        </Modal>
+      )}
+      <li className={twListItems}>
+        <span>{pointType}</span>
+        <span>{pointValue}</span>
+        <span className="list-edit-buttons">
+          <button onClick={() => handleEditingState(pointSetting)}>Edit</button>
+          <button onClick={() => deleteItemFromList(id, listName)}>
+            Delete
+          </button>
+        </span>
+      </li>
+    </>
   )
 }

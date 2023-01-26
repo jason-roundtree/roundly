@@ -48,8 +48,9 @@ input::-webkit-calendar-picker-indicator:hover {
 .editable-list-item {
   border: 0.5px solid var(--primary-color);
 }
-.editable-list-item span {
-  margin: 0 0 0 2.5em;
+.editable-list-item span:not(:first-of-type) {
+  margin: 0 0 0 1em;
+  width: 65vw;
 }
 .editable-list-item button {
   padding: 3px;

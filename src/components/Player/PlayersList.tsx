@@ -4,6 +4,8 @@ import { PlayersListItem } from './'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
+  twEditInputs: string
+  twListItems: string
 }
 
 export default function PlayersList({
@@ -11,6 +13,8 @@ export default function PlayersList({
   listName,
   deleteItemFromList,
   updateListItem,
+  twEditInputs,
+  twListItems,
 }: PlayerProps) {
   return (
     <ul className="mb-3">
@@ -23,6 +27,8 @@ export default function PlayersList({
             updateListItem={updateListItem}
             deleteItemFromList={deleteItemFromList}
             listName={listName}
+            twEditInputs={twEditInputs}
+            twListItems={twListItems}
           />
         )
       })}

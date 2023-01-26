@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { PointSetting } from '../../types'
 import { Player } from '../../types'
 import BasicInput from '../shared/BasicInput'
+import Modal from '../shared/Modal'
 import { PlayersList } from '../../components/Player'
 import { LeaguePointsSettingsList } from '../../components/League'
 import './CreateLeague.css'
@@ -41,6 +42,10 @@ export default function CreateLeague() {
     pointType: false,
     playerName: false,
   })
+  //   TODO: if keeping these move to a separate file
+  const twEditInputs =
+    'border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
+  const twListItems = 'max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item'
 
   function handleInputChange({
     target: { name, value },
@@ -129,7 +134,7 @@ export default function CreateLeague() {
         label="League Name"
         onChange={handleInputChange}
         value={leagueState.leagueName}
-        twClasses="w-full max-w-screen-sm"
+        twClasses="w-72 max-w-screen-sm"
         isRequired={true}
       />
 
@@ -139,7 +144,7 @@ export default function CreateLeague() {
         label="End Date"
         onChange={handleInputChange}
         value={leagueState.endDate}
-        twClasses="w-full max-w-md"
+        twClasses="w-64 max-w-md"
         isRequired={true}
         // onFocus={onFocus}
         // onBlur={onBlur}
@@ -150,10 +155,10 @@ export default function CreateLeague() {
         <BasicInput
           type="text"
           name="playerName"
-          label="Player Name"
+          label="Name"
           onChange={handleInputChange}
           value={leagueState.playerName}
-          twClasses="w-full max-w-screen-sm"
+          twClasses="w-72 max-w-screen-sm"
           showEmptyInputError={showInputError.playerName}
         />
 
@@ -170,6 +175,8 @@ export default function CreateLeague() {
           players={leagueState.players}
           deleteItemFromList={deleteItemFromList}
           updateListItem={updateListItem}
+          twEditInputs={twEditInputs}
+          twListItems={twListItems}
         />
       </div>
 
@@ -190,7 +197,7 @@ export default function CreateLeague() {
           name="pointType"
           onChange={handleInputChange}
           value={leagueState.pointType}
-          twClasses="w-full max-w-screen-sm"
+          twClasses="w-72 max-w-screen-sm"
           showEmptyInputError={showInputError.pointType}
         />
 
@@ -218,6 +225,8 @@ export default function CreateLeague() {
           pointsSettings={leagueState.pointsSettings}
           deleteItemFromList={deleteItemFromList}
           updateListItem={updateListItem}
+          twEditInputs={twEditInputs}
+          twListItems={twListItems}
         />
       </div>
 

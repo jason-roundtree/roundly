@@ -12,6 +12,8 @@ export default function PlayersListItem({
   listName,
   updateListItem,
   deleteItemFromList,
+  twEditInputs,
+  twListItems,
 }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
@@ -35,28 +37,38 @@ export default function PlayersListItem({
   }
 
   return (
-    <li className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item">
+    <li className={twListItems}>
       <span>
         {isBeingEdited ? (
-          <input
-            type="text"
-            name="playerName"
-            value={updatedPlayer.playerName}
-            onChange={handleInputChange}
-          />
+          <>
+            {/* <label htmlFor="playerName" className="block mt-2 font-semibold">
+              Name
+            </label> */}
+            <input
+              className={`${twEditInputs} w-72`}
+              type="text"
+              name="playerName"
+              value={updatedPlayer.playerName}
+              onChange={handleInputChange}
+            />
+          </>
         ) : (
           playerName
         )}
       </span>
-      {!isBeingEdited && (
-        <button onClick={() => handleEditingState(player)}>Edit</button>
-      )}
-      {isBeingEdited && (
-        <button onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}>
-          Save
-        </button>
-      )}
-      <button onClick={() => deleteItemFromList(id, listName)}>Delete</button>
+      <span className="list-edit-buttons">
+        {!isBeingEdited && (
+          <button onClick={() => handleEditingState(player)}>Edit</button>
+        )}
+        {isBeingEdited && (
+          <button
+            onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
+          >
+            Save
+          </button>
+        )}
+        <button onClick={() => deleteItemFromList(id, listName)}>Delete</button>
+      </span>
     </li>
   )
 }
