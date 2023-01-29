@@ -44,7 +44,7 @@ export default function CreateLeague() {
   })
   //   TODO: if keeping these move to a separate file
   const twEditInputs =
-    'border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
+    'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
   const twListItems = 'max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item'
 
   function handleInputChange({
@@ -139,7 +139,7 @@ export default function CreateLeague() {
         label="League Name"
         onChange={handleInputChange}
         value={leagueState.leagueName}
-        twClasses="w-72 max-w-screen-sm"
+        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
         isRequired={true}
       />
 
@@ -149,7 +149,7 @@ export default function CreateLeague() {
         label="End Date"
         onChange={handleInputChange}
         value={leagueState.endDate}
-        twClasses="w-64 max-w-md"
+        twClasses={`${twEditInputs} w-64 max-w-md`}
         isRequired={true}
       />
 
@@ -161,7 +161,7 @@ export default function CreateLeague() {
           label="Name"
           onChange={handleInputChange}
           value={leagueState.playerName}
-          twClasses="w-72 max-w-screen-sm"
+          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
           showEmptyInputError={showInputError.playerName}
         />
 
@@ -200,7 +200,7 @@ export default function CreateLeague() {
           name="pointType"
           onChange={handleInputChange}
           value={leagueState.pointType}
-          twClasses="w-72 max-w-screen-sm"
+          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
           showEmptyInputError={showInputError.pointType}
         />
 

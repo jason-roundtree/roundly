@@ -23,16 +23,17 @@ export default function Modal({
             {title}
           </h2>
           <div id="modal-body">{children}</div>
+          <div id="modal-footer">
+            <button onClick={closeModal} id="close-modal-button">
+              Cancel
+            </button>
+            {deleteItemFn && (
+              <button onClick={deleteItemFn} id="delete-item-btn">
+                Delete
+              </button>
+            )}
+          </div>
         </div>
-
-        <button onClick={closeModal} id="close-modal-button">
-          Cancel
-        </button>
-        {deleteItemFn && (
-          <button onClick={deleteItemFn} id="delete-item-btn">
-            Delete
-          </button>
-        )}
       </div>
     </Portal>
   )

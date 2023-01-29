@@ -4,7 +4,6 @@ type TextDateOrNumber = 'text' | 'date' | 'number'
 
 interface BasicInputProps<T extends TextDateOrNumber> {
   type: T
-  // type: string
   name: string
   label: string
   value: string | number
@@ -32,7 +31,7 @@ export default function BasicInput({
         {label}
       </label>
       <input
-        className={`border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 ${twClasses}`}
+        className={`${twClasses}`}
         type={type}
         name={name}
         onChange={onChange}
