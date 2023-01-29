@@ -41,22 +41,24 @@ export default function PlayersListItem({
   return (
     <li className={twListItems}>
       {isBeingEdited && (
-        <Modal title="Update Player" closeModal={() => setIsBeingEdited(false)}>
-          <div>
-            <BasicInput
-              twClasses={`${twEditInputs} w-72`}
-              type="text"
-              label="Player Name"
-              name="playerName"
-              onChange={handleInputChange}
-              value={updatedPlayer.playerName}
-            />
-            <button
-              onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
-            >
-              Save
-            </button>
-          </div>
+        <Modal
+          title="Update Player"
+          closeModal={() => setIsBeingEdited(false)}
+          deleteItemFn={() => deleteItemFromList(id, listName)}
+        >
+          <BasicInput
+            twClasses={`${twEditInputs} w-72`}
+            type="text"
+            label="Player Name"
+            name="playerName"
+            onChange={handleInputChange}
+            value={updatedPlayer.playerName}
+          />
+          <button
+            onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
+          >
+            Save
+          </button>
         </Modal>
       )}
       <span>{playerName}</span>

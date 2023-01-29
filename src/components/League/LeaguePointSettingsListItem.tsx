@@ -49,6 +49,7 @@ export default function LeaguePointSettingsListItem({
         <Modal
           title="Edit Point Setting"
           closeModal={() => setIsBeingEdited(false)}
+          deleteItemFn={() => deleteItemFromList(id, listName)}
         >
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
