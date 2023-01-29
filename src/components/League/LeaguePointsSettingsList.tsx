@@ -6,6 +6,7 @@ interface PointSettingsProps extends ListEditProps {
   pointsSettings: PointSetting[]
   twEditInputs: string
   twListItems: string
+  selectAllInputText: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function LeaguePointsSettingsList({
@@ -15,6 +16,7 @@ export default function LeaguePointsSettingsList({
   listName,
   twEditInputs,
   twListItems,
+  selectAllInputText,
 }: PointSettingsProps): JSX.Element {
   return (
     <ul className="mb-3">
@@ -28,6 +30,7 @@ export default function LeaguePointsSettingsList({
             listName={listName}
             twEditInputs={twEditInputs}
             twListItems={twListItems}
+            selectAllInputText={selectAllInputText}
           />
         )
       })}

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Modal from '../shared/Modal'
+import BasicInput from '../shared/BasicInput'
 
 interface EditablePlayer {
   playerName: string
@@ -38,35 +40,28 @@ export default function PlayersListItem({
 
   return (
     <li className={twListItems}>
-      <span>
-        {isBeingEdited ? (
-          <>
-            {/* <label htmlFor="playerName" className="block mt-2 font-semibold">
-              Name
-            </label> */}
-            <input
-              className={`${twEditInputs} w-72`}
+      {isBeingEdited && (
+        <Modal title="Update Player" closeModal={() => setIsBeingEdited(false)}>
+          <div>
+            <BasicInput
+              twClasses={`${twEditInputs} w-72`}
               type="text"
+              label="Player Name"
               name="playerName"
-              value={updatedPlayer.playerName}
               onChange={handleInputChange}
+              value={updatedPlayer.playerName}
             />
-          </>
-        ) : (
-          playerName
-        )}
-      </span>
+            <button
+              onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
+            >
+              Save
+            </button>
+          </div>
+        </Modal>
+      )}
+      <span>{playerName}</span>
       <span className="list-edit-buttons">
-        {!isBeingEdited && (
-          <button onClick={() => handleEditingState(player)}>Edit</button>
-        )}
-        {isBeingEdited && (
-          <button
-            onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
-          >
-            Save
-          </button>
-        )}
+        <button onClick={() => handleEditingState(player)}>Edit</button>
         <button onClick={() => deleteItemFromList(id, listName)}>Delete</button>
       </span>
     </li>

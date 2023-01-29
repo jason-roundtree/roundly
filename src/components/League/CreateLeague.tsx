@@ -125,6 +125,11 @@ export default function CreateLeague() {
     })
   }
 
+  function selectAllInputText(e) {
+    console.log('e.target: ', e.target)
+    e.target.select()
+  }
+
   return (
     <div className="m-8 mx-auto max-w-screen-md" id="createLeague">
       <h1 className="text-3xl font-bold">Create New League</h1>
@@ -146,8 +151,6 @@ export default function CreateLeague() {
         value={leagueState.endDate}
         twClasses="w-64 max-w-md"
         isRequired={true}
-        // onFocus={onFocus}
-        // onBlur={onBlur}
       />
 
       <div>
@@ -208,6 +211,7 @@ export default function CreateLeague() {
           value={leagueState.pointValue}
           onChange={handleInputChange}
           twClasses="w-24"
+          onFocus={selectAllInputText}
         />
 
         {/* TODO: Setup call to post point type and then forward point id to settings page */}
@@ -227,6 +231,7 @@ export default function CreateLeague() {
           updateListItem={updateListItem}
           twEditInputs={twEditInputs}
           twListItems={twListItems}
+          selectAllInputText={selectAllInputText}
         />
       </div>
 

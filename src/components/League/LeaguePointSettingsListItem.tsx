@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Modal from '../shared/Modal'
+import BasicInput from '../shared/BasicInput'
 
 interface EditableLeaguePointSetting {
   pointType: string
@@ -17,6 +18,7 @@ export default function LeaguePointSettingsListItem({
   deleteItemFromList,
   twEditInputs,
   twListItems,
+  selectAllInputText,
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
@@ -43,28 +45,29 @@ export default function LeaguePointSettingsListItem({
   return (
     <>
       {isBeingEdited && (
-        <Modal title="Edit Point Setting">
-          <div>
-            <label htmlFor="pointType">Point Type</label>
-            <input
-              className={`${twEditInputs} w-72`}
-              type="text"
-              name="pointType"
-              value={updatedPointSetting.pointType}
-              onChange={handleInputChange}
-            />
-          </div>
+        // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
+        <Modal
+          title="Edit Point Setting"
+          closeModal={() => setIsBeingEdited(false)}
+        >
+          <BasicInput
+            twClasses={`${twEditInputs} w-72`}
+            type="text"
+            label="Point Type"
+            name="pointType"
+            onChange={handleInputChange}
+            value={updatedPointSetting.pointType}
+          />
 
-          <div>
-            <label htmlFor="pointType">Point Value</label>
-            <input
-              className={`${twEditInputs} w-24`}
-              type="number"
-              name="pointValue"
-              value={updatedPointSetting.pointValue}
-              onChange={handleInputChange}
-            />
-          </div>
+          <BasicInput
+            twClasses={`${twEditInputs} w-72`}
+            type="number"
+            label="Point Value"
+            name="pointValue"
+            value={updatedPointSetting.pointValue}
+            onChange={handleInputChange}
+            onFocus={selectAllInputText}
+          />
 
           <button
             onClick={() =>
@@ -75,6 +78,8 @@ export default function LeaguePointSettingsListItem({
           </button>
         </Modal>
       )}
+
+      {/* TODO: change to tqListItem */}
       <li className={twListItems}>
         <span>{pointType}</span>
         <span>{pointValue}</span>
