@@ -2,8 +2,7 @@ import { useState, createContext } from 'react'
 import { v4 as uuid } from 'uuid'
 import { PointSetting } from '../../types'
 import { Player } from '../../types'
-import BasicInput from '../shared/BasicInput'
-import Modal from '../shared/Modal'
+import BasicInput from '../shared/components/BasicInput'
 import { PlayersList } from '../../components/Player'
 import { LeaguePointsSettingsList } from '../../components/League'
 import './CreateLeague.css'
@@ -42,6 +41,7 @@ export default function CreateLeague() {
     pointType: false,
     playerName: false,
   })
+
   //   TODO: if keeping these move to a separate file
   const twEditInputs =
     'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
@@ -113,9 +113,6 @@ export default function CreateLeague() {
 
   //   TODO: how to make the parameter types reusable with list item components?
   function updateListItem(id: string, list: string, updatedItem: any) {
-    console.log('id', id)
-    console.log('list', list)
-    console.log('updatedItem', updatedItem)
     const updatedList = leagueState[list].map((item) =>
       item.id === id ? updatedItem : item
     )
@@ -177,6 +174,7 @@ export default function CreateLeague() {
           listName="players"
           players={leagueState.players}
           deleteItemFromList={deleteItemFromList}
+          // deleteItemFromList={handleDeletionConfirmation}
           updateListItem={updateListItem}
           twEditInputs={twEditInputs}
           twListItems={twListItems}
@@ -187,11 +185,10 @@ export default function CreateLeague() {
         <h2 className="text-xl font-bold mt-4">Points Settings</h2>
         {/* TODO: Maybe put examples in a panel to free up some space? */}
         <p>
-          Add points and then select the Settings button to assign point values
-          (the value can be positive or negative), along with other setting
-          options. Examples of types of points you can use: Eagle, Birdie, Par,
-          Bogey, Double Bogey, Mulligan, Break a Rule, Cursing, Slam Club, you
-          can get creative...
+          Add point types and assign point values (the value can be positive or
+          negative). Examples of types of points you can use: Eagle, Birdie,
+          Par, Bogey, Double Bogey, Mulligan, Break a Rule, Cursing, Slam Club,
+          you can get creative...
         </p>
 
         <BasicInput
@@ -210,7 +207,7 @@ export default function CreateLeague() {
           name="pointValue"
           value={leagueState.pointValue}
           onChange={handleInputChange}
-          twClasses="w-24"
+          twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
           onFocus={selectAllInputText}
         />
 

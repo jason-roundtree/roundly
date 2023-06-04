@@ -6,7 +6,7 @@ interface ModalProps {
   title: string
   children: React.ReactNode
   closeModal: () => void
-  deleteItemFn?: () => {}
+  deleteItemFn?: () => void
 }
 
 export default function Modal({

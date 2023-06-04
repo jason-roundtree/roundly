@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import Modal from '../shared/Modal'
-import BasicInput from '../shared/BasicInput'
+import Modal from '../shared/components/Modal'
+import BasicInput from '../shared/components/BasicInput'
+import useHandleInputChange from '../shared/hooks/useHandleInputChange'
 
 interface EditableLeaguePointSetting {
   pointType: string
@@ -61,7 +62,7 @@ export default function LeaguePointSettingsListItem({
           />
 
           <BasicInput
-            twClasses={`${twEditInputs} w-72`}
+            twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             type="number"
             label="Point Value"
             name="pointValue"

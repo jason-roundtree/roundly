@@ -16,15 +16,28 @@
 #modal {
   margin: 1em;
   padding: 1em;
-  width: 90%;
   background: var(--tertiary-color);
   border-radius: 3px;
+}
+
+@media (max-width: 450px) {
+  #modal {
+    width: 90%;
+    padding: 0.5em;
+  }
+  input {
+    width: 95% !important;
+  }
 }
 
 #modal-footer {
   display: flex;
   /* justify-content: center; */
   justify-content: flex-end;
+}
+
+button + button {
+  margin-left: 15px;
 }
 /* #modal-container > button {
   color: var(--primary-color);

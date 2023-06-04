@@ -18,12 +18,12 @@ export default function BasicInput({
   type,
   name,
   label,
-  onChange,
   value,
   twClasses,
   showEmptyInputError,
-  onFocus,
   isRequired,
+  onChange,
+  onFocus,
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>

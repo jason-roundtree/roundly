@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import Modal from '../shared/Modal'
-import BasicInput from '../shared/BasicInput'
+import Modal from '../shared/components/Modal'
+import BasicInput from '../shared/components/BasicInput'
 
 interface EditablePlayer {
   playerName: string
