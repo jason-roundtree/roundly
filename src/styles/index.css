@@ -45,9 +45,11 @@ input::-webkit-calendar-picker-indicator:hover {
   cursor: pointer;
 }
 
-.editable-list-item {
-  /* border: 0.5px solid var(--primary-color); */
+/* .list-item {
   border-radius: 3px;
+  border: 0.5px solid var(--primary-color);
+} */
+.editable-list-item {
   background: var(--tertiary-color);
 }
 .editable-list-item span:not(:first-of-type) {
@@ -57,4 +59,14 @@ input::-webkit-calendar-picker-indicator:hover {
 .editable-list-item button {
   padding: 3px;
   margin: 0 0 0 0.5em;
+}
+
+.selectable-LI {
+  border: 1px solid var(--primary-color);
+}
+.selectable-LI:hover {
+  cursor: pointer;
+}
+.is-selected {
+  background: var(--tertiary-color);
 }

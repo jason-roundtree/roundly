@@ -1,4 +1,5 @@
 export { default as PlayerProfile } from './PlayerProfile'
 export { default as PlayerSelect } from './PlayerSelect'
-export { default as PlayersList } from './PlayersList'
-export { default as PlayersListItem } from './PlayersListItem'
+export { default as PlayerListEditable } from './PlayerListEditable'
+export { default as PlayerListItemEditable } from './PlayerListItemEditable'
+export { default as PlayerListItemSelectable } from './PlayerListItemSelectable'

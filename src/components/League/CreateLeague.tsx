@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { PointSetting } from '../../types'
 import { Player } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
-import { PlayersList } from '../../components/Player'
+import { PlayerListEditable } from '../../components/Player'
 import { LeaguePointsSettingsList } from '../../components/League'
 import './CreateLeague.css'
 
@@ -45,7 +45,8 @@ export default function CreateLeague() {
   //   TODO: if keeping these move to a separate file
   const twEditInputs =
     'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-  const twListItems = 'max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item'
+  const twListItems =
+    'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   function handleInputChange({
     target: { name, value },
@@ -170,7 +171,7 @@ export default function CreateLeague() {
           Add Player
         </button>
 
-        <PlayersList
+        <PlayerListEditable
           listName="players"
           players={leagueState.players}
           deleteItemFromList={deleteItemFromList}
@@ -235,7 +236,7 @@ export default function CreateLeague() {
       <div className="flex">
         {/* TODO: add validation to ensure league name has been added */}
         <button className="mx-auto" onSubmit={handleSaveLeague}>
-          Save League
+          Create League
         </button>
       </div>
     </div>

@@ -1,14 +1,14 @@
 import { Player } from '../../types'
 import { ListEditProps } from '../../types'
-import { PlayersListItem } from './'
+import { PlayerListItemEditable } from '.'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
-  twEditInputs: string
+  twEditInputs?: string
   twListItems: string
 }
 
-export default function PlayersList({
+export default function PlayersListEditable({
   players,
   listName,
   deleteItemFromList,
@@ -20,7 +20,7 @@ export default function PlayersList({
     <ul className="mb-3">
       {players.map((player) => {
         return (
-          <PlayersListItem
+          <PlayerListItemEditable
             player={player}
             className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item"
             key={player.id}

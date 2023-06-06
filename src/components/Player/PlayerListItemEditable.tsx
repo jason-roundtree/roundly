@@ -9,7 +9,7 @@ const defaultState: EditablePlayer = {
   playerName: '',
 }
 
-export default function PlayersListItem({
+export default function PlayerEditableListItem({
   player,
   listName,
   updateListItem,
