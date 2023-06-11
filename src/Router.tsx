@@ -4,16 +4,19 @@ import { Routes, Route, Link } from 'react-router-dom'
 import Home from './Home'
 import {
   CreateLeague,
-  InvitePlayer,
+  // InvitePlayer,
   LeagueSettings,
-  LeaguePointSetting,
-  LeaguePointsSettings,
+  // LeaguePointSetting,
+  LeaguePointSettings,
   LeaguesList,
   LeagueMembers,
   LeagueStandings,
   LeagueSummary,
 } from './components/League'
-import { PlayerSelect, PlayersList } from './components/Player'
+import {
+  PlayerSelect,
+  // PlayersList
+} from './components/Player'
 import {
   PlayerRoundDetails,
   PlayerRoundPointsEarned,
@@ -52,6 +55,10 @@ export default function Router() {
       <Route path="leagues/:id/members" element={<LeagueMembers />} />
       <Route path="leagues/:id/settings" element={<LeagueSettings />} />
       {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
+      <Route
+        path="league/:id/point-settings"
+        element={<LeaguePointSettings />}
+      />
       <Route path="league/:id/standings" element={<LeagueStandings />} />
       {/* <Route path="league/:id/schedule" element={< />} /> */}
       {/* event history */}

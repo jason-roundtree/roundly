@@ -27,7 +27,7 @@ export default function BasicInput({
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
-      <label htmlFor={name} className="block mt-2 font-semibold">
+      <label htmlFor={name} className="block mt-4 font-semibold">
         {label}
       </label>
       <input

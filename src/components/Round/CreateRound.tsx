@@ -1,9 +1,11 @@
-import React, { useState, MouseEvent } from 'react'
+import React, { useState } from 'react'
 import { Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
+import PointListItemSelectable from '../Round/PointListItemSelectable'
 import useHandleInputChange from '../shared/hooks/useHandleInputChange'
-const players = require('../players-data.json')
+const players = require('../../players-data.json')
+const points = require('../../point-settings-data.json')
 
 interface RoundState {
   name: string
@@ -21,19 +23,28 @@ export default function CreateRound() {
     players: [],
     pointSettings: [],
   })
-
   const [selectedPlayers, setSelectedPlayers] = useState<Array<string>>([])
   console.log('selectedPlayers: ', selectedPlayers)
+  const [selectedPoints, setSelectedPoints] = useState<Array<string>>([])
+  console.log('selectedPoints: ', selectedPoints)
 
   function handleSaveRound() {
     console.log('save round')
   }
 
+  // TODO: DRYify points and players lists
   function handleToggleSelectPlayer(id: string): void {
     if (!selectedPlayers.includes(id)) {
       setSelectedPlayers([...selectedPlayers, id])
     } else {
       setSelectedPlayers(selectedPlayers.filter((playerId) => playerId !== id))
+    }
+  }
+  function handleToggleSelectPoint(id: string): void {
+    if (!selectedPoints.includes(id)) {
+      setSelectedPoints([...selectedPoints, id])
+    } else {
+      setSelectedPoints(selectedPoints.filter((pointId) => pointId !== id))
     }
   }
 
@@ -47,7 +58,7 @@ export default function CreateRound() {
   const twEditInputs =
     'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
   const twListItems =
-    'max-w-fit rounded-lg my-1 mx-1 p-2 inline-block rounded-sm border-solid border-2 border-indigo-600'
+    'max-w-fit rounded-lg my-1 mx-1 p-1 inline-block rounded-sm border-solid border-2 border-indigo-600'
 
   return (
     <div className="m-8 mx-auto max-w-screen-md" id="createRound">
@@ -80,7 +91,7 @@ export default function CreateRound() {
         isRequired={false}
       />
 
-      <label className="block mt-2 font-semibold">Add Players</label>
+      <label className="block mt-4 font-semibold">Add Players</label>
       <ul>
         {players.map((player) => {
           const isSelected = selectedPlayers.includes(player.id)
@@ -90,6 +101,23 @@ export default function CreateRound() {
               id={player.id}
               twListItems={twListItems}
               toggleSelectedPlayer={handleToggleSelectPlayer}
+              isSelected={isSelected}
+            />
+          )
+        })}
+      </ul>
+
+      <label className="block mt-4 font-semibold">Points</label>
+      <ul>
+        {points.map((point) => {
+          const isSelected = selectedPoints.includes(point.id)
+          return (
+            <PointListItemSelectable
+              name={point.name}
+              weight={point.weight}
+              id={point.id}
+              twListItems={twListItems}
+              toggleSelectedPoint={handleToggleSelectPoint}
               isSelected={isSelected}
             />
           )

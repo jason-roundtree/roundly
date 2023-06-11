@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import useHandleInputChange from '../shared/hooks/useHandleInputChange'
 
 interface EditableLeaguePointSetting {
   pointType: string
@@ -30,8 +29,8 @@ export default function LeaguePointSettingsListItem({
     setIsBeingEdited(true)
   }
 
-  function handleUpdatePointSetting(id, listName, updatedPointSetting) {
-    updateListItem(id, listName, updatedPointSetting)
+  function handleUpdatePointSetting(id, updatedPointSetting, listName) {
+    updateListItem(id, updatedPointSetting, listName)
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)
   }
@@ -73,7 +72,7 @@ export default function LeaguePointSettingsListItem({
 
           <button
             onClick={() =>
-              handleUpdatePointSetting(id, listName, updatedPointSetting)
+              handleUpdatePointSetting(id, updatedPointSetting, listName)
             }
           >
             Save

@@ -28,6 +28,8 @@ export interface Player {
 }
 
 export interface Round {
+  // TODO: ids in types??
+  id: string
   name: string
   location?: string
   date: Date
@@ -41,10 +43,13 @@ export interface PointSetting {
   pointType: string
   pointValue: number
   // scope: 'hole' | 'round'
-  // maxFrequencyPerScope: number | 'unlimited'
+  // TODO: better to use null over string like 'unlimited'??
+  // maxFrequencyPerScope: number | null
 }
 
 export interface PointEarned {
+  // TODO: ids in types??
+  id: string
   pointSetting: PointSetting
   player: Player
   round: Round
@@ -53,7 +58,16 @@ export interface PointEarned {
 }
 
 export interface ListEditProps {
-  listName: string
-  updateListItem: (id: string, list: string, updatedItem: any) => void
+  listName: string | undefined
+  updateListItem: (
+    id: string,
+    updatedItem: ListObject,
+    listName: string
+  ) => void
   deleteItemFromList: (id: string, list: string) => void
+}
+
+export interface ListObject {
+  id: string
+  [key: string]: any
 }

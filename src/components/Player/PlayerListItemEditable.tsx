@@ -9,6 +9,7 @@ const defaultState: EditablePlayer = {
   playerName: '',
 }
 
+// className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item"
 export default function PlayerEditableListItem({
   player,
   listName,
@@ -26,8 +27,8 @@ export default function PlayerEditableListItem({
     setIsBeingEdited(true)
   }
 
-  function handleUpdatePlayer(id, listName, updatedPlayer) {
-    updateListItem(id, listName, updatedPlayer)
+  function handleUpdatePlayer(id, updatedPlayer, listName) {
+    updateListItem(id, updatedPlayer, listName)
     setIsBeingEdited(false)
     setUpdatedPlayer(defaultState)
   }

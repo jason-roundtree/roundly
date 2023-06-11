@@ -1,23 +1,27 @@
-import { useState, createContext } from 'react'
+import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
-import { PointSetting } from '../../types'
-import { Player } from '../../types'
+import { PointSetting, Player, ListObject } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import { PlayerListEditable } from '../../components/Player'
-import { LeaguePointsSettingsList } from '../../components/League'
+import { LeaguePointSettingsListEditable } from '../../components/League'
+import {
+  updateObjectItemInList,
+  removeObjectItemFromList,
+} from '../shared/utils/'
+
 import './CreateLeague.css'
 
 interface LeagueState {
   leagueName: string
   endDate: string
   playerName: string
-  players: string[]
-  // players: Player[]
+  // players: string[]
+  players: Player[] | []
   pointType: string
   pointValue: number
-  pointsSettings: string[]
-  // pointsSettings: PointSetting[],
-  // dateInputFocused: boolean,
+  // pointsSettings: string[]
+  pointsSettings: PointSetting[] | []
+  // dateInputFocused: boolean
 }
 
 interface PreSubmitValidation {
@@ -59,12 +63,33 @@ export default function CreateLeague() {
     console.log('save')
   }
 
-  function deleteItemFromList(id, list) {
-    // console.log({ id, list })
-    const filteredState = leagueState[list].filter((item) => item.id !== id)
+  function deleteItemFromList(id, listName): void {
+    console.log({ id, listName })
+    const filteredState = removeObjectItemFromList(id, leagueState[listName])
     setLeagueState({
       ...leagueState,
-      [list]: filteredState,
+      [listName]: filteredState,
+    })
+  }
+
+  // TODO: create type for params and use here and in ListEditProps > updateListItem()
+  function updateListItem(
+    id: string,
+    updatedItem: ListObject,
+    listName: string
+  ): void {
+    console.log('x', { id, updatedItem, listName })
+    const updatedList = updateObjectItemInList(
+      id,
+      leagueState[listName],
+      updatedItem
+    )
+    // const updatedList = leagueState[list].map((item) =>
+    //   item.id === id ? updatedItem : item
+    // )
+    setLeagueState({
+      ...leagueState,
+      [listName]: updatedList,
     })
   }
 
@@ -112,19 +137,7 @@ export default function CreateLeague() {
     console.log('leagueState: ', leagueState)
   }
 
-  //   TODO: how to make the parameter types reusable with list item components?
-  function updateListItem(id: string, list: string, updatedItem: any) {
-    const updatedList = leagueState[list].map((item) =>
-      item.id === id ? updatedItem : item
-    )
-    setLeagueState({
-      ...leagueState,
-      [list]: updatedList,
-    })
-  }
-
-  function selectAllInputText(e) {
-    console.log('e.target: ', e.target)
+  function selectAllInputText(e): void {
     e.target.select()
   }
 
@@ -222,7 +235,7 @@ export default function CreateLeague() {
           Add Point
         </button>
 
-        <LeaguePointsSettingsList
+        <LeaguePointSettingsListEditable
           listName="pointsSettings"
           pointsSettings={leagueState.pointsSettings}
           deleteItemFromList={deleteItemFromList}

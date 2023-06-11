@@ -5,7 +5,7 @@ import { PlayerListItemEditable } from '.'
 export interface PlayerProps extends ListEditProps {
   players: Player[]
   twEditInputs?: string
-  twListItems: string
+  twListItems?: string
 }
 
 export default function PlayersListEditable({
@@ -22,7 +22,6 @@ export default function PlayersListEditable({
         return (
           <PlayerListItemEditable
             player={player}
-            className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item"
             key={player.id}
             updateListItem={updateListItem}
             deleteItemFromList={deleteItemFromList}
