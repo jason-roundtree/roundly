@@ -1,22 +1,54 @@
 import React, { useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import { LeaguePointSettingsListEditable } from '../../components/League'
-import updateObjectItemInList from '../shared/utils/updateObjectItemInList'
-import removeObjectItemFromList from '../shared/utils/removeObjectItemFromList'
-import { ListObject } from '../../types'
-const points = require('../../point-settings-data.json')
+import {
+  updateObjectItemInList,
+  removeObjectItemFromList,
+} from '../shared/utils'
+import { ListObject, PointSetting } from '../../types'
+import BasicInput from '../shared/components/BasicInput'
+
+import points from '../../point-settings-data.json'
+
+const defaultNewPointState: PointSetting = {
+  id: uuid(),
+  pointType: '',
+  pointValue: 0,
+  scope: 'hole',
+  maxFrequencyPerScope: 1,
+}
+
+// TODO: move add point form to modal
+// TODO: add empty field validation
+// TODO: add function that selects whole number input?
+// TODO: clear inputs once new point has been added
 
 export default function LeaguePointSettings() {
-  const [pointSettings, setPointSettings] = useState(points)
+  const pointSettingsData = points as Array<PointSetting>
+  type PointSettings = typeof pointSettingsData
+  const [pointSettings, setPointSettings] =
+    useState<PointSettings>(pointSettingsData)
+
+  const [newPoint, setNewPoint] = useState(defaultNewPointState)
 
   function handleDeleteItemFromList(id: string) {
     const updatedList = removeObjectItemFromList(id, pointSettings)
-    setPointSettings(updatedList)
+    setPointSettings(updatedList as PointSettings)
   }
 
   function handleUpdateListItem(id: string, updatedItem: ListObject) {
-    console.log('handleUpdateListItem: ', { id, updatedItem })
     const updatedList = updateObjectItemInList(id, pointSettings, updatedItem)
-    setPointSettings(updatedList)
+    setPointSettings(updatedList as PointSettings)
+  }
+
+  function handleInputChange({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>): void {
+    setNewPoint({ ...newPoint, [name]: value })
+  }
+
+  function addInputItemToList() {
+    setPointSettings([...pointSettings, newPoint])
   }
 
   //   TODO: if keeping these move to a separate file
@@ -28,6 +60,34 @@ export default function LeaguePointSettings() {
   return (
     <>
       <div>League Point Settings</div>
+
+      <BasicInput
+        type="text"
+        label="Point Name"
+        name="pointType"
+        onChange={handleInputChange}
+        value={newPoint.pointType}
+        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
+        // showEmptyInputError={showInputError.pointType}
+      />
+
+      <BasicInput
+        type="number"
+        label="Point Value"
+        name="pointValue"
+        value={newPoint.pointValue}
+        onChange={handleInputChange}
+        twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
+        // onFocus={selectAllInputText}
+      />
+
+      <button
+        data-input-item="pointType"
+        data-input-list="pointsSettings"
+        onClick={addInputItemToList}
+      >
+        Add Point
+      </button>
 
       <LeaguePointSettingsListEditable
         listName="pointsSettings"

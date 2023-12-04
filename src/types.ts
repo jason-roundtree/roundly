@@ -42,9 +42,9 @@ export interface PointSetting {
   id: string
   pointType: string
   pointValue: number
-  // scope: 'hole' | 'round'
+  scope: 'hole' | 'round'
   // TODO: better to use null over string like 'unlimited'??
-  // maxFrequencyPerScope: number | null
+  maxFrequencyPerScope: number | null
 }
 
 export interface PointEarned {

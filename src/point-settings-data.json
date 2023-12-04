@@ -2,49 +2,49 @@
         "id": "1",
         "pointType": "Birdie",
         "pointValue": 5,
-        "frequency": "hole",
+        "scope": "hole",
         "maxFrequencyPerScope": 1
     },
     {
         "id": "2",
         "pointType": "Par",
         "pointValue": 1,
-        "frequency": "hole",
+        "scope": "hole",
         "maxFrequencyPerScope": 1
     },
     {
         "id": "3",
         "pointType": "Double Bogey",
         "pointValue": -3,
-        "frequency": "hole",
+        "scope": "hole",
         "maxFrequencyPerScope": 1
     },
     {
         "id": "4",
         "pointType": "Swear",
         "pointValue": -10,
-        "frequency": "hole",
+        "scope": "hole",
         "maxFrequencyPerScope": null
     },
     {
         "id": "5",
         "pointType": "Lowest Round of Day",
         "pointValue": 20,
-        "frequency": "round",
+        "scope": "round",
         "maxFrequencyPerScope": 1
     },
     {
         "id": "6",
         "pointType": "Highest Round of Day",
         "pointValue": -20,
-        "frequency": "round",
+        "scope": "round",
         "maxFrequencyPerScope": 1
     },
     {
         "id": "7",
         "pointType": "Ball out of bounds",
         "pointValue": -5,
-        "frequency": "round",
+        "scope": "round",
         "maxFrequencyPerScope": null
     }
 ]

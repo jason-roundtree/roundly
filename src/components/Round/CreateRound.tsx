@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
 import PointListItemSelectable from '../Round/PointListItemSelectable'
-import useHandleInputChange from '../shared/hooks/useHandleInputChange'
-const players = require('../../players-data.json')
-const points = require('../../point-settings-data.json')
+import players from '../../players-data.json'
+import points from '../../point-settings-data.json'
 
 interface RoundState {
   name: string
@@ -27,6 +27,8 @@ export default function CreateRound() {
   console.log('selectedPlayers: ', selectedPlayers)
   const [selectedPoints, setSelectedPoints] = useState<Array<string>>([])
   console.log('selectedPoints: ', selectedPoints)
+  // TODO: pass league down or add it to URL params?
+  const leagueId = 'dummyLeagueID'
 
   function handleSaveRound() {
     console.log('save round')
@@ -108,13 +110,14 @@ export default function CreateRound() {
       </ul>
 
       <label className="block mt-4 font-semibold">Points</label>
+      <Link to={`/league/${leagueId}/point-settings`}>Edit Points</Link>
       <ul>
         {points.map((point) => {
           const isSelected = selectedPoints.includes(point.id)
           return (
             <PointListItemSelectable
-              name={point.name}
-              weight={point.weight}
+              name={point.pointType}
+              weight={point.pointValue}
               id={point.id}
               twListItems={twListItems}
               toggleSelectedPoint={handleToggleSelectPoint}

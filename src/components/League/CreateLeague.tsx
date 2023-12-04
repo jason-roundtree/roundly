@@ -13,14 +13,13 @@ import './CreateLeague.css'
 
 interface LeagueState {
   leagueName: string
+  startDate: string
   endDate: string
   playerName: string
-  // players: string[]
-  players: Player[] | []
+  players: Player[]
   pointType: string
   pointValue: number
-  // pointsSettings: string[]
-  pointsSettings: PointSetting[] | []
+  pointsSettings: PointSetting[]
   // dateInputFocused: boolean
 }
 
@@ -33,6 +32,7 @@ interface PreSubmitValidation {
 export default function CreateLeague() {
   const [leagueState, setLeagueState] = useState<LeagueState>({
     leagueName: '',
+    startDate: '',
     endDate: '',
     playerName: '',
     players: [],
@@ -58,9 +58,27 @@ export default function CreateLeague() {
     setLeagueState({ ...leagueState, [name]: value })
   }
 
-  function handleSaveLeague(e) {
+  async function handleSaveLeague(e) {
     e.preventDefault()
-    console.log('save')
+    const leagueData = {
+      name: leagueState.leagueName,
+      startDate: leagueState.startDate ? new Date(leagueState.startDate) : new Date(),
+      endDate:  leagueState.endDate ? new Date(leagueState.endDate) : null
+    }
+    console.log('create League, basic league state ', leagueData)
+    try {
+      const response = await fetch('http://localhost:3001/api/leagues', {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leagueData),
+      });
+      const resJson = await response.json()
+      console.log('resJson', resJson)
+      // return resJson;
+    }
+    catch(err) {
+      console.log('create league error: ', err)
+    }
   }
 
   function deleteItemFromList(id, listName): void {
@@ -84,9 +102,6 @@ export default function CreateLeague() {
       leagueState[listName],
       updatedItem
     )
-    // const updatedList = leagueState[list].map((item) =>
-    //   item.id === id ? updatedItem : item
-    // )
     setLeagueState({
       ...leagueState,
       [listName]: updatedList,
@@ -94,7 +109,7 @@ export default function CreateLeague() {
   }
 
   function addInputItemToList(e) {
-    e.preventDefault()
+    // e.preventDefault()
     const { inputItem, inputList } = e.target.dataset
     if (!leagueState[inputItem]) {
       setShowInputError({
@@ -142,7 +157,7 @@ export default function CreateLeague() {
   }
 
   return (
-    <div className="m-8 mx-auto max-w-screen-md" id="createLeague">
+    <form className="m-8 mx-auto max-w-screen-md" id="createLeague">
       <h1 className="text-3xl font-bold">Create New League</h1>
       <BasicInput
         type="text"
@@ -156,16 +171,26 @@ export default function CreateLeague() {
 
       <BasicInput
         type="date"
+        name="startDate"
+        label="Start Date"
+        onChange={handleInputChange}
+        value={leagueState.startDate}
+        twClasses={`${twEditInputs} w-64 max-w-md`}
+        // isRequired={true}
+      />
+
+      <BasicInput
+        type="date"
         name="endDate"
         label="End Date"
         onChange={handleInputChange}
         value={leagueState.endDate}
         twClasses={`${twEditInputs} w-64 max-w-md`}
-        isRequired={true}
+        // isRequired={true}
       />
 
       <div>
-        <h2 className="text-xl font-bold mt-4">Players</h2>
+        {/* <h2 className="text-xl font-bold mt-4">Players</h2>
         <BasicInput
           type="text"
           name="playerName"
@@ -188,17 +213,16 @@ export default function CreateLeague() {
           listName="players"
           players={leagueState.players}
           deleteItemFromList={deleteItemFromList}
-          // deleteItemFromList={handleDeletionConfirmation}
           updateListItem={updateListItem}
           twEditInputs={twEditInputs}
           twListItems={twListItems}
-        />
+        /> */}
       </div>
 
       <div>
         <h2 className="text-xl font-bold mt-4">Points Settings</h2>
         {/* TODO: Maybe put examples in a panel to free up some space? */}
-        <p>
+        {/* <p>
           Add point types and assign point values (the value can be positive or
           negative). Examples of types of points you can use: Eagle, Birdie,
           Par, Bogey, Double Bogey, Mulligan, Break a Rule, Cursing, Slam Club,
@@ -223,11 +247,11 @@ export default function CreateLeague() {
           onChange={handleInputChange}
           twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
           onFocus={selectAllInputText}
-        />
+        /> */}
 
         {/* TODO: Setup call to post point type and then forward point id to settings page */}
         {/* TODO: Setup Combobox to allow quick selection of commonly used types? https://ui.reach.tech/combobox */}
-        <button
+        {/* <button
           data-input-item="pointType"
           data-input-list="pointsSettings"
           onClick={addInputItemToList}
@@ -243,15 +267,15 @@ export default function CreateLeague() {
           twEditInputs={twEditInputs}
           twListItems={twListItems}
           selectAllInputText={selectAllInputText}
-        />
+        /> */}
       </div>
 
       <div className="flex">
         {/* TODO: add validation to ensure league name has been added */}
-        <button className="mx-auto" onSubmit={handleSaveLeague}>
+        <button className="mx-auto" onClick={handleSaveLeague}>
           Create League
         </button>
       </div>
-    </div>
+    </form>
   )
 }
