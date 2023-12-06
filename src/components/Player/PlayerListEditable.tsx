@@ -4,6 +4,7 @@ import { PlayerListItemEditable } from '.'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
+  onUpdatePlayer: () => void
   twEditInputs?: string
   twListItems?: string
 }
@@ -11,8 +12,9 @@ export interface PlayerProps extends ListEditProps {
 export default function PlayersListEditable({
   players,
   listName,
-  deleteItemFromList,
-  updateListItem,
+  // deleteItemFromList,
+  // updateListItem,
+  onUpdatePlayer,
   twEditInputs,
   twListItems,
 }: PlayerProps) {
@@ -23,8 +25,9 @@ export default function PlayersListEditable({
           <PlayerListItemEditable
             player={player}
             key={player.id}
-            updateListItem={updateListItem}
-            deleteItemFromList={deleteItemFromList}
+            // updateListItem={updateListItem}
+            // deleteItemFromList={deleteItemFromList}
+            onUpdatePlayer={onUpdatePlayer}
             listName={listName}
             twEditInputs={twEditInputs}
             twListItems={twListItems}

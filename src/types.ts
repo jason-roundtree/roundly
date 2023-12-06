@@ -21,7 +21,7 @@ export interface User {
 export interface Player {
   // TODO: ids in types??
   id: string
-  playerName: string
+  name: string
   //   user: User
   //   displayName: string
   //   rounds?: Round[]
@@ -59,12 +59,12 @@ export interface PointEarned {
 
 export interface ListEditProps {
   listName: string | undefined
-  updateListItem: (
+  updateListItem?: (
     id: string,
     updatedItem: ListObject,
     listName: string
   ) => void
-  deleteItemFromList: (id: string, list: string) => void
+  deleteItemFromList?: (id: string, list: string) => void
 }
 
 export interface ListObject {

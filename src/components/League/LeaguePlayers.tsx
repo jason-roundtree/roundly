@@ -1,0 +1,103 @@
+import { useState, useEffect } from 'react'
+import { v4 as uuid } from 'uuid'
+import BasicInput from '../shared/components/BasicInput'
+import { PlayerListEditable } from '../Player'
+import { Player } from '../../types'
+import {
+  updateObjectItemInList,
+  removeObjectItemFromList,
+} from '../shared/utils'
+
+const leagueId = window.location.pathname.split('/')[2]
+console.log('leagueId', leagueId)
+
+export async function fetchPlayers() {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/players/league/${leagueId}`
+    )
+    const players = await res.json()
+    return players
+  } catch (err) {
+    console.log('fetch players error: ', err)
+  }
+}
+
+export default function LeaguePlayers(): JSX.Element {
+  // TODO: correct way to initiate state when array can be empty?
+  const [players, setPlayers] = useState<[Player] | []>([])
+  const [newPlayerName, setNewPlayerName] = useState<string>('')
+  console.log('players', players)
+
+  useEffect(() => {
+    const getPlayers = () => {
+      refreshPlayers()
+    }
+    getPlayers()
+  }, [])
+
+  async function refreshPlayers(): Promise<void> {
+    console.log('refreshPlayers')
+    const players = await fetchPlayers()
+    setPlayers(players)
+  }
+
+  async function handleAddPlayerToLeague() {
+    const newPlayer = {
+      leagueId: leagueId,
+      name: newPlayerName,
+      // userId: uuid(),
+    }
+    try {
+      const res = await fetch('http://localhost:3001/api/players', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPlayer),
+      })
+      // const resJson = await res.json()
+      // console.log('resJson', resJson)
+      const players = await fetchPlayers()
+      setPlayers(players)
+      setNewPlayerName('')
+    } catch (err) {
+      console.log('add player to league error: ', err)
+    }
+  }
+
+  //   TODO: if keeping these move to a separate file
+  const twEditInputs =
+    'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
+  const twListItems =
+    'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold mt-4">Players</h2>
+      <BasicInput
+        type="text"
+        name="playerName"
+        label="Name"
+        onChange={({ target }) => setNewPlayerName(target.value)}
+        value={newPlayerName}
+        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
+        // showEmptyInputError={showInputError.playerName}
+      />
+
+      <button
+        data-input-item="playerName"
+        data-input-list="players"
+        onClick={handleAddPlayerToLeague}
+      >
+        Add Player
+      </button>
+
+      <PlayerListEditable
+        listName="players"
+        players={players}
+        twEditInputs={twEditInputs}
+        twListItems={twListItems}
+        onUpdatePlayer={refreshPlayers}
+      />
+    </div>
+  )
+}

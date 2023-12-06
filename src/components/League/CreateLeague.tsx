@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { PointSetting, Player, ListObject } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
-import { PlayerListEditable } from '../../components/Player'
-import { LeaguePointSettingsListEditable } from '../../components/League'
+// import { PlayerListEditable } from '../../components/Player'
+// import { LeaguePointSettingsListEditable } from '../../components/League'
 import {
   updateObjectItemInList,
   removeObjectItemFromList,
@@ -11,40 +11,38 @@ import {
 
 import './CreateLeague.css'
 
-interface LeagueState {
+interface BasicLeagueState {
   leagueName: string
   startDate: string
   endDate: string
-  playerName: string
-  players: Player[]
-  pointType: string
-  pointValue: number
-  pointsSettings: PointSetting[]
+
+  // pointType: string
+  // pointValue: number
+  // pointsSettings: PointSetting[]
   // dateInputFocused: boolean
 }
 
-interface PreSubmitValidation {
-  pointType: boolean
-  playerName: boolean
+const defaultState = {
+  leagueName: '',
+  startDate: '',
+  endDate: '',
 }
-
 // TODO: add Enter keypress event listeners for add player and pointType?
 export default function CreateLeague() {
-  const [leagueState, setLeagueState] = useState<LeagueState>({
+  const [leagueState, setLeagueState] = useState<BasicLeagueState>({
     leagueName: '',
     startDate: '',
     endDate: '',
-    playerName: '',
-    players: [],
-    pointType: '',
-    pointValue: 0,
-    pointsSettings: [],
+
+    // pointType: '',
+    // pointValue: 0,
+    // pointsSettings: [],
     // dateInputFocused: false,
   })
-  const [showInputError, setShowInputError] = useState<PreSubmitValidation>({
-    pointType: false,
-    playerName: false,
-  })
+  // const [showInputError, setShowInputError] = useState<PreSubmitValidation>({
+  //   pointType: false,
+  //   playerName: false,
+  // })
 
   //   TODO: if keeping these move to a separate file
   const twEditInputs =
@@ -62,21 +60,23 @@ export default function CreateLeague() {
     e.preventDefault()
     const leagueData = {
       name: leagueState.leagueName,
-      startDate: leagueState.startDate ? new Date(leagueState.startDate) : new Date(),
-      endDate:  leagueState.endDate ? new Date(leagueState.endDate) : null
+      startDate: leagueState.startDate
+        ? new Date(leagueState.startDate)
+        : new Date(),
+      endDate: leagueState.endDate ? new Date(leagueState.endDate) : null,
     }
     console.log('create League, basic league state ', leagueData)
     try {
       const response = await fetch('http://localhost:3001/api/leagues', {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leagueData),
-      });
-      const resJson = await response.json()
-      console.log('resJson', resJson)
-      // return resJson;
-    }
-    catch(err) {
+      })
+      const res = await response.json()
+      console.log('res', res)
+      setLeagueState(defaultState)
+      window.location.href = `http://localhost:3000/leagues/${res.id}/players`
+    } catch (err) {
       console.log('create league error: ', err)
     }
   }
@@ -108,49 +108,49 @@ export default function CreateLeague() {
     })
   }
 
-  function addInputItemToList(e) {
-    // e.preventDefault()
-    const { inputItem, inputList } = e.target.dataset
-    if (!leagueState[inputItem]) {
-      setShowInputError({
-        ...showInputError,
-        [inputItem]: true,
-      })
-    } else {
-      setShowInputError({
-        ...showInputError,
-        [inputItem]: false,
-      })
-      // TODO: make this function less generic so I don't need to do this check for pointType and do the funkyness with clearing state?
-      const itemToAdd: {
-        id: string
-        [key: string]: string | number
-      } = {
-        id: uuid(),
-        [inputItem]: leagueState[inputItem],
-      }
-      if (inputItem === 'pointType') {
-        itemToAdd.pointValue = +leagueState.pointValue
-      }
-      const stateToClear = {}
-      for (const key in itemToAdd) {
-        if (key !== 'id') {
-          if (typeof itemToAdd[key] === 'number') {
-            stateToClear[key] = 0
-          } else {
-            stateToClear[key] = ''
-          }
-        }
-      }
-      setLeagueState({
-        ...leagueState,
-        [inputList]: [...leagueState[inputList], itemToAdd],
-        // TODO: is it safe to clear input here? Safer to use previous leagueState?
-        ...stateToClear,
-      })
-    }
-    console.log('leagueState: ', leagueState)
-  }
+  // function addInputItemToList(e) {
+  //   // e.preventDefault()
+  //   const { inputItem, inputList } = e.target.dataset
+  //   if (!leagueState[inputItem]) {
+  //     setShowInputError({
+  //       ...showInputError,
+  //       [inputItem]: true,
+  //     })
+  //   } else {
+  //     setShowInputError({
+  //       ...showInputError,
+  //       [inputItem]: false,
+  //     })
+  //     // TODO: make this function less generic so I don't need to do this check for pointType and do the funkyness with clearing state?
+  //     const itemToAdd: {
+  //       id: string
+  //       [key: string]: string | number
+  //     } = {
+  //       id: uuid(),
+  //       [inputItem]: leagueState[inputItem],
+  //     }
+  //     if (inputItem === 'pointType') {
+  //       itemToAdd.pointValue = +leagueState.pointValue
+  //     }
+  //     const stateToClear = {}
+  //     for (const key in itemToAdd) {
+  //       if (key !== 'id') {
+  //         if (typeof itemToAdd[key] === 'number') {
+  //           stateToClear[key] = 0
+  //         } else {
+  //           stateToClear[key] = ''
+  //         }
+  //       }
+  //     }
+  //     setLeagueState({
+  //       ...leagueState,
+  //       [inputList]: [...leagueState[inputList], itemToAdd],
+  //       // TODO: is it safe to clear input here? Safer to use previous leagueState?
+  //       ...stateToClear,
+  //     })
+  //   }
+  //   console.log('leagueState: ', leagueState)
+  // }
 
   function selectAllInputText(e): void {
     e.target.select()
