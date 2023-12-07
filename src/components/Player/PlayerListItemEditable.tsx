@@ -14,9 +14,7 @@ const defaultState: EditablePlayer = {
 export default function PlayerEditableListItem({
   player,
   listName,
-  // updateListItem,
-  // deleteItemFromList,
-  onUpdatePlayer,
+  refreshPlayerState,
   twEditInputs,
   twListItems,
 }) {
@@ -28,8 +26,6 @@ export default function PlayerEditableListItem({
     try {
       const res = await fetch(`http://localhost:3001/api/players/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedPlayer),
       })
       // const resJson = await res.json()
       // console.log('resJson', resJson)
@@ -45,10 +41,21 @@ export default function PlayerEditableListItem({
     setIsBeingEdited(true)
   }
 
+  async function deletePlayer(id) {
+    try {
+      const res = await fetch(`http://localhost:3001/api/players/${id}`, {
+        method: 'DELETE',
+      })
+      console.log('delete player res: ', res.json())
+      refreshPlayerState()
+    } catch (err) {
+      console.log('delete player error: ', err)
+    }
+  }
+
   async function handleUpdatePlayer(id, updatedPlayer, listName) {
-    // updateListItem(id, updatedPlayer, listName)
     await updatePlayer()
-    onUpdatePlayer()
+    refreshPlayerState()
     setUpdatedPlayer(defaultState)
     setIsBeingEdited(false)
   }
@@ -85,7 +92,7 @@ export default function PlayerEditableListItem({
       <span>{name}</span>
       <span className="list-edit-buttons">
         <button onClick={() => handleEditingState(player)}>Edit</button>
-        {/* <button onClick={() => deleteItemFromList(id, listName)}>Delete</button> */}
+        <button onClick={() => deletePlayer(id)}>Delete</button>
       </span>
     </li>
   )

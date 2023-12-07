@@ -3,10 +3,7 @@ import { v4 as uuid } from 'uuid'
 import BasicInput from '../shared/components/BasicInput'
 import { PlayerListEditable } from '../Player'
 import { Player } from '../../types'
-import {
-  updateObjectItemInList,
-  removeObjectItemFromList,
-} from '../shared/utils'
+import { sortArrayOfObjects } from '../shared/utils'
 
 const leagueId = window.location.pathname.split('/')[2]
 console.log('leagueId', leagueId)
@@ -17,7 +14,10 @@ export async function fetchPlayers() {
       `http://localhost:3001/api/players/league/${leagueId}`
     )
     const players = await res.json()
-    return players
+    console.log('players pre sort: ', players)
+    const sortedPlayers = sortArrayOfObjects(players, 'name')
+    console.log('players post sort: ', sortedPlayers)
+    return sortedPlayers
   } catch (err) {
     console.log('fetch players error: ', err)
   }
@@ -25,24 +25,25 @@ export async function fetchPlayers() {
 
 export default function LeaguePlayers(): JSX.Element {
   // TODO: correct way to initiate state when array can be empty?
-  const [players, setPlayers] = useState<[Player] | []>([])
+  const [players, setPlayers] = useState<Player[]>([])
   const [newPlayerName, setNewPlayerName] = useState<string>('')
+  const [showInputError, setShowInputError] = useState<boolean>(false)
   console.log('players', players)
 
   useEffect(() => {
-    const getPlayers = () => {
-      refreshPlayers()
-    }
-    getPlayers()
+    refreshPlayersState()
   }, [])
 
-  async function refreshPlayers(): Promise<void> {
-    console.log('refreshPlayers')
+  async function refreshPlayersState(): Promise<void> {
     const players = await fetchPlayers()
     setPlayers(players)
   }
 
-  async function handleAddPlayerToLeague() {
+  async function handleAddPlayerToLeague(): Promise<void> {
+    if (!newPlayerName) {
+      setShowInputError(true)
+      return
+    }
     const newPlayer = {
       leagueId: leagueId,
       name: newPlayerName,
@@ -77,10 +78,13 @@ export default function LeaguePlayers(): JSX.Element {
         type="text"
         name="playerName"
         label="Name"
-        onChange={({ target }) => setNewPlayerName(target.value)}
+        onChange={({ target }) => {
+          setShowInputError(false)
+          setNewPlayerName(target.value)
+        }}
         value={newPlayerName}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        // showEmptyInputError={showInputError.playerName}
+        showEmptyInputError={showInputError}
       />
 
       <button
@@ -96,7 +100,7 @@ export default function LeaguePlayers(): JSX.Element {
         players={players}
         twEditInputs={twEditInputs}
         twListItems={twListItems}
-        onUpdatePlayer={refreshPlayers}
+        refreshPlayerState={refreshPlayersState}
       />
     </div>
   )
