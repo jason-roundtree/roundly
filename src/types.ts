@@ -40,8 +40,8 @@ export interface Round {
 export interface PointSetting {
   // TODO: ids in types??
   id: string
-  pointType: string
-  pointValue: number
+  name: string
+  value: number
   scope: 'hole' | 'round'
   // TODO: better to use null over string like 'unlimited'??
   maxFrequencyPerScope: number | null

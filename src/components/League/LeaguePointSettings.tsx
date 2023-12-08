@@ -10,10 +10,10 @@ import BasicInput from '../shared/components/BasicInput'
 
 import points from '../../point-settings-data.json'
 
-const defaultNewPointState: PointSetting = {
-  id: uuid(),
-  pointType: '',
-  pointValue: 0,
+const defaultNewPointState = {
+  // id: uuid(),
+  name: '',
+  value: 0,
   scope: 'hole',
   maxFrequencyPerScope: 1,
 }
@@ -24,31 +24,58 @@ const defaultNewPointState: PointSetting = {
 // TODO: clear inputs once new point has been added
 
 export default function LeaguePointSettings() {
-  const pointSettingsData = points as Array<PointSetting>
-  type PointSettings = typeof pointSettingsData
-  const [pointSettings, setPointSettings] =
-    useState<PointSettings>(pointSettingsData)
-
+  // const pointSettingsData = points as Array<PointSetting>
+  // type PointSettings = typeof pointSettingsData
+  // const [pointSettings, setPointSettings] =
+  //   useState<PointSettings>(pointSettingsData)
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
 
-  function handleDeleteItemFromList(id: string) {
-    const updatedList = removeObjectItemFromList(id, pointSettings)
-    setPointSettings(updatedList as PointSettings)
-  }
+  // const [showInputError, setShowInputError] = useState({
+  //   name: false,
+  //   maxFrequencyPerScope: false,
+  // })
 
-  function handleUpdateListItem(id: string, updatedItem: ListObject) {
-    const updatedList = updateObjectItemInList(id, pointSettings, updatedItem)
-    setPointSettings(updatedList as PointSettings)
+  async function handleCreatePointSetting(e) {
+    e.preventDefault()
+    try {
+      const response = await fetch('http://localhost:3001/api/point-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPoint),
+      })
+      const res = await response.json()
+      console.log('res', res)
+      setNewPoint(defaultNewPointState)
+      // window.location.href = `http://localhost:3000/leagues/${res.id}/players`
+    } catch (err) {
+      console.log('create point setting error: ', err)
+    }
   }
 
   function handleInputChange({
-    target: { name, value },
+    target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setNewPoint({ ...newPoint, [name]: value })
+    setNewPoint({ ...newPoint, [tName]: tValue })
   }
 
-  function addInputItemToList() {
-    setPointSettings([...pointSettings, newPoint])
+  // if (!newPoint[tName]) {
+  //   setShowInputError({
+  //     ...showInputError,
+  //     [tName]: true,
+  //   })
+  // } else {
+  //   setShowInputError({
+  //     ...showInputError,
+  //     [tName]: false,
+  //   })
+  // if (!newPoint.name) {
+  //   setShowInputError(true)
+  //   return
+  // }
+  // setPointSettings([...pointSettings, newPoint])
+
+  function selectAllInputText(e): void {
+    e.target.select()
   }
 
   //   TODO: if keeping these move to a separate file
@@ -58,38 +85,38 @@ export default function LeaguePointSettings() {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <>
+    <form>
       <div>League Point Settings</div>
 
       <BasicInput
         type="text"
         label="Point Name"
-        name="pointType"
+        name="name"
         onChange={handleInputChange}
-        value={newPoint.pointType}
+        value={newPoint.name}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        // showEmptyInputError={showInputError.pointType}
+        // showEmptyInputError={showInputError.name}
       />
 
       <BasicInput
         type="number"
         label="Point Value"
-        name="pointValue"
-        value={newPoint.pointValue}
+        name="value"
+        value={newPoint.value}
         onChange={handleInputChange}
         twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
-        // onFocus={selectAllInputText}
+        onFocus={selectAllInputText}
       />
 
       <button
-        data-input-item="pointType"
+        data-input-item="pointName"
         data-input-list="pointsSettings"
-        onClick={addInputItemToList}
+        onClick={handleCreatePointSetting}
       >
         Add Point
       </button>
 
-      <LeaguePointSettingsListEditable
+      {/* <LeaguePointSettingsListEditable
         listName="pointsSettings"
         pointsSettings={pointSettings}
         deleteItemFromList={handleDeleteItemFromList}
@@ -97,7 +124,7 @@ export default function LeaguePointSettings() {
         twEditInputs={twEditInputs}
         twListItems={twListItems}
         // selectAllInputText={selectAllInputText}
-      />
-    </>
+      /> */}
+    </form>
   )
 }

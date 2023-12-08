@@ -51,11 +51,11 @@ export default function Router() {
 
       <Route path="create-league" element={<CreateLeague />} />
       <Route path="leagues" element={<LeaguesList />} />
-      <Route path="leagues/:id" element={<LeagueSummary />} />
+      <Route path="league/:id" element={<LeagueSummary />} />
       {/* user leagues */}
-      <Route path="leagues/:id/players" element={<LeaguePlayers />} />
-      <Route path="leagues/:id/members" element={<LeagueMembers />} />
-      <Route path="leagues/:id/settings" element={<LeagueSettings />} />
+      <Route path="league/:id/players" element={<LeaguePlayers />} />
+      <Route path="league/:id/members" element={<LeagueMembers />} />
+      <Route path="league/:id/settings" element={<LeagueSettings />} />
       {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
       <Route
         path="league/:id/point-settings"
