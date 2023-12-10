@@ -1,52 +1,77 @@
-import React, { useState } from 'react'
-import { v4 as uuid } from 'uuid'
+// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
+// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
+// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
+import { useEffect, useState, useRef } from 'react'
 import { LeaguePointSettingsListEditable } from '../../components/League'
-import {
-  updateObjectItemInList,
-  removeObjectItemFromList,
-} from '../shared/utils'
-import { ListObject, PointSetting } from '../../types'
+import { sortArrayOfObjects } from '../shared/utils'
+// import { useFocus } from '../shared/hooks/useFocus'
+import { PointSetting } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 
-import points from '../../point-settings-data.json'
+// import points from '../../point-settings-data.json'
+
+const leagueId = window.location.pathname.split('/')[2]
+console.log('leagueId', leagueId)
 
 const defaultNewPointState = {
-  // id: uuid(),
   name: '',
   value: 0,
   scope: 'hole',
   maxFrequencyPerScope: 1,
 }
 
-// TODO: move add point form to modal
-// TODO: add empty field validation
-// TODO: add function that selects whole number input?
-// TODO: clear inputs once new point has been added
+export async function fetchPointSettings() {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/point-settings/${leagueId}`
+    )
+    const pointSettings = await res.json()
+    console.log('point settings pre-sort: ', pointSettings)
+    const sortedPointSettings = sortArrayOfObjects(pointSettings, 'name')
+    console.log('point settings post-sort: ', sortedPointSettings)
+    return sortedPointSettings
+  } catch (err) {
+    console.log('fetch point settings error: ', err)
+  }
+}
 
 export default function LeaguePointSettings() {
-  // const pointSettingsData = points as Array<PointSetting>
-  // type PointSettings = typeof pointSettingsData
-  // const [pointSettings, setPointSettings] =
-  //   useState<PointSettings>(pointSettingsData)
+  const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
+  // const [inputRef, setInputFocus] = useFocus()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // const [showInputError, setShowInputError] = useState({
   //   name: false,
   //   maxFrequencyPerScope: false,
   // })
 
+  useEffect(() => {
+    refreshPointSettingsState()
+  }, [])
+
+  async function refreshPointSettingsState(): Promise<void> {
+    const points = await fetchPointSettings()
+    setPointSettings(points)
+  }
+
   async function handleCreatePointSetting(e) {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:3001/api/point-settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPoint),
-      })
-      const res = await response.json()
-      console.log('res', res)
+      const response = await fetch(
+        `http://localhost:3001/api/point-setting/${leagueId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newPoint),
+        }
+      )
+      const resJson = await response.json()
+      console.log('resJson', resJson)
+      const pointSettings = await fetchPointSettings()
+      setPointSettings(pointSettings)
       setNewPoint(defaultNewPointState)
-      // window.location.href = `http://localhost:3000/leagues/${res.id}/players`
+      inputRef.current && inputRef.current.focus()
     } catch (err) {
       console.log('create point setting error: ', err)
     }
@@ -95,6 +120,7 @@ export default function LeaguePointSettings() {
         onChange={handleInputChange}
         value={newPoint.name}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
+        inputRef={inputRef}
         // showEmptyInputError={showInputError.name}
       />
 
@@ -116,15 +142,14 @@ export default function LeaguePointSettings() {
         Add Point
       </button>
 
-      {/* <LeaguePointSettingsListEditable
+      <LeaguePointSettingsListEditable
         listName="pointsSettings"
         pointsSettings={pointSettings}
-        deleteItemFromList={handleDeleteItemFromList}
-        updateListItem={handleUpdateListItem}
         twEditInputs={twEditInputs}
         twListItems={twListItems}
-        // selectAllInputText={selectAllInputText}
-      /> */}
+        refreshPointSettingsState={refreshPointSettingsState}
+        selectAllInputText={selectAllInputText}
+      />
     </form>
   )
 }

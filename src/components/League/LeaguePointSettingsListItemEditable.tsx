@@ -1,36 +1,57 @@
 import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
+import { PointSetting } from '../../types'
+import { fetchPointSettings } from '../League/LeaguePointSettings'
 
+// TODO: add same defaultState typing for LeaguePlayers?
 interface EditableLeaguePointSetting {
-  pointType: string
-  pointValue: string
+  name: string
+  value: string
 }
 const defaultState: EditableLeaguePointSetting = {
-  pointType: '',
-  pointValue: '',
+  name: '',
+  value: '',
 }
 
 export default function LeaguePointSettingsListItem({
   pointSetting,
   listName,
-  updateListItem,
+  // updateListItem,
   deleteItemFromList,
   twEditInputs,
   twListItems,
+  refreshPointSettingsState,
   selectAllInputText,
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
-  const { id, pointType, pointValue } = pointSetting
+  const { id, name, value } = pointSetting
+
+  async function updatePointSetting() {
+    try {
+      const res = await fetch(`http://localhost:3001/api/point-setting/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPointSetting),
+      })
+      // const resJson = await res.json()
+      // console.log('resJson', resJson)
+      const points = await fetchPointSettings()
+      console.log('edited points', points)
+    } catch (err) {
+      console.log('update player error: ', err)
+    }
+  }
 
   function handleEditingState(pointSetting) {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
 
-  function handleUpdatePointSetting(id, updatedPointSetting, listName) {
-    updateListItem(id, updatedPointSetting, listName)
+  async function handleUpdatePointSetting(): Promise<void> {
+    await updatePointSetting()
+    refreshPointSettingsState()
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)
   }
@@ -57,7 +78,7 @@ export default function LeaguePointSettingsListItem({
             label="Point Type"
             name="pointType"
             onChange={handleInputChange}
-            value={updatedPointSetting.pointType}
+            value={updatedPointSetting.name}
           />
 
           <BasicInput
@@ -65,30 +86,28 @@ export default function LeaguePointSettingsListItem({
             type="number"
             label="Point Value"
             name="pointValue"
-            value={updatedPointSetting.pointValue}
+            value={updatedPointSetting.value}
             onChange={handleInputChange}
             onFocus={selectAllInputText}
           />
 
-          <button
-            onClick={() =>
-              handleUpdatePointSetting(id, updatedPointSetting, listName)
-            }
-          >
-            Save
-          </button>
+          <button onClick={handleUpdatePointSetting}>Save</button>
         </Modal>
       )}
 
       {/* TODO: change to tqListItem */}
       <li className={twListItems}>
-        <span>{pointType}</span>
-        <span>{pointValue}</span>
+        <span>{name}</span>
+        <span>{value}</span>
         <span className="list-edit-buttons">
+          {/* TODO: why does modal close immediately? */}
+          {/* TODO: why does modal close immediately? */}
+          {/* TODO: why does modal close immediately? */}
           <button onClick={() => handleEditingState(pointSetting)}>Edit</button>
-          <button onClick={() => deleteItemFromList(id, listName)}>
-            Delete
-          </button>
+          {/* TODO: re-implement delete to match player delete */}
+          {/* TODO: re-implement delete to match player delete */}
+          {/* TODO: re-implement delete to match player delete */}
+          <button onClick={() => deleteItemFromList(id)}>Delete</button>
         </span>
       </li>
     </>

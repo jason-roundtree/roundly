@@ -1,5 +1,5 @@
 import React from 'react'
 
 export default function PageContainer({ children }) {
-  return <div className="m-4">{children}</div>
+  return <div className="m-8 mx-auto max-w-screen-md">{children}</div>
 }

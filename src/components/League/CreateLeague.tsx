@@ -1,29 +1,17 @@
 import { useState } from 'react'
-import { v4 as uuid } from 'uuid'
-import { PointSetting, Player, ListObject } from '../../types'
+import { BasicLeagueState, PointSetting, Player, ListObject } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 
 import './CreateLeague.css'
 
-interface BasicLeagueState {
-  name: string
-  startDate: string
-  endDate: string
-
-  // pointType: string
-  // pointValue: number
-  // pointsSettings: PointSetting[]
-  // dateInputFocused: boolean
-}
-
-const defaultState = {
+export const defaultLeagueState = {
   name: '',
   startDate: '',
   endDate: '',
 }
 // TODO: add Enter keypress event listeners for add player and pointType?
 export default function CreateLeague() {
-  const [leagueState, setLeagueState] = useState<BasicLeagueState>({
+  const [league, setLeagueState] = useState<BasicLeagueState>({
     name: '',
     startDate: '',
     endDate: '',
@@ -47,45 +35,44 @@ export default function CreateLeague() {
   function handleInputChange({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setLeagueState({ ...leagueState, [name]: value })
+    console.log('asdasdas')
+    setLeagueState({ ...league, [name]: value })
   }
 
   async function handleCreateLeague(e) {
     e.preventDefault()
     const leagueData = {
-      name: leagueState.name,
-      startDate: leagueState.startDate
-        ? new Date(leagueState.startDate)
-        : new Date(),
-      endDate: leagueState.endDate ? new Date(leagueState.endDate) : null,
+      name: league.name,
+      startDate: league.startDate ? new Date(league.startDate) : new Date(),
+      endDate: league.endDate ? new Date(league.endDate) : null,
     }
     console.log('create League, basic league state ', leagueData)
     try {
-      const response = await fetch('http://localhost:3001/api/leagues', {
+      const response = await fetch('http://localhost:3001/api/league', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leagueData),
       })
       const res = await response.json()
       console.log('res', res)
-      setLeagueState(defaultState)
-      window.location.href = `http://localhost:3000/leagues/${res.id}/players`
+      setLeagueState(defaultLeagueState)
+      window.location.href = `http://localhost:3000/league/${res.id}`
     } catch (err) {
       console.log('create league error: ', err)
     }
   }
 
   return (
-    <form className="m-8 mx-auto max-w-screen-md" id="createLeague">
+    <form id="createLeague">
       <h1 className="text-3xl font-bold">Create New League</h1>
       <BasicInput
         type="text"
-        name="leagueName"
+        name="name"
         label="League Name"
         onChange={handleInputChange}
-        value={leagueState.name}
+        value={league.name}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        isRequired={true}
+        // isRequired={true}
       />
 
       <BasicInput
@@ -93,7 +80,7 @@ export default function CreateLeague() {
         name="startDate"
         label="Start Date"
         onChange={handleInputChange}
-        value={leagueState.startDate}
+        value={league.startDate}
         twClasses={`${twEditInputs} w-64 max-w-md`}
         // isRequired={true}
       />
@@ -103,7 +90,7 @@ export default function CreateLeague() {
         name="endDate"
         label="End Date"
         onChange={handleInputChange}
-        value={leagueState.endDate}
+        value={league.endDate}
         twClasses={`${twEditInputs} w-64 max-w-md`}
         // isRequired={true}
       />

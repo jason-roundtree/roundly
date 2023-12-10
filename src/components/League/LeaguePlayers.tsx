@@ -10,9 +10,7 @@ console.log('leagueId', leagueId)
 
 export async function fetchPlayers() {
   try {
-    const res = await fetch(
-      `http://localhost:3001/api/players/league/${leagueId}`
-    )
+    const res = await fetch(`http://localhost:3001/api/players/${leagueId}`)
     const players = await res.json()
     console.log('players pre sort: ', players)
     const sortedPlayers = sortArrayOfObjects(players, 'name')
@@ -39,24 +37,22 @@ export default function LeaguePlayers(): JSX.Element {
     setPlayers(players)
   }
 
-  async function handleAddPlayerToLeague(): Promise<void> {
+  async function handleCreateLeaguePlayer(e): Promise<void> {
+    e.preventDefault()
     if (!newPlayerName) {
       setShowInputError(true)
       return
     }
     const newPlayer = {
-      leagueId: leagueId,
       name: newPlayerName,
-      // userId: uuid(),
     }
     try {
-      const res = await fetch('http://localhost:3001/api/players', {
+      const res = await fetch(`http://localhost:3001/api/player/${leagueId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPlayer),
       })
       // const resJson = await res.json()
-      // console.log('resJson', resJson)
       const players = await fetchPlayers()
       setPlayers(players)
       setNewPlayerName('')
@@ -72,7 +68,7 @@ export default function LeaguePlayers(): JSX.Element {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <div>
+    <form>
       <h2 className="text-xl font-bold mt-4">Players</h2>
       <BasicInput
         type="text"
@@ -90,7 +86,7 @@ export default function LeaguePlayers(): JSX.Element {
       <button
         data-input-item="playerName"
         data-input-list="players"
-        onClick={handleAddPlayerToLeague}
+        onClick={handleCreateLeaguePlayer}
       >
         Add Player
       </button>
@@ -102,6 +98,6 @@ export default function LeaguePlayers(): JSX.Element {
         twListItems={twListItems}
         refreshPlayerState={refreshPlayersState}
       />
-    </div>
+    </form>
   )
 }

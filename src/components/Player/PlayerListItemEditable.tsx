@@ -13,7 +13,6 @@ const defaultState: EditablePlayer = {
 // className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item"
 export default function PlayerEditableListItem({
   player,
-  listName,
   refreshPlayerState,
   twEditInputs,
   twListItems,
@@ -24,8 +23,10 @@ export default function PlayerEditableListItem({
 
   async function updatePlayer() {
     try {
-      const res = await fetch(`http://localhost:3001/api/players/${id}`, {
+      const res = await fetch(`http://localhost:3001/api/player/${id}`, {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPlayer),
       })
       // const resJson = await res.json()
       // console.log('resJson', resJson)
@@ -43,7 +44,7 @@ export default function PlayerEditableListItem({
 
   async function deletePlayer(id) {
     try {
-      const res = await fetch(`http://localhost:3001/api/players/${id}`, {
+      const res = await fetch(`http://localhost:3001/api/player/${id}`, {
         method: 'DELETE',
       })
       console.log('delete player res: ', res.json())
@@ -53,7 +54,7 @@ export default function PlayerEditableListItem({
     }
   }
 
-  async function handleUpdatePlayer(id, updatedPlayer, listName) {
+  async function handleUpdatePlayer(id, listName) {
     await updatePlayer()
     refreshPlayerState()
     setUpdatedPlayer(defaultState)
@@ -82,9 +83,7 @@ export default function PlayerEditableListItem({
             onChange={handleInputChange}
             value={updatedPlayer.name}
           />
-          <button
-            onClick={() => handleUpdatePlayer(id, listName, updatedPlayer)}
-          >
+          <button onClick={() => handleUpdatePlayer(id, updatedPlayer)}>
             Save
           </button>
         </Modal>

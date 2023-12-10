@@ -8,4 +8,4 @@ export { default as LeaguePointSettingsListItemEditable } from './LeaguePointSet
 export { default as LeagueSettings } from './LeagueSettings'
 export { default as LeaguesList } from './LeaguesList'
 export { default as LeagueStandings } from './LeagueStandings'
-export { default as LeagueSummary } from './LeagueSummary'
+export { default as LeagueHome } from './LeagueHome'

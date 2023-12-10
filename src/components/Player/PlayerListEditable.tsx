@@ -11,7 +11,6 @@ export interface PlayerProps extends ListEditProps {
 
 export default function PlayersListEditable({
   players,
-  listName,
   refreshPlayerState,
   twEditInputs,
   twListItems,
@@ -24,7 +23,6 @@ export default function PlayersListEditable({
             player={player}
             key={player.id}
             refreshPlayerState={refreshPlayerState}
-            listName={listName}
             twEditInputs={twEditInputs}
             twListItems={twListItems}
           />

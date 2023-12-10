@@ -12,7 +12,7 @@ import {
   LeagueMembers,
   LeaguePlayers,
   LeagueStandings,
-  LeagueSummary,
+  LeagueHome,
 } from './components/League'
 import {
   PlayerSelect,
@@ -51,7 +51,7 @@ export default function Router() {
 
       <Route path="create-league" element={<CreateLeague />} />
       <Route path="leagues" element={<LeaguesList />} />
-      <Route path="league/:id" element={<LeagueSummary />} />
+      <Route path="league/:id" element={<LeagueHome />} />
       {/* user leagues */}
       <Route path="league/:id/players" element={<LeaguePlayers />} />
       <Route path="league/:id/members" element={<LeagueMembers />} />
