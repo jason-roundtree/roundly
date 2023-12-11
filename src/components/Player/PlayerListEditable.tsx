@@ -1,6 +1,6 @@
 import { Player } from '../../types'
 import { ListEditProps } from '../../types'
-import { PlayerListItemEditable } from '.'
+import { PlayerListItemEditable } from './'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
@@ -16,7 +16,7 @@ export default function PlayersListEditable({
   twListItems,
 }: PlayerProps) {
   return (
-    <ul className="mb-3">
+    <ul className="mb-3 mt-5">
       {players.map((player) => {
         return (
           <PlayerListItemEditable

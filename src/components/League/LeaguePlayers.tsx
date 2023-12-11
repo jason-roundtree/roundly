@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { v4 as uuid } from 'uuid'
-import BasicInput from '../shared/components/BasicInput'
 import { PlayerListEditable } from '../Player'
+import BasicInput from '../shared/components/BasicInput'
+import SimpleInputValidationError, {
+  ErrorMsgCodes,
+} from '../shared/components/SimpleInputValidationError'
 import { Player } from '../../types'
-import { sortArrayOfObjects } from '../shared/utils'
+import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
 
 const leagueId = window.location.pathname.split('/')[2]
 console.log('leagueId', leagueId)
@@ -25,8 +27,9 @@ export default function LeaguePlayers(): JSX.Element {
   // TODO: correct way to initiate state when array can be empty?
   const [players, setPlayers] = useState<Player[]>([])
   const [newPlayerName, setNewPlayerName] = useState<string>('')
-  const [showInputError, setShowInputError] = useState<boolean>(false)
-  console.log('players', players)
+  const [inputValidationError, setInputValidationError] = useState<
+    string | null
+  >(null)
 
   useEffect(() => {
     refreshPlayersState()
@@ -37,27 +40,35 @@ export default function LeaguePlayers(): JSX.Element {
     setPlayers(players)
   }
 
-  async function handleCreateLeaguePlayer(e): Promise<void> {
-    e.preventDefault()
-    if (!newPlayerName) {
-      setShowInputError(true)
+  async function handleCreateLeaguePlayer(): Promise<void> {
+    if (
+      !validateSimpleInput(
+        newPlayerName,
+        'Player Name',
+        setInputValidationError
+      )
+    ) {
       return
-    }
-    const newPlayer = {
-      name: newPlayerName,
-    }
-    try {
-      const res = await fetch(`http://localhost:3001/api/player/${leagueId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPlayer),
-      })
-      // const resJson = await res.json()
-      const players = await fetchPlayers()
-      setPlayers(players)
-      setNewPlayerName('')
-    } catch (err) {
-      console.log('add player to league error: ', err)
+    } else {
+      const newPlayer = {
+        name: newPlayerName,
+      }
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/player/${leagueId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newPlayer),
+          }
+        )
+        // const resJson = await res.json()
+        const players = await fetchPlayers()
+        setPlayers(players)
+        setNewPlayerName('')
+      } catch (err) {
+        console.log('add player to league error: ', err)
+      }
     }
   }
 
@@ -68,27 +79,25 @@ export default function LeaguePlayers(): JSX.Element {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <form>
+    <div>
       <h1 className="text-3xl font-bold">Players</h1>
       <BasicInput
         type="text"
         name="playerName"
-        label="Name"
+        label="Player Name"
         onChange={({ target }) => {
-          setShowInputError(false)
+          // setInputValidationError(null)
           setNewPlayerName(target.value)
         }}
         value={newPlayerName}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
       />
 
-      <button
-        data-input-item="playerName"
-        data-input-list="players"
-        onClick={handleCreateLeaguePlayer}
-      >
-        Add Player
-      </button>
+      <button onClick={handleCreateLeaguePlayer}>Add Player</button>
+      <SimpleInputValidationError
+        errorField={inputValidationError}
+        errorMsgCode="MISSNG_VALUE"
+      />
 
       <PlayerListEditable
         listName="players"
@@ -97,6 +106,6 @@ export default function LeaguePlayers(): JSX.Element {
         twListItems={twListItems}
         refreshPlayerState={refreshPlayersState}
       />
-    </form>
+    </div>
   )
 }

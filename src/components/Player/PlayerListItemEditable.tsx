@@ -70,11 +70,7 @@ export default function PlayerEditableListItem({
   return (
     <li className={twListItems}>
       {isBeingEdited && (
-        <Modal
-          title="Update Player"
-          closeModal={() => setIsBeingEdited(false)}
-          // deleteItemFn={() => deleteItemFromList(id, listName)}
-        >
+        <Modal title="Update Player" closeModal={() => setIsBeingEdited(false)}>
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
             type="text"

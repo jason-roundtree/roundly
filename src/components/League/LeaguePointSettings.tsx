@@ -1,13 +1,10 @@
-// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
-// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
-// TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
 import { useEffect, useState, useRef } from 'react'
-import { LeaguePointSettingsListEditable } from '../../components/League'
+import { PointSettingsListEditable } from '../../components/PointSettings'
 import SimpleInputValidationError, {
   ErrorMsgCodes,
 } from '../shared/components/SimpleInputValidationError'
 
-import { sortArrayOfObjects } from '../shared/utils'
+import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
 // import { useFocus } from '../shared/hooks/useFocus'
 import { PointSetting } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
@@ -39,13 +36,12 @@ export async function fetchPointSettings() {
   }
 }
 
-export default function LeaguePointSettings() {
+export default function LeaguePointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null)
-  // const [inputRef, setInputFocus] = useFocus()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -53,23 +49,14 @@ export default function LeaguePointSettings() {
   }, [])
 
   async function refreshPointSettingsState(): Promise<void> {
-    const points = await fetchPointSettings()
-    setPointSettings(points)
-  }
-
-  function hanldeValidateInputs() {
-    let fieldsAreValid = false
-    if (!newPoint.name) {
-      setInputValidationError('Point Name')
-    } else {
-      setInputValidationError(null)
-      fieldsAreValid = true
-    }
-    return fieldsAreValid
+    const pointSettings = await fetchPointSettings()
+    setPointSettings(pointSettings)
   }
 
   async function handleCreatePointSetting() {
-    if (!hanldeValidateInputs()) {
+    if (
+      !validateSimpleInput(newPoint.name, 'Point Name', setInputValidationError)
+    ) {
       return
     } else {
       try {
@@ -152,7 +139,7 @@ export default function LeaguePointSettings() {
         errorMsgCode="MISSNG_VALUE"
       />
 
-      <LeaguePointSettingsListEditable
+      <PointSettingsListEditable
         listName="pointsSettings"
         pointSettings={pointSettings}
         twEditInputs={twEditInputs}

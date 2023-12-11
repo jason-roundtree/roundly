@@ -1,6 +1,6 @@
 import { PointSetting } from '../../types'
 import { ListEditProps } from '../../types'
-import { LeaguePointSettingsListItemEditable } from '.'
+import { PointSettingsListItemEditable } from '.'
 
 interface PointSettingsProps extends ListEditProps {
   pointSettings: PointSetting[]
@@ -23,7 +23,7 @@ export default function LeaguePointSettingsList({
     <ul className="mb-3 mt-5">
       {pointSettings.map((pointSetting) => {
         return (
-          <LeaguePointSettingsListItemEditable
+          <PointSettingsListItemEditable
             key={pointSetting.id}
             pointSetting={pointSetting}
             deletePointSetting={deletePointSetting}
