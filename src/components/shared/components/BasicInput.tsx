@@ -9,8 +9,8 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   label: string
   value: string | number
   twClasses?: string
-  showEmptyInputError?: boolean
-  isRequired?: boolean
+  // showEmptyInputError?: boolean
+  // isRequired?: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
   inputRef?: T
@@ -22,8 +22,8 @@ export default function BasicInput({
   label,
   value,
   twClasses,
-  showEmptyInputError,
-  isRequired,
+  // showEmptyInputError,
+  // isRequired,
   onChange,
   onFocus,
   inputRef,
@@ -39,13 +39,13 @@ export default function BasicInput({
         name={name}
         onChange={onChange}
         value={value}
-        required={isRequired}
+        // required={isRequired}
         onFocus={onFocus}
         ref={inputRef}
       />
-      {showEmptyInputError && (
+      {/* {showEmptyInputError && (
         <p className="text-red-400 ml-2">Please fill out this field</p>
-      )}
+      )} */}
     </>
   )
 }

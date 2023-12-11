@@ -3,33 +3,30 @@ import { ListEditProps } from '../../types'
 import { LeaguePointSettingsListItemEditable } from '.'
 
 interface PointSettingsProps extends ListEditProps {
-  pointsSettings: PointSetting[]
+  pointSettings: PointSetting[]
   twEditInputs?: string
   twListItems?: string
+  deletePointSetting: (id: string) => Promise<void>
   selectAllInputText?: (e: React.ChangeEvent<HTMLInputElement>) => void
   refreshPointSettingsState?: () => void
 }
 
 export default function LeaguePointSettingsList({
-  pointsSettings,
-  updateListItem,
-  deleteItemFromList,
-  listName,
+  pointSettings,
+  deletePointSetting,
   twEditInputs,
   twListItems,
   refreshPointSettingsState,
   selectAllInputText,
 }: PointSettingsProps): JSX.Element {
   return (
-    <ul className="mb-3">
-      {pointsSettings.map((pointSetting) => {
+    <ul className="mb-3 mt-5">
+      {pointSettings.map((pointSetting) => {
         return (
           <LeaguePointSettingsListItemEditable
             key={pointSetting.id}
             pointSetting={pointSetting}
-            // updateListItem={updateListItem}
-            deleteItemFromList={deleteItemFromList}
-            listName={listName}
+            deletePointSetting={deletePointSetting}
             twEditInputs={twEditInputs}
             twListItems={twListItems}
             refreshPointSettingsState={refreshPointSettingsState}

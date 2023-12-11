@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
 import PointListItemSelectable from '../Round/PointListItemSelectable'
+
 import players from '../../players-data.json'
-import points from '../../point-settings-data.json'
+import pointSettings from '../../point-settings-data.json'
 
 interface RoundState {
   name: string
@@ -51,9 +52,9 @@ export default function CreateRound() {
   }
 
   function handleInputChange({
-    target: { name, value },
+    target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setRoundState({ ...roundState, [name]: value })
+    setRoundState({ ...roundState, [tName]: tValue })
   }
 
   //   TODO: if keeping these move to a separate file
@@ -72,7 +73,6 @@ export default function CreateRound() {
         value={roundState.name}
         onChange={handleInputChange}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        isRequired={true}
       />
       <BasicInput
         type="text"
@@ -81,7 +81,6 @@ export default function CreateRound() {
         value={roundState.location || ''}
         onChange={handleInputChange}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        isRequired={false}
       />
       <BasicInput
         type="date"
@@ -90,7 +89,6 @@ export default function CreateRound() {
         value={roundState.date}
         onChange={handleInputChange}
         twClasses={`${twEditInputs} w-64 max-w-md`}
-        isRequired={false}
       />
 
       <label className="block mt-4 font-semibold">Add Players</label>
@@ -112,13 +110,13 @@ export default function CreateRound() {
       <label className="block mt-4 font-semibold">Points</label>
       <Link to={`/league/${leagueId}/point-settings`}>Edit Points</Link>
       <ul>
-        {points.map((point) => {
-          const isSelected = selectedPoints.includes(point.id)
+        {pointSettings.map(({ name, value, id }) => {
+          const isSelected = selectedPoints.includes(id)
           return (
             <PointListItemSelectable
-              name={point.pointType}
-              weight={point.pointValue}
-              id={point.id}
+              name={name}
+              value={value}
+              id={id}
               twListItems={twListItems}
               toggleSelectedPoint={handleToggleSelectPoint}
               isSelected={isSelected}

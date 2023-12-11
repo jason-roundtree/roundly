@@ -2,14 +2,15 @@ import { useState, MouseEvent } from 'react'
 
 export default function PointListItemSelectable({
   name,
-  weight,
+  value,
   id,
   twListItems,
   toggleSelectedPoint,
   isSelected,
 }: {
   name: string
-  weight: number
+  // TODO: remove undefined as it seems to be something weird from json data
+  value: number | undefined
   id: string
   twListItems: string
   toggleSelectedPoint: (id) => void
@@ -21,7 +22,7 @@ export default function PointListItemSelectable({
       className={`selectable-LI ${twListItems} ${isSelected && 'is-selected'}`}
       onClick={() => toggleSelectedPoint(id)}
     >
-      {name} {weight}
+      {name} {value}
     </li>
   )
 }

@@ -72,7 +72,6 @@ export default function CreateLeague() {
         onChange={handleInputChange}
         value={league.name}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        // isRequired={true}
       />
 
       <BasicInput
@@ -82,7 +81,6 @@ export default function CreateLeague() {
         onChange={handleInputChange}
         value={league.startDate}
         twClasses={`${twEditInputs} w-64 max-w-md`}
-        // isRequired={true}
       />
 
       <BasicInput
@@ -92,7 +90,6 @@ export default function CreateLeague() {
         onChange={handleInputChange}
         value={league.endDate}
         twClasses={`${twEditInputs} w-64 max-w-md`}
-        // isRequired={true}
       />
 
       <div className="flex">

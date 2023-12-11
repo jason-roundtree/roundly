@@ -29,7 +29,7 @@ button {
   padding: 7px 15px;
   background: var(--primary-color);
   color: var(--secondary-color);
-  margin: 0.5em 0 1em;
+  margin: 0.5em 0;
 }
 button:hover {
   filter: brightness(105%);

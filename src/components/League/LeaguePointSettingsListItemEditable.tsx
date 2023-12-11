@@ -5,6 +5,7 @@ import { PointSetting } from '../../types'
 import { fetchPointSettings } from '../League/LeaguePointSettings'
 
 // TODO: add same defaultState typing for LeaguePlayers?
+// TODO: add other PointSetting fields from Types
 interface EditableLeaguePointSetting {
   name: string
   value: string
@@ -16,9 +17,7 @@ const defaultState: EditableLeaguePointSetting = {
 
 export default function LeaguePointSettingsListItem({
   pointSetting,
-  listName,
-  // updateListItem,
-  deleteItemFromList,
+  deletePointSetting,
   twEditInputs,
   twListItems,
   refreshPointSettingsState,
@@ -44,7 +43,7 @@ export default function LeaguePointSettingsListItem({
     }
   }
 
-  function handleEditingState(pointSetting) {
+  function handleEditingPoint(pointSetting) {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
@@ -56,11 +55,10 @@ export default function LeaguePointSettingsListItem({
     setUpdatedPointSetting(defaultState)
   }
 
-  //   TODO: move basic handleInputChange to shared hook
   function handleInputChange({
-    target: { name, value },
+    target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
+    setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
   }
 
   return (
@@ -70,13 +68,13 @@ export default function LeaguePointSettingsListItem({
         <Modal
           title="Edit Point Setting"
           closeModal={() => setIsBeingEdited(false)}
-          deleteItemFn={() => deleteItemFromList(id, listName)}
+          deleteItemFn={() => deletePointSetting(id)}
         >
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
             type="text"
-            label="Point Type"
-            name="pointType"
+            label="Point Name"
+            name="name"
             onChange={handleInputChange}
             value={updatedPointSetting.name}
           />
@@ -85,7 +83,7 @@ export default function LeaguePointSettingsListItem({
             twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             type="number"
             label="Point Value"
-            name="pointValue"
+            name="value"
             value={updatedPointSetting.value}
             onChange={handleInputChange}
             onFocus={selectAllInputText}
@@ -100,14 +98,8 @@ export default function LeaguePointSettingsListItem({
         <span>{name}</span>
         <span>{value}</span>
         <span className="list-edit-buttons">
-          {/* TODO: why does modal close immediately? */}
-          {/* TODO: why does modal close immediately? */}
-          {/* TODO: why does modal close immediately? */}
-          <button onClick={() => handleEditingState(pointSetting)}>Edit</button>
-          {/* TODO: re-implement delete to match player delete */}
-          {/* TODO: re-implement delete to match player delete */}
-          {/* TODO: re-implement delete to match player delete */}
-          <button onClick={() => deleteItemFromList(id)}>Delete</button>
+          <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
+          <button onClick={() => deletePointSetting(id)}>Delete</button>
         </span>
       </li>
     </>

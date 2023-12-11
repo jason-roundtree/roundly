@@ -69,7 +69,7 @@ export default function LeaguePlayers(): JSX.Element {
 
   return (
     <form>
-      <h2 className="text-xl font-bold mt-4">Players</h2>
+      <h1 className="text-3xl font-bold">Players</h1>
       <BasicInput
         type="text"
         name="playerName"
@@ -80,7 +80,6 @@ export default function LeaguePlayers(): JSX.Element {
         }}
         value={newPlayerName}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-        showEmptyInputError={showInputError}
       />
 
       <button

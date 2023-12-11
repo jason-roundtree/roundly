@@ -3,6 +3,10 @@
 // TODO: move LeaguePointSettings... components to PointSetting folder like PlayerList... components?
 import { useEffect, useState, useRef } from 'react'
 import { LeaguePointSettingsListEditable } from '../../components/League'
+import SimpleInputValidationError, {
+  ErrorMsgCodes,
+} from '../shared/components/SimpleInputValidationError'
+
 import { sortArrayOfObjects } from '../shared/utils'
 // import { useFocus } from '../shared/hooks/useFocus'
 import { PointSetting } from '../../types'
@@ -38,13 +42,11 @@ export async function fetchPointSettings() {
 export default function LeaguePointSettings() {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
+  const [inputValidationError, setInputValidationError] = useState<
+    string | null
+  >(null)
   // const [inputRef, setInputFocus] = useFocus()
   const inputRef = useRef<HTMLInputElement>(null)
-
-  // const [showInputError, setShowInputError] = useState({
-  //   name: false,
-  //   maxFrequencyPerScope: false,
-  // })
 
   useEffect(() => {
     refreshPointSettingsState()
@@ -55,49 +57,60 @@ export default function LeaguePointSettings() {
     setPointSettings(points)
   }
 
-  async function handleCreatePointSetting(e) {
-    e.preventDefault()
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/point-setting/${leagueId}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newPoint),
-        }
-      )
-      const resJson = await response.json()
-      console.log('resJson', resJson)
-      const pointSettings = await fetchPointSettings()
-      setPointSettings(pointSettings)
-      setNewPoint(defaultNewPointState)
-      inputRef.current && inputRef.current.focus()
-    } catch (err) {
-      console.log('create point setting error: ', err)
+  function hanldeValidateInputs() {
+    let fieldsAreValid = false
+    if (!newPoint.name) {
+      setInputValidationError('Point Name')
+    } else {
+      setInputValidationError(null)
+      fieldsAreValid = true
+    }
+    return fieldsAreValid
+  }
+
+  async function handleCreatePointSetting() {
+    if (!hanldeValidateInputs()) {
+      return
+    } else {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/point-setting/${leagueId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newPoint),
+          }
+        )
+        const resJson = await response.json()
+        console.log('resJson', resJson)
+        const pointSettings = await fetchPointSettings()
+        setPointSettings(pointSettings)
+        setNewPoint(defaultNewPointState)
+        inputRef.current && inputRef.current.focus()
+      } catch (err) {
+        console.log('create point setting error: ', err)
+      }
     }
   }
 
+  async function deletePointSetting(id: string): Promise<void> {
+    try {
+      const res = await fetch(`http://localhost:3001/api/point-setting/${id}`, {
+        method: 'DELETE',
+      })
+      console.log('delete point setting res: ', res.json())
+      refreshPointSettingsState()
+    } catch (err) {
+      console.log('delete point setting error: ', err)
+    }
+  }
+
+  // TODO: move basic handleInputChange to shared hook
   function handleInputChange({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
     setNewPoint({ ...newPoint, [tName]: tValue })
   }
-
-  // if (!newPoint[tName]) {
-  //   setShowInputError({
-  //     ...showInputError,
-  //     [tName]: true,
-  //   })
-  // } else {
-  //   setShowInputError({
-  //     ...showInputError,
-  //     [tName]: false,
-  //   })
-  // if (!newPoint.name) {
-  //   setShowInputError(true)
-  //   return
-  // }
-  // setPointSettings([...pointSettings, newPoint])
 
   function selectAllInputText(e): void {
     e.target.select()
@@ -110,8 +123,8 @@ export default function LeaguePointSettings() {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <form>
-      <div>League Point Settings</div>
+    <div>
+      <h1 className="text-3xl font-bold">League Point Settings</h1>
 
       <BasicInput
         type="text"
@@ -121,7 +134,6 @@ export default function LeaguePointSettings() {
         value={newPoint.name}
         twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
         inputRef={inputRef}
-        // showEmptyInputError={showInputError.name}
       />
 
       <BasicInput
@@ -134,22 +146,21 @@ export default function LeaguePointSettings() {
         onFocus={selectAllInputText}
       />
 
-      <button
-        data-input-item="pointName"
-        data-input-list="pointsSettings"
-        onClick={handleCreatePointSetting}
-      >
-        Add Point
-      </button>
+      <button onClick={handleCreatePointSetting}>Add Point</button>
+      <SimpleInputValidationError
+        errorField={inputValidationError}
+        errorMsgCode="MISSNG_VALUE"
+      />
 
       <LeaguePointSettingsListEditable
         listName="pointsSettings"
-        pointsSettings={pointSettings}
+        pointSettings={pointSettings}
         twEditInputs={twEditInputs}
         twListItems={twListItems}
+        deletePointSetting={deletePointSetting}
         refreshPointSettingsState={refreshPointSettingsState}
         selectAllInputText={selectAllInputText}
       />
-    </form>
+    </div>
   )
 }
