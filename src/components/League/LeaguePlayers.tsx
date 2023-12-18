@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useParams } from 'react-router-dom'
+
 import { PlayerListEditable } from '../Player'
 import BasicInput from '../shared/components/BasicInput'
-import SimpleInputValidationError, {
-  ErrorMsgCodes,
-} from '../shared/components/SimpleInputValidationError'
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { Player } from '../../types'
 import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
 
-const leagueId = window.location.pathname.split('/')[2]
-console.log('leagueId', leagueId)
-
-export async function fetchPlayers() {
+export async function fetchPlayers(leagueId): Promise<any> {
   try {
     const res = await fetch(`http://localhost:3001/api/players/${leagueId}`)
     const players = await res.json()
@@ -24,19 +21,20 @@ export async function fetchPlayers() {
 }
 
 export default function LeaguePlayers(): JSX.Element {
-  // TODO: correct way to initiate state when array can be empty?
   const [players, setPlayers] = useState<Player[]>([])
   const [newPlayerName, setNewPlayerName] = useState<string>('')
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { id: leagueId } = useParams()
 
   useEffect(() => {
     refreshPlayersState()
   }, [])
 
   async function refreshPlayersState(): Promise<void> {
-    const players = await fetchPlayers()
+    const players = await fetchPlayers(leagueId)
     setPlayers(players)
   }
 
@@ -63,9 +61,10 @@ export default function LeaguePlayers(): JSX.Element {
           }
         )
         // const resJson = await res.json()
-        const players = await fetchPlayers()
+        const players = await fetchPlayers(leagueId)
         setPlayers(players)
         setNewPlayerName('')
+        inputRef.current && inputRef.current.focus()
       } catch (err) {
         console.log('add player to league error: ', err)
       }
@@ -80,7 +79,13 @@ export default function LeaguePlayers(): JSX.Element {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">Players</h1>
+      <span className="breadcrumb">
+        <Link to={`/league/${leagueId}`}>League Home</Link>
+        <span> / </span>
+        League Players
+      </span>
+
+      {/* <h1 className="text-3xl font-bold">Players</h1> */}
       <BasicInput
         type="text"
         name="playerName"

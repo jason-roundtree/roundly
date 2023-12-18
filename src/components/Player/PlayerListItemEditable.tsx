@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useParams } from 'react-router'
+
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { fetchPlayers } from '../League/LeaguePlayers'
@@ -10,7 +12,6 @@ const defaultState: EditablePlayer = {
   name: '',
 }
 
-// className="max-w-fit rounded-lg my-1 mx-4 p-2 editable-list-item"
 export default function PlayerEditableListItem({
   player,
   refreshPlayerState,
@@ -20,6 +21,7 @@ export default function PlayerEditableListItem({
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const { id, name } = player
+  const { id: leagueId } = useParams()
 
   async function updatePlayer() {
     try {
@@ -30,7 +32,7 @@ export default function PlayerEditableListItem({
       })
       // const resJson = await res.json()
       // console.log('resJson', resJson)
-      const players = await fetchPlayers()
+      const players = await fetchPlayers(leagueId)
       console.log('edited players', players)
     } catch (err) {
       console.log('update player error: ', err)

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { BasicLeagueState, Player, PointSetting } from '../../types'
 import { defaultLeagueState } from '../League/CreateLeague'
-
-const leagueId = window.location.pathname.split('/')[2]
-console.log('leagueId', leagueId)
 
 export default function LeagueHome() {
   const [leagueData, setBasicLeagueData] =
@@ -11,6 +9,7 @@ export default function LeagueHome() {
   const [players, setPlayers] = useState<Player[]>([])
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const { name, startDate, endDate } = leagueData
+  const { id: leagueId } = useParams()
 
   useEffect(() => {
     getBasicLeagueData()
@@ -56,13 +55,15 @@ export default function LeagueHome() {
   return (
     <>
       <h1 className="text-3xl font-bold">{name} - League Home</h1>
-
       <h2 className="text-xl font-bold mt-4">Players</h2>
       <ul>
         {players.map(({ id, name }) => {
           return <li key={id}>{name}</li>
         })}
       </ul>
+      <Link to={`/league/${leagueId}/players`} className="text-link mt-4">
+        Edit Players
+      </Link>
 
       <h2 className="text-xl font-bold mt-4">Point Settings</h2>
       <ul>
@@ -74,8 +75,15 @@ export default function LeagueHome() {
           )
         })}
       </ul>
+      <Link
+        to={`/league/${leagueId}/point-settings`}
+        className="text-link mt-4"
+      >
+        Edit Point Settings
+      </Link>
 
       <h2 className="text-xl font-bold mt-4">Rounds</h2>
+
       <h2 className="text-xl font-bold mt-4">Standings</h2>
     </>
   )

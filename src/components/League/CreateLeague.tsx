@@ -1,26 +1,17 @@
 import { useState } from 'react'
-import { BasicLeagueState, PointSetting, Player, ListObject } from '../../types'
+import { BasicLeagueState } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 
 import './CreateLeague.css'
 
-export const defaultLeagueState = {
+export const defaultLeagueState: BasicLeagueState = {
   name: '',
   startDate: '',
   endDate: '',
 }
 // TODO: add Enter keypress event listeners for add player and pointType?
 export default function CreateLeague() {
-  const [league, setLeagueState] = useState<BasicLeagueState>({
-    name: '',
-    startDate: '',
-    endDate: '',
-
-    // pointType: '',
-    // pointValue: 0,
-    // pointsSettings: [],
-    // dateInputFocused: false,
-  })
+  const [league, setLeagueState] = useState(defaultLeagueState)
   // const [showInputError, setShowInputError] = useState<PreSubmitValidation>({
   //   pointType: false,
   //   playerName: false,

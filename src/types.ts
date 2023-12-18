@@ -48,7 +48,7 @@ export interface Round {
 
 export interface PointSetting {
   // TODO: ids in types??
-  id: string
+  id?: string
   name: string
   value: number
   scope: 'hole' | 'round'

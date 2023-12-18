@@ -70,3 +70,20 @@ input::-webkit-calendar-picker-indicator:hover {
 .is-selected {
   background: var(--tertiary-color);
 }
+
+.text-link {
+  color: #0096ff;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.text-link:hover {
+  filter: brightness(85%);
+}
+
+.breadcrumb {
+  font-size: 1.25rem;
+}
+.breadcrumb a:hover {
+  color: #0096ff;
+}

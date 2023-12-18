@@ -1,27 +1,25 @@
 import { useEffect, useState, useRef } from 'react'
+import { Link } from 'react-router-dom'
+
 import { PointSettingsListEditable } from '../../components/PointSettings'
-import SimpleInputValidationError, {
-  ErrorMsgCodes,
-} from '../shared/components/SimpleInputValidationError'
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 
 import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
 // import { useFocus } from '../shared/hooks/useFocus'
 import { PointSetting } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 
-// import points from '../../point-settings-data.json'
-
 const leagueId = window.location.pathname.split('/')[2]
 console.log('leagueId', leagueId)
 
-const defaultNewPointState = {
+const defaultNewPointState: PointSetting = {
   name: '',
   value: 0,
   scope: 'hole',
   maxFrequencyPerScope: 1,
 }
 
-export async function fetchPointSettings() {
+export async function fetchPointSettings(): Promise<any> {
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-settings/${leagueId}`
@@ -111,7 +109,12 @@ export default function LeaguePointSettings(): JSX.Element {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">League Point Settings</h1>
+      <span className="breadcrumb">
+        <Link to={`/league/${leagueId}`}>League Home</Link>
+        <span> / </span>
+        League Point Settings
+      </span>
+      {/* <h1 className="text-3xl font-bold">League Point Settings</h1> */}
 
       <BasicInput
         type="text"

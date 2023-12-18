@@ -2,7 +2,10 @@ import React from 'react'
 
 type ErrorField = string | null
 
-export type ErrorMsgCodes = 'MISSNG_VALUE'
+export type ErrorMsgCodes =
+  | 'MISSNG_VALUE'
+  | 'INVALID_EMAIL'
+  | 'INVALID_PASSWORD'
 
 function generateErrorMessage(
   errorMsgCode: ErrorMsgCodes,
@@ -10,7 +13,7 @@ function generateErrorMessage(
 ) {
   switch (errorMsgCode) {
     case 'MISSNG_VALUE':
-      return `Please add a value for ${errorField}`
+      return `${errorField} cannot be empty`
     // case '':
     //   return `${errorField}`
   }
