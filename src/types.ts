@@ -42,13 +42,13 @@ export interface Round {
   name: string
   location?: string
   date: Date
-  pointSettings: PointSetting[] | null
-  players: Player[]
+  pointSettings: string[]
+  players: string[]
 }
 
 export interface PointSetting {
   // TODO: ids in types??
-  id?: string
+  id: string
   name: string
   value: number
   scope: 'hole' | 'round'

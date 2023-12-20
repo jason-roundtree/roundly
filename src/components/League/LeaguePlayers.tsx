@@ -6,19 +6,20 @@ import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { Player } from '../../types'
 import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
+import { fetchLeaguePlayers } from '../../data'
 
-export async function fetchPlayers(leagueId): Promise<any> {
-  try {
-    const res = await fetch(`http://localhost:3001/api/players/${leagueId}`)
-    const players = await res.json()
-    console.log('players pre sort: ', players)
-    const sortedPlayers = sortArrayOfObjects(players, 'name')
-    console.log('players post sort: ', sortedPlayers)
-    return sortedPlayers
-  } catch (err) {
-    console.log('fetch players error: ', err)
-  }
-}
+// export async function fetchPlayers(leagueId): Promise<any> {
+//   try {
+//     const res = await fetch(`http://localhost:3001/api/players/${leagueId}`)
+//     const players = await res.json()
+//     console.log('players pre sort: ', players)
+//     const sortedPlayers = sortArrayOfObjects(players, 'name')
+//     console.log('players post sort: ', sortedPlayers)
+//     return sortedPlayers
+//   } catch (err) {
+//     console.log('fetch players error: ', err)
+//   }
+// }
 
 export default function LeaguePlayers(): JSX.Element {
   const [players, setPlayers] = useState<Player[]>([])
@@ -34,7 +35,7 @@ export default function LeaguePlayers(): JSX.Element {
   }, [])
 
   async function refreshPlayersState(): Promise<void> {
-    const players = await fetchPlayers(leagueId)
+    const players = await fetchLeaguePlayers(leagueId)
     setPlayers(players)
   }
 
@@ -61,7 +62,7 @@ export default function LeaguePlayers(): JSX.Element {
           }
         )
         // const resJson = await res.json()
-        const players = await fetchPlayers(leagueId)
+        const players = await fetchLeaguePlayers(leagueId)
         setPlayers(players)
         setNewPlayerName('')
         inputRef.current && inputRef.current.focus()

@@ -1,19 +1,18 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Round } from '../../types'
+import { useState, useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { Player, PointSetting, Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
 import PointListItemSelectable from '../Round/PointListItemSelectable'
-
-import players from '../../players-data.json'
-import pointSettings from '../../point-settings-data.json'
+import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
+import { fetchLeaguePlayers, fetchLeaguePointSettings } from '../../data'
 
 interface RoundState {
   name: string
   location?: string
   date: string
-  players: string[]
-  pointSettings: string[]
+  // players: string[]
+  // pointSettings: string[]
 }
 
 export default function CreateRound() {
@@ -21,34 +20,46 @@ export default function CreateRound() {
     name: '',
     location: '',
     date: '',
-    players: [],
-    pointSettings: [],
+    // players: [],
+    // pointSettings: [],
   })
-  const [selectedPlayers, setSelectedPlayers] = useState<Array<string>>([])
-  console.log('selectedPlayers: ', selectedPlayers)
-  const [selectedPoints, setSelectedPoints] = useState<Array<string>>([])
-  console.log('selectedPoints: ', selectedPoints)
-  // TODO: pass league down or add it to URL params?
-  const leagueId = 'dummyLeagueID'
+  const [players, setPlayers] = useState<Player[]>([])
+  const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
+  console.log('pointSettings: ', pointSettings)
 
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
+  console.log('selectedPlayers: ', selectedPlayers)
+
+  const [selectedPoints, setSelectedPoints] = useState<string[]>([])
+  console.log('selectedPoints: ', selectedPoints)
+
+  // TODO: pass league down or add it to URL params?
+  const { id: leagueId } = useParams()
+
+  useEffect(() => {
+    const getPlayers = async () => {
+      const players = await fetchLeaguePlayers(leagueId)
+      setPlayers(players)
+    }
+    const getPointSettings = async () => {
+      const pointSettings = await fetchLeaguePointSettings(leagueId)
+      setPointSettings(pointSettings)
+    }
+    getPlayers()
+    getPointSettings()
+  }, [leagueId])
+
+  // TODO: create api calls and routes
   function handleSaveRound() {
     console.log('save round')
   }
 
-  // TODO: DRYify points and players lists
   function handleToggleSelectPlayer(id: string): void {
-    if (!selectedPlayers.includes(id)) {
-      setSelectedPlayers([...selectedPlayers, id])
-    } else {
-      setSelectedPlayers(selectedPlayers.filter((playerId) => playerId !== id))
-    }
+    toggleStringItemInList(id, selectedPlayers, setSelectedPlayers)
   }
+
   function handleToggleSelectPoint(id: string): void {
-    if (!selectedPoints.includes(id)) {
-      setSelectedPoints([...selectedPoints, id])
-    } else {
-      setSelectedPoints(selectedPoints.filter((pointId) => pointId !== id))
-    }
+    toggleStringItemInList(id, selectedPoints, setSelectedPoints)
   }
 
   function handleInputChange({

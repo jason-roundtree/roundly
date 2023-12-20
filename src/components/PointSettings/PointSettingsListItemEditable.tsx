@@ -1,8 +1,9 @@
 import { useState } from 'react'
+
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { fetchPointSettings } from '../League/LeaguePointSettings'
+import { fetchLeaguePointSettings } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -36,8 +37,8 @@ export default function LeaguePointSettingsListItem({
       })
       // const resJson = await res.json()
       // console.log('resJson', resJson)
-      const points = await fetchPointSettings()
-      console.log('edited points', points)
+      // const points = await fetchLeaguePointSettings(leagueId)
+      // console.log('edited points', points)
     } catch (err) {
       console.log('update player error: ', err)
     }

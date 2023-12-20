@@ -1,37 +1,19 @@
 import { useEffect, useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import { PointSettingsListEditable } from '../../components/PointSettings'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-
 import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
-// import { useFocus } from '../shared/hooks/useFocus'
 import { PointSetting } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
-
-const leagueId = window.location.pathname.split('/')[2]
-console.log('leagueId', leagueId)
+import { fetchLeaguePointSettings } from '../../data'
 
 const defaultNewPointState: PointSetting = {
+  id: '',
   name: '',
   value: 0,
   scope: 'hole',
   maxFrequencyPerScope: 1,
-}
-
-export async function fetchPointSettings(): Promise<any> {
-  try {
-    const res = await fetch(
-      `http://localhost:3001/api/point-settings/${leagueId}`
-    )
-    const pointSettings = await res.json()
-    console.log('point settings pre-sort: ', pointSettings)
-    const sortedPointSettings = sortArrayOfObjects(pointSettings, 'name')
-    console.log('point settings post-sort: ', sortedPointSettings)
-    return sortedPointSettings
-  } catch (err) {
-    console.log('fetch point settings error: ', err)
-  }
 }
 
 export default function LeaguePointSettings(): JSX.Element {
@@ -41,13 +23,14 @@ export default function LeaguePointSettings(): JSX.Element {
     string | null
   >(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const { id: leagueId } = useParams()
 
   useEffect(() => {
     refreshPointSettingsState()
   }, [])
 
   async function refreshPointSettingsState(): Promise<void> {
-    const pointSettings = await fetchPointSettings()
+    const pointSettings = await fetchLeaguePointSettings(leagueId)
     setPointSettings(pointSettings)
   }
 
@@ -68,7 +51,7 @@ export default function LeaguePointSettings(): JSX.Element {
         )
         const resJson = await response.json()
         console.log('resJson', resJson)
-        const pointSettings = await fetchPointSettings()
+        const pointSettings = await fetchLeaguePointSettings(leagueId)
         setPointSettings(pointSettings)
         setNewPoint(defaultNewPointState)
         inputRef.current && inputRef.current.focus()

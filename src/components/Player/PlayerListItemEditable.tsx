@@ -3,7 +3,8 @@ import { useParams } from 'react-router'
 
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import { fetchPlayers } from '../League/LeaguePlayers'
+// import { fetchPlayers } from '../League/LeaguePlayers'
+import { fetchLeaguePlayers } from '../../data'
 
 interface EditablePlayer {
   name: string
@@ -32,7 +33,7 @@ export default function PlayerEditableListItem({
       })
       // const resJson = await res.json()
       // console.log('resJson', resJson)
-      const players = await fetchPlayers(leagueId)
+      const players = await fetchLeaguePlayers(leagueId)
       console.log('edited players', players)
     } catch (err) {
       console.log('update player error: ', err)

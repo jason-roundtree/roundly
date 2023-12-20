@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+
 import { BasicLeagueState, Player, PointSetting } from '../../types'
 import { defaultLeagueState } from '../League/CreateLeague'
+import {
+  fetchLeaguePointSettings,
+  fetchLeaguePlayers,
+  fetchBasicLeagueData,
+} from '../../data'
 
 export default function LeagueHome() {
   const [leagueData, setBasicLeagueData] =
@@ -17,39 +23,20 @@ export default function LeagueHome() {
     getLeaguePointSettings()
   }, [])
 
-  async function getBasicLeagueData() {
-    try {
-      const res = await fetch(`http://localhost:3001/api/league/${leagueId}`)
-      const leagueData = await res.json()
-      console.log('get league data res: ', leagueData)
-      setBasicLeagueData(leagueData)
-    } catch (err) {
-      console.log('get league data error: ', err)
-    }
-  }
-
+  // TODO: add error checking to these?
   async function getLeaguePlayers() {
-    try {
-      const res = await fetch(`http://localhost:3001/api/players/${leagueId}`)
-      const players = await res.json()
-      console.log('get players data res: ', players)
-      setPlayers(players)
-    } catch (err) {
-      console.log('get league data error: ', err)
-    }
+    const players = await fetchLeaguePlayers(leagueId)
+    setPlayers(players)
   }
 
   async function getLeaguePointSettings() {
-    try {
-      const res = await fetch(
-        `http://localhost:3001/api/point-settings/${leagueId}`
-      )
-      const pointSettings = await res.json()
-      console.log('get pointSettings data res: ', pointSettings)
-      setPointSettings(pointSettings)
-    } catch (err) {
-      console.log('get league data error: ', err)
-    }
+    const pointSettings = await fetchLeaguePointSettings(leagueId)
+    setPointSettings(pointSettings)
+  }
+
+  async function getBasicLeagueData() {
+    const leagueData = await fetchBasicLeagueData(leagueId)
+    setBasicLeagueData(leagueData)
   }
 
   return (
@@ -83,6 +70,9 @@ export default function LeagueHome() {
       </Link>
 
       <h2 className="text-xl font-bold mt-4">Rounds</h2>
+      <Link to={`/league/${leagueId}/create-round`} className="text-link mt-4">
+        Create Round
+      </Link>
 
       <h2 className="text-xl font-bold mt-4">Standings</h2>
     </>

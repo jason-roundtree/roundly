@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+// TODO: finish implementing
 const useFocus = () => {
   const htmlElRef = useRef<HTMLElement>(null)
   const setFocus = () => {
