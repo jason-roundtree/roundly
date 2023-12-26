@@ -79,7 +79,7 @@ export default function LeaguePlayers(): JSX.Element {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <div>
+    <>
       <span className="breadcrumb">
         <Link to={`/league/${leagueId}`}>League Home</Link>
         <span> / </span>
@@ -112,6 +112,6 @@ export default function LeaguePlayers(): JSX.Element {
         twListItems={twListItems}
         refreshPlayerState={refreshPlayersState}
       />
-    </div>
+    </>
   )
 }

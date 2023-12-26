@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { useParams } from 'react-router'
 
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-// import { fetchPlayers } from '../League/LeaguePlayers'
-import { fetchLeaguePlayers } from '../../data'
+import { updatePlayer, deletePlayer } from '../../data'
 
 interface EditablePlayer {
   name: string
@@ -21,47 +19,23 @@ export default function PlayerEditableListItem({
 }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
-  const { id, name } = player
-  const { id: leagueId } = useParams()
-
-  async function updatePlayer() {
-    try {
-      const res = await fetch(`http://localhost:3001/api/player/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedPlayer),
-      })
-      // const resJson = await res.json()
-      // console.log('resJson', resJson)
-      const players = await fetchLeaguePlayers(leagueId)
-      console.log('edited players', players)
-    } catch (err) {
-      console.log('update player error: ', err)
-    }
-  }
+  const { id: playerId, name } = player
 
   function handleEditingState(name) {
     setUpdatedPlayer(name)
     setIsBeingEdited(true)
   }
 
-  async function deletePlayer(id) {
-    try {
-      const res = await fetch(`http://localhost:3001/api/player/${id}`, {
-        method: 'DELETE',
-      })
-      console.log('delete player res: ', res.json())
-      refreshPlayerState()
-    } catch (err) {
-      console.log('delete player error: ', err)
-    }
-  }
-
-  async function handleUpdatePlayer(id, listName) {
-    await updatePlayer()
+  async function handleUpdatePlayer() {
+    await updatePlayer(playerId, updatedPlayer)
     refreshPlayerState()
     setUpdatedPlayer(defaultState)
     setIsBeingEdited(false)
+  }
+
+  async function handleDeletePlayer(playerId) {
+    await deletePlayer(playerId)
+    refreshPlayerState()
   }
 
   function handleInputChange({
@@ -82,15 +56,13 @@ export default function PlayerEditableListItem({
             onChange={handleInputChange}
             value={updatedPlayer.name}
           />
-          <button onClick={() => handleUpdatePlayer(id, updatedPlayer)}>
-            Save
-          </button>
+          <button onClick={() => handleUpdatePlayer()}>Save</button>
         </Modal>
       )}
       <span>{name}</span>
       <span className="list-edit-buttons">
         <button onClick={() => handleEditingState(player)}>Edit</button>
-        <button onClick={() => deletePlayer(id)}>Delete</button>
+        <button onClick={() => handleDeletePlayer(player.id)}>Delete</button>
       </span>
     </li>
   )

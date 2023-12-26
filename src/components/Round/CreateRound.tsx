@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+// import { v4 as uuid } from 'uuid'
+
 import { Player, PointSetting, Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
-import PointListItemSelectable from '../Round/PointListItemSelectable'
+import PointListItemSelectable from '../PointSettings/PointListItemSelectable'
 import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
 import { fetchLeaguePlayers, fetchLeaguePointSettings } from '../../data'
 
@@ -11,8 +13,6 @@ interface RoundState {
   name: string
   location?: string
   date: string
-  // players: string[]
-  // pointSettings: string[]
 }
 
 export default function CreateRound() {
@@ -20,38 +20,101 @@ export default function CreateRound() {
     name: '',
     location: '',
     date: '',
-    // players: [],
-    // pointSettings: [],
   })
   const [players, setPlayers] = useState<Player[]>([])
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
-  console.log('pointSettings: ', pointSettings)
-
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
-  console.log('selectedPlayers: ', selectedPlayers)
+  const [selectedPointSettings, setSelectedPointSettings] = useState<string[]>(
+    []
+  )
 
-  const [selectedPoints, setSelectedPoints] = useState<string[]>([])
-  console.log('selectedPoints: ', selectedPoints)
-
-  // TODO: pass league down or add it to URL params?
   const { id: leagueId } = useParams()
+
+  async function createRoundPointSettings(roundId) {
+    for (const pointId of selectedPointSettings) {
+      try {
+        const response = await fetch(
+          'http://localhost:3001/api/round-point-setting',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              pointSettingId: pointId,
+              roundId: roundId,
+            }),
+          }
+        )
+        const res = await response.json()
+        console.log('createRoundPointSettings res', res)
+      } catch (err) {
+        console.log('create round players error: ', err)
+      }
+    }
+  }
+
+  async function createRoundPlayers(roundId) {
+    for (const playerId of selectedPlayers) {
+      try {
+        const response = await fetch('http://localhost:3001/api/player-round', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            playerId: playerId,
+            roundId: roundId,
+          }),
+        })
+        // const res = await response.json()
+        // console.log('createRoundPlayers res', res)
+      } catch (err) {
+        console.log('createRoundPlayers error: ', err)
+      }
+    }
+  }
+
+  async function createRound() {
+    try {
+      const response = await fetch('http://localhost:3001/api/round', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...roundState,
+          leagueId,
+          date: roundState.date ? new Date(roundState.date) : new Date(),
+        }),
+      })
+
+      const { id: roundId } = await response.json()
+      await createRoundPlayers(roundId)
+      await createRoundPointSettings(roundId)
+      // TODO: change route to league home
+    } catch (err) {
+      console.log('create round error: ', err)
+    }
+  }
 
   useEffect(() => {
     const getPlayers = async () => {
+      // TODO: also set all players active by default?
       const players = await fetchLeaguePlayers(leagueId)
       setPlayers(players)
     }
+
     const getPointSettings = async () => {
       const pointSettings = await fetchLeaguePointSettings(leagueId)
+      const pointSettingsIds = pointSettings.map((ps) => ps.id)
       setPointSettings(pointSettings)
+      setSelectedPointSettings(pointSettingsIds)
     }
+
     getPlayers()
     getPointSettings()
   }, [leagueId])
 
   // TODO: create api calls and routes
-  function handleSaveRound() {
+  async function handleSaveRound(e) {
     console.log('save round')
+    e.preventDefault()
+    await createRound()
   }
 
   function handleToggleSelectPlayer(id: string): void {
@@ -59,7 +122,7 @@ export default function CreateRound() {
   }
 
   function handleToggleSelectPoint(id: string): void {
-    toggleStringItemInList(id, selectedPoints, setSelectedPoints)
+    toggleStringItemInList(id, selectedPointSettings, setSelectedPointSettings)
   }
 
   function handleInputChange({
@@ -75,8 +138,14 @@ export default function CreateRound() {
     'max-w-fit rounded-lg my-1 mx-1 p-1 inline-block rounded-sm border-solid border-2 border-indigo-600'
 
   return (
-    <div className="m-8 mx-auto max-w-screen-md" id="createRound">
-      <h1 className="text-3xl font-bold">Create Round</h1>
+    <form>
+      <span className="breadcrumb">
+        <Link to={`/league/${leagueId}`}>League Home</Link>
+        <span> / </span>
+        Create Round
+      </span>
+
+      {/* <h1 className="text-3xl font-bold">Create Round</h1> */}
       <BasicInput
         type="text"
         label="Round Name"
@@ -102,14 +171,15 @@ export default function CreateRound() {
         twClasses={`${twEditInputs} w-64 max-w-md`}
       />
 
-      <label className="block mt-4 font-semibold">Add Players</label>
+      <label className="block mt-4 font-semibold">Players</label>
       <ul>
-        {players.map((player) => {
-          const isSelected = selectedPlayers.includes(player.id)
+        {players.map(({ name, id }) => {
+          const isSelected = selectedPlayers.includes(id)
           return (
             <PlayerListItemSelectable
-              name={player.name}
-              id={player.id}
+              name={name}
+              id={id}
+              key={id}
               twListItems={twListItems}
               toggleSelectedPlayer={handleToggleSelectPlayer}
               isSelected={isSelected}
@@ -119,15 +189,15 @@ export default function CreateRound() {
       </ul>
 
       <label className="block mt-4 font-semibold">Points</label>
-      <Link to={`/league/${leagueId}/point-settings`}>Edit Points</Link>
       <ul>
         {pointSettings.map(({ name, value, id }) => {
-          const isSelected = selectedPoints.includes(id)
+          const isSelected = selectedPointSettings.includes(id)
           return (
             <PointListItemSelectable
               name={name}
               value={value}
               id={id}
+              key={id}
               twListItems={twListItems}
               toggleSelectedPoint={handleToggleSelectPoint}
               isSelected={isSelected}
@@ -135,13 +205,24 @@ export default function CreateRound() {
           )
         })}
       </ul>
+      {/* <Link
+        to={`/league/${leagueId}/create-round/point-settings`}
+        state={{
+          nextPageTitle: 'Round Point Settings',
+          priorPageTitle: 'Create Round',
+          priorPagePath: window.location.pathname,
+        }}
+        className="text-link mt-4"
+      >
+        Edit Round Points
+      </Link> */}
 
       <div className="flex mt-6">
         {/* TODO: add validation to ensure league name has been added */}
-        <button className="mx-auto" onSubmit={handleSaveRound}>
+        <button className="mx-auto" onClick={handleSaveRound}>
           Create Round
         </button>
       </div>
-    </div>
+    </form>
   )
 }

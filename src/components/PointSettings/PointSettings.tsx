@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router-dom'
 
-import { PointSettingsListEditable } from '../../components/PointSettings'
+import { PointSettingsListEditable } from '.'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { sortArrayOfObjects, validateSimpleInput } from '../shared/utils'
 import { PointSetting } from '../../types'
@@ -16,7 +16,7 @@ const defaultNewPointState: PointSetting = {
   maxFrequencyPerScope: 1,
 }
 
-export default function LeaguePointSettings(): JSX.Element {
+export default function PointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
   const [inputValidationError, setInputValidationError] = useState<
@@ -24,6 +24,9 @@ export default function LeaguePointSettings(): JSX.Element {
   >(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { id: leagueId } = useParams()
+  const {
+    state: { nextPageTitle, priorPageTitle, priorPagePath },
+  } = useLocation()
 
   useEffect(() => {
     refreshPointSettingsState()
@@ -93,11 +96,10 @@ export default function LeaguePointSettings(): JSX.Element {
   return (
     <div>
       <span className="breadcrumb">
-        <Link to={`/league/${leagueId}`}>League Home</Link>
+        <Link to={priorPagePath}>{priorPageTitle}</Link>
         <span> / </span>
-        League Point Settings
+        {nextPageTitle}
       </span>
-      {/* <h1 className="text-3xl font-bold">League Point Settings</h1> */}
 
       <BasicInput
         type="text"

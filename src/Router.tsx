@@ -7,7 +7,6 @@ import {
   // InvitePlayer,
   LeagueSettings,
   // LeaguePointSetting,
-  LeaguePointSettings,
   LeaguesList,
   LeagueMembers,
   LeaguePlayers,
@@ -31,10 +30,11 @@ import {
   RoundsList,
   RoundPlayers,
   RoundSettings,
-  RoundPointSetting,
+  RoundPointSettings,
   RoundSummary,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
+import { PointSettings } from './components/PointSettings'
 
 export default function Router() {
   return (
@@ -58,9 +58,10 @@ export default function Router() {
       <Route path="league/:id/settings" element={<LeagueSettings />} />
       {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
       <Route
-        path="league/:id/point-settings"
-        element={<LeaguePointSettings />}
+        path="league/:id/create-round/point-settings"
+        element={<PointSettings />}
       />
+      <Route path="league/:id/point-settings" element={<PointSettings />} />
       <Route path="league/:id/standings" element={<LeagueStandings />} />
       {/* <Route path="league/:id/schedule" element={< />} /> */}
       {/* event history */}
@@ -71,7 +72,7 @@ export default function Router() {
       <Route path="rounds/:id" element={<RoundSummary />} />
       {/* user rounds */}
       <Route path="rounds/:id/settings" element={<RoundSettings />} />
-      <Route path="rounds/:id/point-setting" element={<RoundPointSetting />} />
+      <Route path="rounds/:id/point-setting" element={<RoundPointSettings />} />
       <Route path="rounds/:id/players" element={<RoundPlayers />} />
       <Route path="rounds/:name" element={<PlayerRounds />} />
       {/* TODO: should following 2 be shared component? */}

@@ -64,6 +64,11 @@ export default function LeagueHome() {
       </ul>
       <Link
         to={`/league/${leagueId}/point-settings`}
+        state={{
+          nextPageTitle: 'League Point Settings',
+          priorPageTitle: 'League Home',
+          priorPagePath: window.location.pathname,
+        }}
         className="text-link mt-4"
       >
         Edit Point Settings
