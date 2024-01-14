@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { BasicLeagueState, Player, PointSetting } from '../../types'
+import { BasicLeagueState, Player, PointSetting, Round } from '../../types'
 import { defaultLeagueState } from '../League/CreateLeague'
 import {
   fetchLeaguePointSettings,
   fetchLeaguePlayers,
   fetchBasicLeagueData,
+  fetchLeagueRounds,
 } from '../../data'
 
 export default function LeagueHome() {
@@ -14,6 +15,8 @@ export default function LeagueHome() {
     useState<BasicLeagueState>(defaultLeagueState)
   const [players, setPlayers] = useState<Player[]>([])
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
+  const [rounds, setRounds] = useState<Round[]>([])
+
   const { name, startDate, endDate } = leagueData
   const { id: leagueId } = useParams()
 
@@ -21,6 +24,7 @@ export default function LeagueHome() {
     getBasicLeagueData()
     getLeaguePlayers()
     getLeaguePointSettings()
+    getLeagueRounds()
   }, [])
 
   // TODO: add error checking to these?
@@ -39,20 +43,38 @@ export default function LeagueHome() {
     setBasicLeagueData(leagueData)
   }
 
+  async function getLeagueRounds() {
+    const rounds = await fetchLeagueRounds(leagueId)
+    setRounds(rounds)
+  }
+
   return (
     <>
       <h1 className="text-3xl font-bold">{name} - League Home</h1>
-      <h2 className="text-xl font-bold mt-4">Players</h2>
+      <h2 className="text-xl font-bold mt-4">
+        <Link to={`/league/${leagueId}/players`} className="text-link mt-2">
+          Players
+        </Link>
+      </h2>
       <ul>
         {players.map(({ id, name }) => {
           return <li key={id}>{name}</li>
         })}
       </ul>
-      <Link to={`/league/${leagueId}/players`} className="text-link mt-4">
-        Edit Players
-      </Link>
 
-      <h2 className="text-xl font-bold mt-4">Point Settings</h2>
+      <h2 className="text-xl font-bold mt-4">
+        <Link
+          to={`/league/${leagueId}/point-settings`}
+          state={{
+            nextPageTitle: 'League Point Settings',
+            priorPageTitle: 'League Home',
+            priorPagePath: window.location.pathname,
+          }}
+          className="text-link mt-2"
+        >
+          Point Settings
+        </Link>
+      </h2>
       <ul>
         {pointSettings.map(({ id, name, value }) => {
           return (
@@ -62,22 +84,17 @@ export default function LeagueHome() {
           )
         })}
       </ul>
-      <Link
-        to={`/league/${leagueId}/point-settings`}
-        state={{
-          nextPageTitle: 'League Point Settings',
-          priorPageTitle: 'League Home',
-          priorPagePath: window.location.pathname,
-        }}
-        className="text-link mt-4"
-      >
-        Edit Point Settings
-      </Link>
 
-      <h2 className="text-xl font-bold mt-4">Rounds</h2>
-      <Link to={`/league/${leagueId}/create-round`} className="text-link mt-4">
-        Create Round
-      </Link>
+      <h2 className="text-xl font-bold mt-4">
+        <Link to={`/league/${leagueId}/rounds`} className="text-link">
+          Rounds
+        </Link>
+      </h2>
+      <ul>
+        {rounds.map(({ id, name, location, date }) => {
+          return <li key={id}>{name}</li>
+        })}
+      </ul>
 
       <h2 className="text-xl font-bold mt-4">Standings</h2>
     </>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 // import { v4 as uuid } from 'uuid'
 
 import { Player, PointSetting, Round } from '../../types'
@@ -8,6 +8,8 @@ import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
 import PointListItemSelectable from '../PointSettings/PointListItemSelectable'
 import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
 import { fetchLeaguePlayers, fetchLeaguePointSettings } from '../../data'
+import { validateSimpleInput } from '../shared/utils'
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 
 interface RoundState {
   name: string
@@ -27,6 +29,10 @@ export default function CreateRound() {
   const [selectedPointSettings, setSelectedPointSettings] = useState<string[]>(
     []
   )
+  const [inputValidationError, setInputValidationError] = useState<
+    string | null
+  >(null)
+  const navigate = useNavigate()
 
   const { id: leagueId } = useParams()
 
@@ -110,19 +116,20 @@ export default function CreateRound() {
     getPointSettings()
   }, [leagueId])
 
-  // TODO: create api calls and routes
   async function handleSaveRound(e) {
     console.log('save round')
     e.preventDefault()
+    if (
+      !validateSimpleInput(
+        roundState.name,
+        'Round Name',
+        setInputValidationError
+      )
+    ) {
+      return
+    }
     await createRound()
-  }
-
-  function handleToggleSelectPlayer(id: string): void {
-    toggleStringItemInList(id, selectedPlayers, setSelectedPlayers)
-  }
-
-  function handleToggleSelectPoint(id: string): void {
-    toggleStringItemInList(id, selectedPointSettings, setSelectedPointSettings)
+    navigate(`/league/${leagueId}`)
   }
 
   function handleInputChange({
@@ -181,14 +188,17 @@ export default function CreateRound() {
               id={id}
               key={id}
               twListItems={twListItems}
-              toggleSelectedPlayer={handleToggleSelectPlayer}
+              toggleSelectedPlayer={() =>
+                toggleStringItemInList(id, selectedPlayers, setSelectedPlayers)
+              }
               isSelected={isSelected}
             />
           )
         })}
       </ul>
 
-      <label className="block mt-4 font-semibold">Points</label>
+      <label className="block mt-2 font-semibold">Points</label>
+      <p>You can edit and add round points after creating the round</p>
       <ul>
         {pointSettings.map(({ name, value, id }) => {
           const isSelected = selectedPointSettings.includes(id)
@@ -199,7 +209,13 @@ export default function CreateRound() {
               id={id}
               key={id}
               twListItems={twListItems}
-              toggleSelectedPoint={handleToggleSelectPoint}
+              toggleSelectedPoint={() =>
+                toggleStringItemInList(
+                  id,
+                  selectedPointSettings,
+                  setSelectedPointSettings
+                )
+              }
               isSelected={isSelected}
             />
           )
@@ -212,17 +228,19 @@ export default function CreateRound() {
           priorPageTitle: 'Create Round',
           priorPagePath: window.location.pathname,
         }}
-        className="text-link mt-4"
+        className="text-link mt-2"
       >
         Edit Round Points
       </Link> */}
 
-      <div className="flex mt-6">
-        {/* TODO: add validation to ensure league name has been added */}
-        <button className="mx-auto" onClick={handleSaveRound}>
-          Create Round
-        </button>
-      </div>
+      {/* <div className="flex mt-6"> */}
+      {/* TODO: add validation to ensure league name has been added */}
+      <button onClick={handleSaveRound}>Create Round</button>
+      <SimpleInputValidationError
+        errorField={inputValidationError}
+        errorMsgCode="MISSNG_VALUE"
+      />
+      {/* </div> */}
     </form>
   )
 }

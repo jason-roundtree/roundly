@@ -68,7 +68,7 @@ export default function Router() {
       {/* <Route path="league/:id/history" element={< />} /> */}
 
       <Route path="league/:id/create-round" element={<CreateRound />} />
-      <Route path="rounds" element={<RoundsList />} />
+      <Route path="league/:id/rounds" element={<RoundsList />} />
       <Route path="rounds/:id" element={<RoundSummary />} />
       {/* user rounds */}
       <Route path="rounds/:id/settings" element={<RoundSettings />} />
