@@ -92,7 +92,6 @@ export default function CreateRound() {
       const { id: roundId } = await response.json()
       await createRoundPlayers(roundId)
       await createRoundPointSettings(roundId)
-      // TODO: change route to league home
     } catch (err) {
       console.log('create round error: ', err)
     }
@@ -129,7 +128,7 @@ export default function CreateRound() {
       return
     }
     await createRound()
-    navigate(`/league/${leagueId}`)
+    navigate(`/league/${leagueId}/rounds`)
   }
 
   function handleInputChange({

@@ -42,8 +42,8 @@ export interface Round {
   name: string
   location?: string
   date: Date
-  pointSettings: string[]
-  players: string[]
+  pointSettings?: string[]
+  players?: string[]
 }
 
 export interface PointSetting {

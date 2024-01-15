@@ -27,7 +27,8 @@ import {
 } from './components/PlayerRound'
 import {
   CreateRound,
-  RoundsList,
+  // Round,
+  Rounds,
   RoundPlayers,
   RoundSettings,
   RoundPointSettings,
@@ -68,8 +69,9 @@ export default function Router() {
       {/* <Route path="league/:id/history" element={< />} /> */}
 
       <Route path="league/:id/create-round" element={<CreateRound />} />
-      <Route path="league/:id/rounds" element={<RoundsList />} />
+      <Route path="league/:id/rounds" element={<Rounds />} />
       <Route path="rounds/:id" element={<RoundSummary />} />
+      {/* <Route path="rounds/:id" element={<RoundSummary />} /> */}
       {/* user rounds */}
       <Route path="rounds/:id/settings" element={<RoundSettings />} />
       <Route path="rounds/:id/point-setting" element={<RoundPointSettings />} />

@@ -3,10 +3,9 @@ import { Link, useParams, useLocation } from 'react-router-dom'
 
 import { Round } from '../../types'
 import { fetchLeagueRounds } from '../../data'
-import './RoundsList.css'
+import './Rounds.css'
 
-// TODO: rename to Rounds and create separate component for RoundsList
-export default function RoundsList() {
+export default function Rounds() {
   const [rounds, setRounds] = useState<Round[]>([])
   const { id: leagueId } = useParams()
 
@@ -26,15 +25,18 @@ export default function RoundsList() {
         Create Round
       </Link>
       <ul>
-        {rounds.map(({ id, name, location, date }) => {
+        {rounds.map((round) => {
+          const { id, name, location, date } = round
           const dateFormatted = new Date(date).toLocaleDateString()
           return (
             <li key={id}>
-              <div className="round-card">
-                <p>{name}</p>
-                <p>{dateFormatted.toString()}</p>
-                {location && <p>{location}</p>}
-              </div>
+              <Link to={`/rounds/${id}`} state={{ ...round }}>
+                <div className="round-card">
+                  <p>{name}</p>
+                  <p>{dateFormatted.toString()}</p>
+                  {location && <p>{location}</p>}
+                </div>
+              </Link>
             </li>
           )
         })}

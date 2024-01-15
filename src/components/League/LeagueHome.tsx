@@ -10,6 +10,7 @@ import {
   fetchLeagueRounds,
 } from '../../data'
 
+// TODO: show league name/link outside of child components so it's always easily accessible (instead of passing data down)
 export default function LeagueHome() {
   const [leagueData, setBasicLeagueData] =
     useState<BasicLeagueState>(defaultLeagueState)
