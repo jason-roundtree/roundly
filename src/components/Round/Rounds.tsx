@@ -7,7 +7,7 @@ import './Rounds.css'
 
 export default function Rounds() {
   const [rounds, setRounds] = useState<Round[]>([])
-  const { id: leagueId } = useParams()
+  const { leagueId } = useParams()
 
   useEffect(() => {
     getLeagueRounds()
@@ -20,17 +20,19 @@ export default function Rounds() {
 
   return (
     <>
+      <Link to={`/league/${leagueId}`}>League Home</Link>
+
       <h2>Rounds</h2>
       <Link to={`/league/${leagueId}/create-round`} className="text-link mt-2">
         Create Round
       </Link>
       <ul>
         {rounds.map((round) => {
-          const { id, name, location, date } = round
+          const { id: roundId, name, location, date } = round
           const dateFormatted = new Date(date).toLocaleDateString()
           return (
-            <li key={id}>
-              <Link to={`/rounds/${id}`} state={{ ...round }}>
+            <li key={roundId}>
+              <Link to={`/league/${leagueId}/rounds/${roundId}`} state={round}>
                 <div className="round-card">
                   <p>{name}</p>
                   <p>{dateFormatted.toString()}</p>

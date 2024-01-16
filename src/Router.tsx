@@ -1,9 +1,10 @@
 import React from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Outlet, Routes, Route, Link } from 'react-router-dom'
 
 import Home from './Home'
 import {
   CreateLeague,
+  LeagueHomeLayout,
   // InvitePlayer,
   LeagueSettings,
   // LeaguePointSetting,
@@ -32,7 +33,7 @@ import {
   RoundPlayers,
   RoundSettings,
   RoundPointSettings,
-  RoundSummary,
+  RoundDetails,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
 import { PointSettings } from './components/PointSettings'
@@ -42,36 +43,46 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Home />} />
       {/* <Route path="about" element={} /> */}
-      <Route path="signup" element={<Signup />} />
-      <Route path="login" element={<Login />} />
+      {/* <Route path="signup" element={<Signup />} /> */}
+      {/* <Route path="login" element={<Login />} /> */}
 
       {/* user dashboard */}
       {/* <Route path=":user" element={< />} /> */}
       {/* user profile */}
-      <Route path="profile" element={<Profile />} />
+      {/* <Route path="profile" element={<Profile />} /> */}
 
       <Route path="create-league" element={<CreateLeague />} />
-      <Route path="leagues" element={<LeaguesList />} />
-      <Route path="league/:id" element={<LeagueHome />} />
-      {/* user leagues */}
-      <Route path="league/:id/players" element={<LeaguePlayers />} />
-      <Route path="league/:id/members" element={<LeagueMembers />} />
-      <Route path="league/:id/settings" element={<LeagueSettings />} />
-      {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
+      {/* <Route path="leagues" element={<LeaguesList />} /> */}
+
+      {/* TODO: remove parent layout route if still unused */}
+      {/* <Route element={<LeagueHomeLayout />}> */}
+      <Route path="league/:leagueId" element={<LeagueHome />} />
+      <Route path="league/:leagueId/players" element={<LeaguePlayers />} />
       <Route
-        path="league/:id/create-round/point-settings"
+        path="league/:leagueId/point-settings"
         element={<PointSettings />}
       />
-      <Route path="league/:id/point-settings" element={<PointSettings />} />
-      <Route path="league/:id/standings" element={<LeagueStandings />} />
+      <Route path="league/:leagueId/rounds" element={<Rounds />} />
+      <Route path="league/:leagueId/create-round" element={<CreateRound />} />
+      <Route path="league/:leagueId/standings" element={<LeagueStandings />} />
+      <Route
+        path="league/:leagueId/rounds/:roundId"
+        element={<RoundDetails />}
+      />
+      {/* </Route> */}
+
+      {/* <Route path="league/:id/members" element={<LeagueMembers />} /> */}
+      {/* <Route path="league/:id/settings" element={<LeagueSettings />} /> */}
+      {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
+      {/* <Route
+        path="league/:id/create-round/point-settings"
+        element={<PointSettings />}
+      /> */}
       {/* <Route path="league/:id/schedule" element={< />} /> */}
       {/* event history */}
       {/* <Route path="league/:id/history" element={< />} /> */}
 
-      <Route path="league/:id/create-round" element={<CreateRound />} />
-      <Route path="league/:id/rounds" element={<Rounds />} />
-      <Route path="rounds/:id" element={<RoundSummary />} />
-      {/* <Route path="rounds/:id" element={<RoundSummary />} /> */}
+      {/* <Route path="rounds/:id" element={<RoundDetails />} /> */}
       {/* user rounds */}
       <Route path="rounds/:id/settings" element={<RoundSettings />} />
       <Route path="rounds/:id/point-setting" element={<RoundPointSettings />} />

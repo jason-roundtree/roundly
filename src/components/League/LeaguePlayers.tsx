@@ -28,7 +28,7 @@ export default function LeaguePlayers(): JSX.Element {
     string | null
   >(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { id: leagueId } = useParams()
+  const { leagueId } = useParams()
 
   useEffect(() => {
     refreshPlayersState()
@@ -80,11 +80,9 @@ export default function LeaguePlayers(): JSX.Element {
 
   return (
     <>
-      <span className="breadcrumb">
-        <Link to={`/league/${leagueId}`}>League Home</Link>
-        <span> / </span>
-        League Players
-      </span>
+      <Link to={`/league/${leagueId}`}>League Home</Link>
+
+      <h2>League Players</h2>
 
       {/* <h1 className="text-3xl font-bold">Players</h1> */}
       <BasicInput

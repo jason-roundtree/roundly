@@ -10,7 +10,6 @@ import {
   fetchLeagueRounds,
 } from '../../data'
 
-// TODO: show league name/link outside of child components so it's always easily accessible (instead of passing data down)
 export default function LeagueHome() {
   const [leagueData, setBasicLeagueData] =
     useState<BasicLeagueState>(defaultLeagueState)
@@ -19,16 +18,17 @@ export default function LeagueHome() {
   const [rounds, setRounds] = useState<Round[]>([])
 
   const { name, startDate, endDate } = leagueData
-  const { id: leagueId } = useParams()
+  const { leagueId } = useParams()
 
   useEffect(() => {
     getBasicLeagueData()
     getLeaguePlayers()
     getLeaguePointSettings()
     getLeagueRounds()
-  }, [])
+  }, [leagueId])
 
-  // TODO: add error checking to these?
+  // TODO: add error checking to these types of functions throughout app
+  // TODO: add error checking to these types of functions throughout app
   async function getLeaguePlayers() {
     const players = await fetchLeaguePlayers(leagueId)
     setPlayers(players)
@@ -66,11 +66,6 @@ export default function LeagueHome() {
       <h2 className="text-xl font-bold mt-4">
         <Link
           to={`/league/${leagueId}/point-settings`}
-          state={{
-            nextPageTitle: 'League Point Settings',
-            priorPageTitle: 'League Home',
-            priorPagePath: window.location.pathname,
-          }}
           className="text-link mt-2"
         >
           Point Settings

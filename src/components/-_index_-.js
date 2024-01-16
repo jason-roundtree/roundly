@@ -19,7 +19,7 @@ export { PlayerSummary } from './Player/PlayerSummary'
 export { RoundPointsSettings } from './Round/RoundPointsSettings'
 export { RoundScorecard } from './Round/RoundScorecard'
 export { Rounds } from './Round/Rounds'
-export { RoundSummary } from './Round/RoundSummary'
+export { RoundDetails } from './Round/RoundDetails'
 export { ScheduleRound } from './Round/CreateRound'
 
 export { Login } from './User/Login'

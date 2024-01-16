@@ -8,8 +8,9 @@ import { PointSetting } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import { fetchLeaguePointSettings } from '../../data'
 
-const defaultNewPointState: PointSetting = {
-  id: '',
+type NewPointSetting = Omit<PointSetting, 'id'>
+
+const defaultNewPointState: NewPointSetting = {
   name: '',
   value: 0,
   scope: 'hole',
@@ -23,10 +24,7 @@ export default function PointSettings(): JSX.Element {
     string | null
   >(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { id: leagueId } = useParams()
-  const {
-    state: { nextPageTitle, priorPageTitle, priorPagePath },
-  } = useLocation()
+  const { leagueId } = useParams()
 
   useEffect(() => {
     refreshPointSettingsState()
@@ -94,12 +92,10 @@ export default function PointSettings(): JSX.Element {
     'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
   return (
-    <div>
-      <span className="breadcrumb">
-        <Link to={priorPagePath}>{priorPageTitle}</Link>
-        <span> / </span>
-        {nextPageTitle}
-      </span>
+    <>
+      <Link to={`/league/${leagueId}`}>League Home</Link>
+
+      <h2>Point Settings</h2>
 
       <BasicInput
         type="text"
@@ -136,6 +132,6 @@ export default function PointSettings(): JSX.Element {
         refreshPointSettingsState={refreshPointSettingsState}
         selectAllInputText={selectAllInputText}
       />
-    </div>
+    </>
   )
 }

@@ -34,7 +34,7 @@ export default function CreateRound() {
   >(null)
   const navigate = useNavigate()
 
-  const { id: leagueId } = useParams()
+  const { leagueId } = useParams()
 
   async function createRoundPointSettings(roundId) {
     for (const pointId of selectedPointSettings) {
@@ -144,102 +144,95 @@ export default function CreateRound() {
     'max-w-fit rounded-lg my-1 mx-1 p-1 inline-block rounded-sm border-solid border-2 border-indigo-600'
 
   return (
-    <form>
-      <span className="breadcrumb">
-        <Link to={`/league/${leagueId}`}>League Home</Link>
-        <span> / </span>
-        Create Round
-      </span>
+    <>
+      <Link to={`/league/${leagueId}`}>League Home</Link>
 
-      {/* <h1 className="text-3xl font-bold">Create Round</h1> */}
-      <BasicInput
-        type="text"
-        label="Round Name"
-        name="name"
-        value={roundState.name}
-        onChange={handleInputChange}
-        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-      />
-      <BasicInput
-        type="text"
-        label="Location"
-        name="location"
-        value={roundState.location || ''}
-        onChange={handleInputChange}
-        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
-      />
-      <BasicInput
-        type="date"
-        label="Date"
-        name="date"
-        value={roundState.date}
-        onChange={handleInputChange}
-        twClasses={`${twEditInputs} w-64 max-w-md`}
-      />
+      <form>
+        <h2>Create Round</h2>
 
-      <label className="block mt-4 font-semibold">Players</label>
-      <ul>
-        {players.map(({ name, id }) => {
-          const isSelected = selectedPlayers.includes(id)
-          return (
-            <PlayerListItemSelectable
-              name={name}
-              id={id}
-              key={id}
-              twListItems={twListItems}
-              toggleSelectedPlayer={() =>
-                toggleStringItemInList(id, selectedPlayers, setSelectedPlayers)
-              }
-              isSelected={isSelected}
-            />
-          )
-        })}
-      </ul>
+        {/* <h1 className="text-3xl font-bold">Create Round</h1> */}
+        <BasicInput
+          type="text"
+          label="Round Name"
+          name="name"
+          value={roundState.name}
+          onChange={handleInputChange}
+          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
+        />
+        <BasicInput
+          type="text"
+          label="Location"
+          name="location"
+          value={roundState.location || ''}
+          onChange={handleInputChange}
+          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
+        />
+        <BasicInput
+          type="date"
+          label="Date"
+          name="date"
+          value={roundState.date}
+          onChange={handleInputChange}
+          twClasses={`${twEditInputs} w-64 max-w-md`}
+        />
 
-      <label className="block mt-2 font-semibold">Points</label>
-      <p>You can edit and add round points after creating the round</p>
-      <ul>
-        {pointSettings.map(({ name, value, id }) => {
-          const isSelected = selectedPointSettings.includes(id)
-          return (
-            <PointListItemSelectable
-              name={name}
-              value={value}
-              id={id}
-              key={id}
-              twListItems={twListItems}
-              toggleSelectedPoint={() =>
-                toggleStringItemInList(
-                  id,
-                  selectedPointSettings,
-                  setSelectedPointSettings
-                )
-              }
-              isSelected={isSelected}
-            />
-          )
-        })}
-      </ul>
-      {/* <Link
-        to={`/league/${leagueId}/create-round/point-settings`}
-        state={{
-          nextPageTitle: 'Round Point Settings',
-          priorPageTitle: 'Create Round',
-          priorPagePath: window.location.pathname,
-        }}
-        className="text-link mt-2"
-      >
-        Edit Round Points
-      </Link> */}
+        <label className="block mt-4 font-semibold">Players</label>
+        <ul>
+          {players.map(({ name, id }) => {
+            const isSelected = selectedPlayers.includes(id)
+            return (
+              <PlayerListItemSelectable
+                name={name}
+                id={id}
+                key={id}
+                twListItems={twListItems}
+                toggleSelectedPlayer={() =>
+                  toggleStringItemInList(
+                    id,
+                    selectedPlayers,
+                    setSelectedPlayers
+                  )
+                }
+                isSelected={isSelected}
+              />
+            )
+          })}
+        </ul>
 
-      {/* <div className="flex mt-6"> */}
-      {/* TODO: add validation to ensure league name has been added */}
-      <button onClick={handleSaveRound}>Create Round</button>
-      <SimpleInputValidationError
-        errorField={inputValidationError}
-        errorMsgCode="MISSNG_VALUE"
-      />
-      {/* </div> */}
-    </form>
+        <label className="block mt-2 font-semibold">Points</label>
+        <p>You can edit and add round points after creating the round</p>
+        <ul>
+          {pointSettings.map(({ name, value, id }) => {
+            const isSelected = selectedPointSettings.includes(id)
+            return (
+              <PointListItemSelectable
+                name={name}
+                value={value}
+                id={id}
+                key={id}
+                twListItems={twListItems}
+                toggleSelectedPoint={() =>
+                  toggleStringItemInList(
+                    id,
+                    selectedPointSettings,
+                    setSelectedPointSettings
+                  )
+                }
+                isSelected={isSelected}
+              />
+            )
+          })}
+        </ul>
+
+        {/* <div className="flex mt-6"> */}
+        {/* TODO: add validation to ensure league name has been added */}
+        <button onClick={handleSaveRound}>Create Round</button>
+        <SimpleInputValidationError
+          errorField={inputValidationError}
+          errorMsgCode="MISSNG_VALUE"
+        />
+        {/* </div> */}
+      </form>
+    </>
   )
 }
