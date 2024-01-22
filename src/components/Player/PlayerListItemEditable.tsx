@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import { updatePlayer, deletePlayer } from '../../data'
+import { updatePlayer, deletePlayerFromLeague } from '../../data'
 
 interface EditablePlayer {
   name: string
@@ -34,7 +34,7 @@ export default function PlayerEditableListItem({
   }
 
   async function handleDeletePlayer(playerId) {
-    await deletePlayer(playerId)
+    await deletePlayerFromLeague(playerId)
     refreshPlayerState()
   }
 
@@ -61,8 +61,10 @@ export default function PlayerEditableListItem({
       )}
       <span>{name}</span>
       <span className="list-edit-buttons">
-        <button onClick={() => handleEditingState(player)}>Edit</button>
-        <button onClick={() => handleDeletePlayer(player.id)}>Delete</button>
+        <button onClick={() => handleEditingState(player)}>Update</button>
+        <button onClick={() => handleDeletePlayer(player.id)}>
+          Remove From League
+        </button>
       </span>
     </li>
   )

@@ -1,38 +1,78 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { useEffect, useState, createContext } from 'react'
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 
-import { Round, Player } from '../../types'
+import { Round, Player, PointSetting } from '../../types'
 import { fetchRound } from '../../data'
 
+//   TODO: if keeping these move to a separate file
+const twEditInputs =
+  'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
+const twListItems =
+  'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
+
+const RoundContextDefault = {
+  id: '',
+  name: '',
+  location: '',
+  date: '',
+  players: [] as Player[],
+  pointSettings: [] as PointSetting[],
+  refreshRoundState: () => {},
+}
+
+type RoundContextDefaultType = typeof RoundContextDefault
+
+export const RoundContext = createContext(
+  RoundContextDefault as RoundContextDefaultType
+)
+
 export default function RoundDetails(): JSX.Element {
-  const [players, setPlayers] = useState<Player[]>([])
-  const { state } = useLocation()
-  const { leagueId, roundId } = useParams()
+  const [roundData, setRoundData] = useState(RoundContextDefault)
+  const { id, name, location, date, players, pointSettings } = roundData
+  // const [roundInfo, setRoundInfo] = useState({
+  //   id: '',
+  //   name: '',
+  //   location: '',
+  //   date: '',
+  // })
+  // const [players, setPlayers] = useState<Player[]>([])
+  // const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
+  const { roundId, leagueId } = useParams()
 
   useEffect(() => {
-    getRoundData()
+    refreshRoundState()
   }, [])
 
-  async function getRoundData() {
+  async function refreshRoundState() {
     const roundData = await fetchRound(roundId)
-    console.log('XXXX roundData', roundData)
-    const { players } = roundData
-    setPlayers(players)
+
+    // const { players, point_settings } = roundData
+    // setPlayers(players)
+    // setPointSettings(point_settings)
+    setRoundData(roundData)
   }
 
-  const dateFormatted = new Date(state.date).toLocaleDateString()
+  const dateFormatted = new Date(date).toLocaleDateString()
   return (
-    <>
+    <RoundContext.Provider
+      value={{
+        id,
+        name,
+        location,
+        date: dateFormatted,
+        players,
+        pointSettings,
+        refreshRoundState,
+      }}
+    >
       <Link to={`/league/${leagueId}`}>League Home</Link>
       <h2>Round</h2>
-      <h3>{state.name}</h3>
-      <h3>{state.location && state.location}</h3>
-      <h3>{dateFormatted}</h3>
-      <ul>
-        {players.map(({ id, name }) => {
-          return <li key={id}>{name}</li>
-        })}
-      </ul>
-    </>
+
+      <p>{name}</p>
+      <p>{location && location}</p>
+      <p>{dateFormatted}</p>
+
+      <Outlet />
+    </RoundContext.Provider>
   )
 }

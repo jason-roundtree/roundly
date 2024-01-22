@@ -12,13 +12,27 @@ export async function updatePlayer(playerId, updatedPlayer) {
   }
 }
 
-export async function deletePlayer(playerId) {
+// TODO: is deleting the player outright the same as removing from league?
+export async function deletePlayerFromLeague(playerId) {
   try {
     const res = await fetch(`http://localhost:3001/api/player/${playerId}`, {
       method: 'DELETE',
     })
-    console.log('delete player res: ', res.json())
+    console.log('delete player from league res: ', res.json())
   } catch (err) {
-    console.log('delete player error: ', err)
+    console.log('delete player from league error: ', err)
+  }
+}
+
+export async function deletePlayerFromRound(playerId, roundId): Promise<void> {
+  try {
+    const res = await fetch(`http://localhost:3001/api/player-round`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ playerId, roundId }),
+    })
+    console.log('delete player from round res: ', res.json())
+  } catch (err) {
+    console.log('delete player from round error: ', err)
   }
 }

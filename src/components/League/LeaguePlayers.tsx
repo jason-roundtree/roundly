@@ -84,7 +84,6 @@ export default function LeaguePlayers(): JSX.Element {
 
       <h2>League Players</h2>
 
-      {/* <h1 className="text-3xl font-bold">Players</h1> */}
       <BasicInput
         type="text"
         name="playerName"

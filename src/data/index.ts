@@ -1,5 +1,13 @@
 export { fetchLeaguePlayers } from './players'
-export { updatePlayer, deletePlayer } from './player'
+export {
+  updatePlayer,
+  deletePlayerFromLeague,
+  deletePlayerFromRound,
+} from './player'
+export {
+  updateRoundPointSetting,
+  deleteRoundPointSetting,
+} from './point-setting'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'
 export { fetchRound } from './round'

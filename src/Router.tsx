@@ -16,6 +16,7 @@ import {
 } from './components/League'
 import {
   PlayerSelect,
+  PlayerListRound,
   // PlayersList
 } from './components/Player'
 import {
@@ -32,11 +33,11 @@ import {
   Rounds,
   RoundPlayers,
   RoundSettings,
-  RoundPointSettings,
   RoundDetails,
+  RoundDetailsLists,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
-import { PointSettings } from './components/PointSettings'
+import { PointSettings, PointSettingsRound } from './components/PointSettings'
 
 export default function Router() {
   return (
@@ -65,10 +66,15 @@ export default function Router() {
       <Route path="league/:leagueId/rounds" element={<Rounds />} />
       <Route path="league/:leagueId/create-round" element={<CreateRound />} />
       <Route path="league/:leagueId/standings" element={<LeagueStandings />} />
-      <Route
-        path="league/:leagueId/rounds/:roundId"
-        element={<RoundDetails />}
-      />
+      <Route path="league/:leagueId/rounds/:roundId" element={<RoundDetails />}>
+        <Route index element={<RoundDetailsLists />} />
+        <Route path="point-settings" element={<PointSettingsRound />} />
+        <Route
+          // path="league/:leagueId/rounds/:roundId/players"
+          path="players"
+          element={<PlayerListRound />}
+        />
+      </Route>
       {/* </Route> */}
 
       {/* <Route path="league/:id/members" element={<LeagueMembers />} /> */}
@@ -84,10 +90,10 @@ export default function Router() {
 
       {/* <Route path="rounds/:id" element={<RoundDetails />} /> */}
       {/* user rounds */}
-      <Route path="rounds/:id/settings" element={<RoundSettings />} />
-      <Route path="rounds/:id/point-setting" element={<RoundPointSettings />} />
-      <Route path="rounds/:id/players" element={<RoundPlayers />} />
-      <Route path="rounds/:name" element={<PlayerRounds />} />
+      {/* <Route path="rounds/:id/settings" element={<RoundSettings />} /> */}
+      {/* <Route path="rounds/:id/players" element={<RoundPlayers />} /> */}
+      {/* <Route path="rounds/:name" element={<PlayerRounds />} /> */}
+
       {/* TODO: should following 2 be shared component? */}
       <Route
         path="rounds/:id/:name/points"

@@ -176,6 +176,8 @@ export default function CreateRound() {
           twClasses={`${twEditInputs} w-64 max-w-md`}
         />
 
+        {/* TODO: add select/de-select all */}
+
         <label className="block mt-4 font-semibold">Players</label>
         <ul>
           {players.map(({ name, id }) => {

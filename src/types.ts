@@ -41,9 +41,10 @@ export interface Round {
   id: string
   name: string
   location?: string
-  date: Date
-  pointSettings?: string[]
-  players?: string[]
+  // TODO: change all dates to string?
+  date: string
+  pointSettings?: PointSetting[]
+  players?: Player[]
 }
 
 export interface PointSetting {
