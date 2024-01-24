@@ -10,5 +10,5 @@ export {
 } from './point-setting'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'
-export { fetchRound } from './round'
+export { fetchRound, deleteRound } from './round'
 export { fetchLeagueRounds } from './rounds'

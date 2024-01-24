@@ -17,7 +17,7 @@ export default function RoundDetailsLists() {
       </Link>
       <ul>
         {players?.map((player) => {
-          return <li>{player.name}</li>
+          return <li key={player.id}>{player.name}</li>
         })}
       </ul>
 

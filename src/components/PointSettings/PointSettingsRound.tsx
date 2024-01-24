@@ -15,9 +15,10 @@ export default function RoundPointSettings() {
   const { pointSettings, refreshRoundState } = useContext(RoundContext)
   console.log('pointSettings: ', pointSettings)
 
-  async function handleDeleteRoundPointSetting(pointId, roundId) {
-    const roundPointSetting = { pointId, roundId }
-    await deleteRoundPointSetting(roundPointSetting)
+  async function handleDeleteRoundPointSetting(pointSettingId, roundId) {
+    console.log('pointSettingId:: ', pointSettingId)
+    console.log('roundId:: ', roundId)
+    await deleteRoundPointSetting(pointSettingId, roundId)
     refreshRoundState()
   }
 

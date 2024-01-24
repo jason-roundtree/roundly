@@ -1,8 +1,14 @@
 import { useEffect, useState, createContext } from 'react'
-import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
 
 import { Round, Player, PointSetting } from '../../types'
-import { fetchRound } from '../../data'
+import { fetchRound, deleteRound } from '../../data'
 
 //   TODO: if keeping these move to a separate file
 const twEditInputs =
@@ -38,14 +44,18 @@ export default function RoundDetails(): JSX.Element {
   // const [players, setPlayers] = useState<Player[]>([])
   // const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const { roundId, leagueId } = useParams()
-
+  const navigate = useNavigate()
   useEffect(() => {
     refreshRoundState()
   }, [])
 
+  async function handleDeleteRound() {
+    await deleteRound(roundId)
+    navigate(`/league/${leagueId}/rounds`)
+  }
+
   async function refreshRoundState() {
     const roundData = await fetchRound(roundId)
-
     // const { players, point_settings } = roundData
     // setPlayers(players)
     // setPointSettings(point_settings)
@@ -73,6 +83,8 @@ export default function RoundDetails(): JSX.Element {
       <p>{dateFormatted}</p>
 
       <Outlet />
+
+      <button onClick={handleDeleteRound}>Delete Round</button>
     </RoundContext.Provider>
   )
 }

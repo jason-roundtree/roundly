@@ -5,14 +5,15 @@ export async function updateRoundPointSetting(roundPointSettingId) {
   //   }
 }
 
-export async function deleteRoundPointSetting(roundPointSettingId) {
+export async function deleteRoundPointSetting(pointSettingId, roundId) {
+  const roundPointSetting = { pointSettingId, roundId }
+  console.log('roundPointSetting', roundPointSetting)
   try {
-    const res = await fetch(
-      `http://localhost:3001/api/round-point-setting/${roundPointSettingId}`,
-      {
-        method: 'DELETE',
-      }
-    )
+    const res = await fetch(`http://localhost:3001/api/round-point-setting`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(roundPointSetting),
+    })
     console.log('delete round point settings res: ', res.json())
   } catch (err) {
     console.log('delete round point settings error: ', err)
