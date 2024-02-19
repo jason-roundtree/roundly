@@ -14,8 +14,8 @@ export async function deleteRound(roundId): Promise<any> {
     const res = await fetch(`http://localhost:3001/api/round/${roundId}`, {
       method: 'DELETE',
     })
-    console.log('delete player from round res: ', res.json())
+    console.log('delete round', res.json())
   } catch (err) {
-    console.log('delete player from round error: ', err)
+    console.log('delete round error', err)
   }
 }

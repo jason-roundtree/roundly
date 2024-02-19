@@ -5,7 +5,12 @@ import { RoundContext } from './RoundDetails'
 
 export default function RoundDetailsLists() {
   const { leagueId } = useParams()
-  const { id: roundId, players, pointSettings } = useContext(RoundContext)
+  const {
+    id: roundId,
+    players,
+    pointSettings,
+    handleDeleteRound,
+  } = useContext(RoundContext)
 
   return (
     <>
@@ -41,6 +46,9 @@ export default function RoundDetailsLists() {
           Scores
         </Link>
       </ul>
+
+      {/* TODO: add confirmation step */}
+      <button onClick={handleDeleteRound}>Delete Round</button>
     </>
   )
 }

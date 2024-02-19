@@ -24,6 +24,7 @@ const RoundContextDefault = {
   players: [] as Player[],
   pointSettings: [] as PointSetting[],
   refreshRoundState: () => {},
+  handleDeleteRound: () => {},
 }
 
 type RoundContextDefaultType = typeof RoundContextDefault
@@ -35,14 +36,7 @@ export const RoundContext = createContext(
 export default function RoundDetails(): JSX.Element {
   const [roundData, setRoundData] = useState(RoundContextDefault)
   const { id, name, location, date, players, pointSettings } = roundData
-  // const [roundInfo, setRoundInfo] = useState({
-  //   id: '',
-  //   name: '',
-  //   location: '',
-  //   date: '',
-  // })
-  // const [players, setPlayers] = useState<Player[]>([])
-  // const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
+
   const { roundId, leagueId } = useParams()
   const navigate = useNavigate()
   useEffect(() => {
@@ -73,6 +67,7 @@ export default function RoundDetails(): JSX.Element {
         players,
         pointSettings,
         refreshRoundState,
+        handleDeleteRound,
       }}
     >
       <Link to={`/league/${leagueId}`}>League Home</Link>
@@ -82,8 +77,6 @@ export default function RoundDetails(): JSX.Element {
       <p>{location && location}</p>
       <p>{dateFormatted}</p>
       <Outlet />
-      {/* TODO: add confirmation step */}
-      <button onClick={handleDeleteRound}>Delete Round</button>
     </RoundContext.Provider>
   )
 }

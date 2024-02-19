@@ -3,7 +3,7 @@ import { Link, useParams, useLocation } from 'react-router-dom'
 
 import { Round } from '../../types'
 import { fetchLeagueRounds } from '../../data'
-import './Rounds.css'
+import styles from './Rounds.module.css'
 
 export default function Rounds() {
   const [rounds, setRounds] = useState<Round[]>([])
@@ -33,7 +33,7 @@ export default function Rounds() {
           return (
             <li key={roundId}>
               <Link to={`/league/${leagueId}/rounds/${roundId}`} state={round}>
-                <div className="round-card">
+                <div className={styles['round-card']}>
                   <p>{name}</p>
                   <p>{dateFormatted.toString()}</p>
                   {location && <p>{location}</p>}
