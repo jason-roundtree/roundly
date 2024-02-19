@@ -36,3 +36,20 @@ export async function deletePlayerFromRound(playerId, roundId): Promise<void> {
     console.log('delete player from round error: ', err)
   }
 }
+
+export async function createRoundPlayer(playerId, roundId): Promise<void> {
+  try {
+    const res = await fetch('http://localhost:3001/api/player-round', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        playerId: playerId,
+        roundId: roundId,
+      }),
+    })
+    // const res = await res.json()
+    console.log('createRoundPlayer res', res)
+  } catch (err) {
+    console.log('createRoundPlayer error: ', err)
+  }
+}

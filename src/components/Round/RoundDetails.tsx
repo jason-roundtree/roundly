@@ -10,12 +10,6 @@ import {
 import { Round, Player, PointSetting } from '../../types'
 import { fetchRound, deleteRound } from '../../data'
 
-//   TODO: if keeping these move to a separate file
-const twEditInputs =
-  'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-const twListItems =
-  'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
-
 const RoundContextDefault = {
   id: '',
   name: '',
@@ -50,9 +44,6 @@ export default function RoundDetails(): JSX.Element {
 
   async function refreshRoundState() {
     const roundData = await fetchRound(roundId)
-    // const { players, point_settings } = roundData
-    // setPlayers(players)
-    // setPointSettings(point_settings)
     setRoundData(roundData)
   }
 

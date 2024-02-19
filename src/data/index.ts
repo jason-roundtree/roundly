@@ -3,6 +3,7 @@ export {
   updatePlayer,
   deletePlayerFromLeague,
   deletePlayerFromRound,
+  createRoundPlayer,
 } from './player'
 export {
   createLeaguePointSetting,

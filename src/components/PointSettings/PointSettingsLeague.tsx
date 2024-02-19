@@ -5,15 +5,6 @@ import { PointSettingsListEditable, AddPointSetting } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deletePointSetting } from '../../data'
 
-// type NewPointSetting = Omit<PointSetting, 'id'>
-
-// const defaultNewPointState: NewPointSetting = {
-//   name: '',
-//   value: 0,
-//   scope: 'hole',
-//   maxFrequencyPerScope: 1,
-// }
-
 export default function PointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
 

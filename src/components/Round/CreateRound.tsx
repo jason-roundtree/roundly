@@ -11,6 +11,7 @@ import {
   createRoundPointSetting,
   fetchLeaguePlayers,
   fetchLeaguePointSettings,
+  createRoundPlayer,
 } from '../../data'
 import { validateSimpleInput } from '../shared/utils'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
@@ -53,20 +54,7 @@ export default function CreateRound() {
 
   async function createRoundPlayers(roundId) {
     for (const playerId of selectedPlayers) {
-      try {
-        const response = await fetch('http://localhost:3001/api/player-round', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            playerId: playerId,
-            roundId: roundId,
-          }),
-        })
-        // const res = await response.json()
-        // console.log('createRoundPlayers res', res)
-      } catch (err) {
-        console.log('createRoundPlayers error: ', err)
-      }
+      await createRoundPlayer(playerId, playerId)
     }
   }
 
