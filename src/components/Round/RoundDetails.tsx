@@ -76,14 +76,13 @@ export default function RoundDetails(): JSX.Element {
       }}
     >
       <Link to={`/league/${leagueId}`}>League Home</Link>
+      {/* TODO: add link bavk to round details */}
       <h2>Round</h2>
-
       <p>{name}</p>
       <p>{location && location}</p>
       <p>{dateFormatted}</p>
-
       <Outlet />
-
+      {/* TODO: add confirmation step */}
       <button onClick={handleDeleteRound}>Delete Round</button>
     </RoundContext.Provider>
   )

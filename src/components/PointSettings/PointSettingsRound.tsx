@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 
+import { AddPointSetting } from '../PointSettings'
 import { RoundContext } from '../Round/RoundDetails'
 import { deleteRoundPointSetting } from '../../data'
 
@@ -11,20 +12,33 @@ const twListItems =
   'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
 
 export default function RoundPointSettings() {
-  const { roundId } = useParams()
+  const params = useParams()
+  // TODO: why can't i destructure params above without TS complaining?
+  const leagueId = params.leagueId as string
+  const roundId = params.roundId as string
+
   const { pointSettings, refreshRoundState } = useContext(RoundContext)
   console.log('pointSettings: ', pointSettings)
 
   async function handleDeleteRoundPointSetting(pointSettingId, roundId) {
-    console.log('pointSettingId:: ', pointSettingId)
-    console.log('roundId:: ', roundId)
     await deleteRoundPointSetting(pointSettingId, roundId)
     refreshRoundState()
+  }
+
+  async function handleEditRoundPointSetting(pointSettingId, roundId) {
+    console.log('pointSettingId:: ', pointSettingId)
+    console.log('roundId:: ', roundId)
   }
 
   return (
     <>
       <h3>PointSettings</h3>
+
+      {/* TODO: setup ability to turn on exising league points that weren't initially activated for the round */}
+      <p>Edit Round Points</p>
+
+      <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
+
       <ul>
         {pointSettings?.map((ps) => {
           return (
@@ -32,7 +46,11 @@ export default function RoundPointSettings() {
               <span>{ps.name}</span>
               <span>{ps.value}</span>
               <span className="list-edit-buttons">
-                <button>Edit Round Point</button>
+                <button
+                  onClick={() => handleEditRoundPointSetting(ps.id, roundId)}
+                >
+                  Edit Round Point
+                </button>
                 <button
                   onClick={() => handleDeleteRoundPointSetting(ps.id, roundId)}
                 >

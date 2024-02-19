@@ -1,5 +1,6 @@
 export { default as PointSetting } from './PointSetting'
-export { default as PointSettings } from './PointSettings'
+export { default as AddPointSetting } from './AddPointSetting'
+export { default as PointSettingsLeague } from './PointSettingsLeague'
 export { default as PointSettingsListEditable } from './PointSettingsListEditable'
 export { default as PointSettingsListItemEditable } from './PointSettingsListItemEditable'
 export { default as PointSettingsRound } from './PointSettingsRound'

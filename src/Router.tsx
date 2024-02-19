@@ -37,7 +37,10 @@ import {
   RoundDetailsLists,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
-import { PointSettings, PointSettingsRound } from './components/PointSettings'
+import {
+  PointSettingsLeague,
+  PointSettingsRound,
+} from './components/PointSettings'
 
 export default function Router() {
   return (
@@ -61,7 +64,7 @@ export default function Router() {
       <Route path="league/:leagueId/players" element={<LeaguePlayers />} />
       <Route
         path="league/:leagueId/point-settings"
-        element={<PointSettings />}
+        element={<PointSettingsLeague />}
       />
       <Route path="league/:leagueId/rounds" element={<Rounds />} />
       <Route path="league/:leagueId/create-round" element={<CreateRound />} />

@@ -20,6 +20,18 @@ body {
   --tertiary-color: rgb(208, 246, 226);
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin: 15px 5px 10px;
+}
+
+[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
 button {
   border-radius: 0.5rem;
   padding: 7px 15px;

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { fetchLeaguePointSettings } from '../../data'
+import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -28,29 +28,13 @@ export default function LeaguePointSettingsListItem({
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value } = pointSetting
 
-  async function updatePointSetting() {
-    try {
-      const res = await fetch(`http://localhost:3001/api/point-setting/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedPointSetting),
-      })
-      // const resJson = await res.json()
-      // console.log('resJson', resJson)
-      // const points = await fetchLeaguePointSettings(leagueId)
-      // console.log('edited points', points)
-    } catch (err) {
-      console.log('update player error: ', err)
-    }
-  }
-
   function handleEditingPoint(pointSetting) {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
 
   async function handleUpdatePointSetting(): Promise<void> {
-    await updatePointSetting()
+    await updatePointSetting(id, updatedPointSetting)
     refreshPointSettingsState()
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)

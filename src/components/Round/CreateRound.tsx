@@ -7,7 +7,11 @@ import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
 import PointListItemSelectable from '../PointSettings/PointListItemSelectable'
 import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
-import { fetchLeaguePlayers, fetchLeaguePointSettings } from '../../data'
+import {
+  createRoundPointSetting,
+  fetchLeaguePlayers,
+  fetchLeaguePointSettings,
+} from '../../data'
 import { validateSimpleInput } from '../shared/utils'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 
@@ -39,19 +43,8 @@ export default function CreateRound() {
   async function createRoundPointSettings(roundId) {
     for (const pointId of selectedPointSettings) {
       try {
-        const response = await fetch(
-          'http://localhost:3001/api/round-point-setting',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              pointSettingId: pointId,
-              roundId: roundId,
-            }),
-          }
-        )
-        const res = await response.json()
-        console.log('createRoundPointSettings res', res)
+        const roundPointJson = await createRoundPointSetting(pointId, roundId)
+        console.log('createRoundPointSettings json', roundPointJson)
       } catch (err) {
         console.log('create round players error: ', err)
       }

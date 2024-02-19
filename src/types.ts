@@ -55,6 +55,7 @@ export interface PointSetting {
   scope: 'hole' | 'round'
   // TODO: better to use null over string like 'unlimited'??
   maxFrequencyPerScope: number | null
+  isLeagueSetting?: boolean
 }
 
 export interface PointEarned {
