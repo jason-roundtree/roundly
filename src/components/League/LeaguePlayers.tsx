@@ -34,7 +34,6 @@ export default function LeaguePlayers(): JSX.Element {
       <AddPlayer refreshState={refreshPlayersState} />
 
       <PlayerListEditable
-        listName="players"
         players={players}
         twEditInputs={twEditInputs}
         twListItems={twListItems}

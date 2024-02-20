@@ -13,7 +13,6 @@ export default function Modal({
   title,
   children,
   closeModal,
-  deleteItemFn,
 }: ModalProps): JSX.Element {
   return (
     <Portal selector="#portal">
@@ -27,11 +26,6 @@ export default function Modal({
             <button onClick={closeModal} id="close-modal-button">
               Cancel
             </button>
-            {deleteItemFn && (
-              <button onClick={deleteItemFn} id="delete-item-btn">
-                Delete
-              </button>
-            )}
           </div>
         </div>
       </div>

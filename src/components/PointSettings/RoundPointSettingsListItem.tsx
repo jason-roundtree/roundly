@@ -3,25 +3,25 @@ import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
+import { fetchLeaguePointSettings, updateRoundPointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
-interface EditableLeaguePointSetting {
+interface EditablePointSetting {
   name: string
   value: string
 }
-const defaultState: EditableLeaguePointSetting = {
+const defaultState: EditablePointSetting = {
   name: '',
   value: '',
 }
 
-export default function LeaguePointSettingsListItem({
+export default function RoundPointSettingsListItem({
   pointSetting,
-  deletePointSetting,
+  removePointSettingFromRound,
   twEditInputs,
   twListItems,
-  refreshPointSettingsState,
+  refreshState,
   selectAllInputText,
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
@@ -34,8 +34,8 @@ export default function LeaguePointSettingsListItem({
   }
 
   async function handleUpdatePointSetting(): Promise<void> {
-    await updatePointSetting(id, updatedPointSetting)
-    refreshPointSettingsState()
+    await updateRoundPointSetting(id, updatedPointSetting)
+    refreshState()
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)
   }
@@ -53,7 +53,6 @@ export default function LeaguePointSettingsListItem({
         <Modal
           title="Edit Point Setting"
           closeModal={() => setIsBeingEdited(false)}
-          deleteItemFn={() => deletePointSetting(id)}
         >
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
@@ -75,16 +74,21 @@ export default function LeaguePointSettingsListItem({
           />
 
           <button onClick={handleUpdatePointSetting}>Save</button>
+          <button onClick={() => removePointSettingFromRound(id)}>
+            Remove Point From Round
+          </button>
+          {/* TODO: add remove point from league */}
         </Modal>
       )}
 
-      {/* TODO: change to tqListItem */}
       <li className={twListItems}>
         <span>{name}</span>
         <span>{value}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button onClick={() => deletePointSetting(id)}>Delete</button>
+          <button onClick={() => removePointSettingFromRound(id)}>
+            Remove Point From Round
+          </button>
         </span>
       </li>
     </>

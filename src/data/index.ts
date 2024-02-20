@@ -7,8 +7,8 @@ export {
 } from './player'
 export {
   createLeaguePointSetting,
-  updatePointSetting,
-  deletePointSetting,
+  updateLeaguePointSetting,
+  deleteLeaguePointSetting,
   createRoundPointSetting,
   updateRoundPointSetting,
   deleteRoundPointSetting,

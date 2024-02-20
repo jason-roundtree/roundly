@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { PointSettingsListEditable, AddPointSetting } from '.'
+import { AddPointSetting, LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
-import { fetchLeaguePointSettings, deletePointSetting } from '../../data'
+import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
 
-export default function PointSettings(): JSX.Element {
+export default function LeaguePointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
 
   const { leagueId } = useParams()
@@ -20,7 +20,7 @@ export default function PointSettings(): JSX.Element {
   }
 
   async function handleDeletePointSetting(pointId) {
-    await deletePointSetting(pointId)
+    await deleteLeaguePointSetting(pointId)
     refreshPointSettingsState()
   }
 
@@ -45,16 +45,21 @@ export default function PointSettings(): JSX.Element {
         pointContext="league"
       />
 
-      {/* TODO: create reusable component to be shared here and PointSettingsRound */}
-      <PointSettingsListEditable
-        listName="pointsSettings"
-        pointSettings={pointSettings}
-        twEditInputs={twEditInputs}
-        twListItems={twListItems}
-        deletePointSetting={handleDeletePointSetting}
-        refreshPointSettingsState={refreshPointSettingsState}
-        selectAllInputText={selectAllInputText}
-      />
+      <ul className="mb-3 mt-5">
+        {pointSettings.map((pointSetting) => {
+          return (
+            <LeaguePointSettingsListItem
+              key={pointSetting.id}
+              pointSetting={pointSetting}
+              deleteLeaguePointSetting={handleDeletePointSetting}
+              twEditInputs={twEditInputs}
+              twListItems={twListItems}
+              refreshState={refreshPointSettingsState}
+              selectAllInputText={selectAllInputText}
+            />
+          )
+        })}
+      </ul>
     </>
   )
 }

@@ -8,6 +8,7 @@ import {
   createRoundPlayer,
 } from '../../data'
 import { Player } from '../../types'
+import { sortArrayOfObjects } from '../shared/utils'
 
 //   TODO: if keeping these move to a separate file
 const twListItems =
@@ -50,37 +51,41 @@ export default function RoundPlayers(): JSX.Element {
 
   return (
     <>
-      <h3>Players</h3>
+      <h3>Round Players</h3>
       <Link to={`/league/${leagueId}/players`} className="text-link mt-2">
         League Players
       </Link>
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
-      {/* TODO: sort active round players  */}
       <ul>
-        {roundPlayers?.map(({ id: playerId, name }) => {
-          return (
-            <li key={playerId} className={twListItems}>
-              <span>{name}</span>
-              <span className="list-edit-buttons">
-                <button
-                  onClick={() => handleDeletePlayerFromRound(playerId, roundId)}
-                >
-                  Remove From Round
-                </button>
-              </span>
-            </li>
-          )
-        })}
+        {sortArrayOfObjects(roundPlayers, 'name')?.map(
+          ({ id: playerId, name }) => {
+            return (
+              <li key={playerId} className={twListItems}>
+                <span>{name}</span>
+                <span className="list-edit-buttons">
+                  <button
+                    onClick={() =>
+                      handleDeletePlayerFromRound(playerId, roundId)
+                    }
+                  >
+                    Remove From Round
+                  </button>
+                </span>
+              </li>
+            )
+          }
+        )}
       </ul>
 
+      <br />
       <ul>
         {getInactiveRoundPlayers().map((player) => {
           return (
             <li key={player.id} className={twListItems}>
               <span>{player.name}</span>
-              <span className="list-edit-buttons not-round-player">
+              <span className="list-edit-buttons non-round-player">
                 <button
                   onClick={() => handleAddPlayerToRound(player.id, roundId)}
                 >

@@ -45,14 +45,22 @@ export default function AddPointSetting({
     } else {
       try {
         console.log('newPoint.isLeagueSetting: ', newPoint.isLeagueSetting)
+        const newPointCopy = { ...newPoint }
+        if (pointContext === 'league') {
+          newPointCopy.isLeagueSetting = true
+        }
+
         const leaguePointJson = await createLeaguePointSetting(
           leagueId,
-          newPoint
+          newPointCopy
         )
         const { id: pointId } = leaguePointJson
 
-        const roundPointJson = await createRoundPointSetting(pointId, roundId)
-        console.log('roundPointJson JSON', roundPointJson)
+        // TODO: should i just use roundId param instead?
+        if (pointContext === 'round') {
+          const roundPointJson = await createRoundPointSetting(pointId, roundId)
+          console.log('roundPointJson JSON', roundPointJson)
+        }
 
         refreshState()
         setNewPoint(defaultNewPointState)
@@ -78,9 +86,13 @@ export default function AddPointSetting({
     e.target.select()
   }
 
+  function pointContextCapitalized() {
+    return pointContext[0].toUpperCase() + pointContext.slice(1)
+  }
+
   return (
     <div>
-      <p>Add New Point to Round</p>
+      <p>Add New Point to {pointContextCapitalized()}</p>
       <BasicInput
         type="text"
         label="Point Name"

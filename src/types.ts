@@ -69,7 +69,6 @@ export interface PointEarned {
 }
 
 export interface ListEditProps {
-  listName: string | undefined
   updateListItem?: (
     id: string,
     updatedItem: ListObject,
