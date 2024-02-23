@@ -6,16 +6,16 @@ import {
   CreateLeague,
   LeagueHomeLayout,
   // InvitePlayer,
-  LeagueSettings,
   // LeaguePointSetting,
   LeaguesList,
   LeagueMembers,
-  LeaguePlayers,
   LeagueStandings,
   LeagueHome,
 } from './components/League'
 import {
   PlayerSelect,
+  LeaguePlayers,
+  RoundPlayers,
   // PlayersList
 } from './components/Player'
 import {
@@ -30,10 +30,8 @@ import {
   CreateRound,
   // Round,
   Rounds,
-  RoundSettings,
   RoundDetails,
   RoundDetailsLists,
-  RoundPlayers,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
 import {
@@ -82,17 +80,12 @@ export default function Router() {
       {/* <Route path="league/:id/members" element={<LeagueMembers />} /> */}
       {/* <Route path="league/:id/settings" element={<LeagueSettings />} /> */}
       {/* <Route path="league/:id/point-setting" element={<LeaguePointSetting />} /> */}
-      {/* <Route
-        path="league/:id/create-round/point-settings"
-        element={<PointSettings />}
-      /> */}
       {/* <Route path="league/:id/schedule" element={< />} /> */}
       {/* event history */}
       {/* <Route path="league/:id/history" element={< />} /> */}
 
       {/* <Route path="rounds/:id" element={<RoundDetails />} /> */}
       {/* user rounds */}
-      {/* <Route path="rounds/:id/settings" element={<RoundSettings />} /> */}
       {/* <Route path="rounds/:name" element={<PlayerRounds />} /> */}
 
       {/* TODO: should following 2 be shared component? */}

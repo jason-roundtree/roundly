@@ -1,8 +1,6 @@
 export { default as CreateRound } from './CreateRound'
 export { default as RoundPlayer } from '../PlayerRound/PlayerRoundDetails'
-export { default as RoundSettings } from './RoundSettings'
 export { default as RoundDetails } from './RoundDetails'
 export { default as RoundDetailsLists } from './RoundDetailsLists'
-export { default as RoundPlayers } from './RoundPlayers'
 export { default as Rounds } from './Rounds'
 export { default as RoundStandings } from './RoundStandings'

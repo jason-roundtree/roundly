@@ -27,7 +27,7 @@ export async function updateLeaguePointSetting(
         body: JSON.stringify(updatedPointSetting),
       }
     )
-    console.log('update general point settings res: ', res.json())
+    console.log('update general point settings res: ', res)
   } catch (err) {
     console.log('update general point settings error: ', err)
   }

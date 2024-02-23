@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 
-import { RoundContext } from './RoundDetails'
+import { RoundContext } from '../Round/RoundDetails'
 import {
   deletePlayerFromRound,
   fetchLeaguePlayers,
@@ -58,6 +58,7 @@ export default function RoundPlayers(): JSX.Element {
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
+      <p>Active Round Players</p>
       <ul>
         {sortArrayOfObjects(roundPlayers, 'name')?.map(
           ({ id: playerId, name }) => {
@@ -80,6 +81,7 @@ export default function RoundPlayers(): JSX.Element {
       </ul>
 
       <br />
+      <p>Inactive Round Players</p>
       <ul>
         {getInactiveRoundPlayers().map((player) => {
           return (
@@ -96,30 +98,6 @@ export default function RoundPlayers(): JSX.Element {
           )
         })}
       </ul>
-
-      {/* <ul>
-        {leaguePlayers?.map(({ id: leaguePlayerId, name }) => {
-          const isNotRoundPlayer = roundPlayers.every(
-            (roundPlayer) => roundPlayer.id !== leaguePlayerId
-          )
-          if (isNotRoundPlayer) {
-            return (
-              <li key={leaguePlayerId} className={twListItems}>
-                <span>{name}</span>
-                <span className="list-edit-buttons not-round-player">
-                  <button
-                    onClick={() =>
-                      handleDeletePlayerFromRound(leaguePlayerId, roundId)
-                    }
-                  >
-                    Add to Round
-                  </button>
-                </span>
-              </li>
-            )
-          }
-        })}
-      </ul> */}
     </>
   )
 }

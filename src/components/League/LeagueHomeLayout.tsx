@@ -11,6 +11,10 @@ export default function LeagueHomeLayout() {
   const { leagueId } = useParams()
   const isHomePage = useMatch('/league/:id')
 
+  useEffect(() => {
+    getBasicLeagueData()
+  }, [])
+
   async function getBasicLeagueData() {
     const leagueData = await fetchBasicLeagueData(leagueId)
     setBasicLeagueData(leagueData)
@@ -19,7 +23,7 @@ export default function LeagueHomeLayout() {
   function pageTitle() {
     if (isHomePage) {
       return (
-        <h1 className="text-3xl font-bold">YourLeagueName - League Home</h1>
+        <h1 className="text-3xl font-bold">${leagueData.name} - League Home</h1>
       )
     } else {
       return <Link to={`/league/${leagueId}`}>League Home</Link>

@@ -76,9 +76,6 @@ export default function RoundPointSettings(): JSX.Element {
     <>
       <h3>Round Point Settings</h3>
 
-      {/* TODO: setup ability to turn on exising league points that weren't initially activated for the round */}
-      <p>Edit Round Points</p>
-
       <Link
         to={`/league/${leagueId}/point-settings`}
         className="text-link mt-2"
@@ -88,6 +85,7 @@ export default function RoundPointSettings(): JSX.Element {
 
       <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
 
+      <p>Active Round Points</p>
       <ul className="mb-3 mt-5">
         {sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
           return (
@@ -104,6 +102,7 @@ export default function RoundPointSettings(): JSX.Element {
         })}
       </ul>
 
+      <p>Inactive Round Points</p>
       <ul className="mb-3 mt-5">
         {getInactiveRoundPointSettings().map((pointSetting) => {
           return (
@@ -114,6 +113,7 @@ export default function RoundPointSettings(): JSX.Element {
                   Add to Round
                 </button>
               </span>
+              {pointSetting.isLeagueSetting && <span>LPS</span>}
             </li>
           )
         })}

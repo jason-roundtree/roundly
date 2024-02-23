@@ -1,4 +1,3 @@
-export { default as PointSetting } from './PointSetting'
 export { default as AddPointSetting } from './AddPointSetting'
 export { default as LeaguePointSettings } from './LeaguePointSettings'
 // export { default as PointSettingsListEditable } from './PointSettingsListEditable'

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { PlayerListEditable, AddPlayer } from '../Player'
+import { PlayerListEditable, AddPlayer } from '.'
 import { Player } from '../../types'
 import { fetchLeaguePlayers } from '../../data'
 

@@ -10,10 +10,12 @@ import { fetchLeaguePointSettings, updateRoundPointSetting } from '../../data'
 interface EditablePointSetting {
   name: string
   value: string
+  isLeagueSetting: boolean
 }
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
+  isLeagueSetting: false,
 }
 
 export default function RoundPointSettingsListItem({
@@ -26,7 +28,7 @@ export default function RoundPointSettingsListItem({
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
-  const { id, name, value } = pointSetting
+  const { id, name, value, isLeagueSetting } = pointSetting
 
   function handleEditingPoint(pointSetting) {
     setUpdatedPointSetting(pointSetting)
@@ -90,6 +92,7 @@ export default function RoundPointSettingsListItem({
             Remove Point From Round
           </button>
         </span>
+        {isLeagueSetting && <span>LPS</span>}
       </li>
     </>
   )

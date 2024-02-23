@@ -43,18 +43,13 @@ export default function CreateRound() {
 
   async function createRoundPointSettings(roundId) {
     for (const pointId of selectedPointSettings) {
-      try {
-        const roundPointJson = await createRoundPointSetting(pointId, roundId)
-        console.log('createRoundPointSettings json', roundPointJson)
-      } catch (err) {
-        console.log('create round players error: ', err)
-      }
+      const res = await createRoundPointSetting(pointId, roundId)
     }
   }
 
   async function createRoundPlayers(roundId) {
     for (const playerId of selectedPlayers) {
-      await createRoundPlayer(playerId, playerId)
+      const res = await createRoundPlayer(playerId, roundId)
     }
   }
 
@@ -183,7 +178,7 @@ export default function CreateRound() {
         </ul>
 
         <label className="block mt-2 font-semibold">Points</label>
-        <p>You can edit and add round points after creating the round</p>
+        <p>You can edit these round points once the round is created</p>
         <ul>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
