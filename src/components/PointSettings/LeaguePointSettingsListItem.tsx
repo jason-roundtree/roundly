@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { fetchLeaguePointSettings, updateLeaguePointSetting } from '../../data'
+import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -34,7 +34,7 @@ export default function LeaguePointSettingsListItem({
   }
 
   async function handleUpdatePointSetting(): Promise<void> {
-    await updateLeaguePointSetting(id, updatedPointSetting)
+    await updatePointSetting(id, updatedPointSetting)
     refreshState()
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)
@@ -75,7 +75,7 @@ export default function LeaguePointSettingsListItem({
 
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => deleteLeaguePointSetting(id)}>
-            Delete League Point
+            Remove from League
           </button>
         </Modal>
       )}
@@ -87,7 +87,7 @@ export default function LeaguePointSettingsListItem({
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
           <button onClick={() => deleteLeaguePointSetting(id)}>
-            Delete League Point
+            Remove from League
           </button>
         </span>
       </li>

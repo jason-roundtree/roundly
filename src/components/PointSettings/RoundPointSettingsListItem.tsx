@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { fetchLeaguePointSettings, updateRoundPointSetting } from '../../data'
+import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -36,7 +36,7 @@ export default function RoundPointSettingsListItem({
   }
 
   async function handleUpdatePointSetting(): Promise<void> {
-    await updateRoundPointSetting(id, updatedPointSetting)
+    await updatePointSetting(id, updatedPointSetting)
     refreshState()
     setIsBeingEdited(false)
     setUpdatedPointSetting(defaultState)
@@ -48,14 +48,21 @@ export default function RoundPointSettingsListItem({
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
   }
 
+  function modalTitle() {
+    return isLeagueSetting
+      ? 'Edit Default League Point'
+      : 'Edit One-off Round Point'
+  }
+
+  function deactivatePointButtonText() {
+    return isLeagueSetting ? 'Deactivate Round Point' : 'Delete'
+  }
+
   return (
     <>
       {isBeingEdited && (
         // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
-        <Modal
-          title="Edit Point Setting"
-          closeModal={() => setIsBeingEdited(false)}
-        >
+        <Modal title={modalTitle()} closeModal={() => setIsBeingEdited(false)}>
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
             type="text"
@@ -77,9 +84,9 @@ export default function RoundPointSettingsListItem({
 
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => removePointSettingFromRound(id)}>
-            Remove Point From Round
+            {deactivatePointButtonText()}
           </button>
-          {/* TODO: add remove point from league */}
+          {/* TODO: add remove point from league if isLeagueSetting */}
         </Modal>
       )}
 
@@ -89,10 +96,10 @@ export default function RoundPointSettingsListItem({
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
           <button onClick={() => removePointSettingFromRound(id)}>
-            Remove Point From Round
+            {/* TODO: add color key or icon to differentiate one-off round point */}
+            {deactivatePointButtonText()}
           </button>
         </span>
-        {isLeagueSetting && <span>LPS</span>}
       </li>
     </>
   )

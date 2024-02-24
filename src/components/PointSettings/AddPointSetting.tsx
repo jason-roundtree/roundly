@@ -6,6 +6,7 @@ import SimpleInputValidationError from '../shared/components/SimpleInputValidati
 import { PointSetting } from '../../types'
 import { validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
+import RadioButton from '../shared/components/RadioButton'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
@@ -78,8 +79,10 @@ export default function AddPointSetting({
     setNewPoint({ ...newPoint, [tName]: tValue })
   }
 
-  function handleCheckboxInputChange(e) {
-    setNewPoint({ ...newPoint, isLeagueSetting: e.target.checked })
+  function handleRadioInputChange(e) {
+    console.log('e.target.id', e.target.id)
+    const isLeagueSetting = e.target.id === 'league-setting'
+    setNewPoint({ ...newPoint, isLeagueSetting: isLeagueSetting })
   }
 
   function selectAllInputText(e): void {
@@ -114,18 +117,29 @@ export default function AddPointSetting({
       />
 
       {pointContext === 'round' && (
-        <div className="checkbox-container">
-          <input
-            type="checkbox"
-            id="point-context"
-            onChange={handleCheckboxInputChange}
-            checked={newPoint.isLeagueSetting}
-          />
-          <label htmlFor="point-context">
-            Also add to league point settings
-          </label>
-          <br />
-        </div>
+        <>
+          <div className="round-point-radio">
+            <RadioButton
+              id="round-only"
+              value="round-only"
+              name="round-point-radio-buttons"
+              label="Add as one-off round point"
+              onChange={handleRadioInputChange}
+              checked={!newPoint.isLeagueSetting}
+            />
+          </div>
+
+          <div className="round-point-radio">
+            <RadioButton
+              id="league-setting"
+              value="league-setting"
+              name="round-point-radio-buttons"
+              label="Add to default league point settings"
+              onChange={handleRadioInputChange}
+              checked={newPoint.isLeagueSetting}
+            />
+          </div>
+        </>
       )}
 
       <button onClick={handleCreatePointSetting}>Add Point</button>

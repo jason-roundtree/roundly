@@ -30,9 +30,10 @@ export const RoundContext = createContext(
 export default function RoundDetails(): JSX.Element {
   const [roundData, setRoundData] = useState(RoundContextDefault)
   const { id, name, location, date, players, pointSettings } = roundData
-
+  console.log('**** pointSettings ****', pointSettings)
   const { roundId, leagueId } = useParams()
   const navigate = useNavigate()
+
   useEffect(() => {
     refreshRoundState()
   }, [])
@@ -43,6 +44,7 @@ export default function RoundDetails(): JSX.Element {
   }
 
   async function refreshRoundState() {
+    console.log('*** refreshRoundState ***')
     const roundData = await fetchRound(roundId)
     setRoundData(roundData)
   }

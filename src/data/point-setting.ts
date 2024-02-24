@@ -14,10 +14,7 @@ export async function createLeaguePointSetting(leagueId, newPointSetting) {
   }
 }
 
-export async function updateLeaguePointSetting(
-  pointSettingId,
-  updatedPointSetting
-) {
+export async function updatePointSetting(pointSettingId, updatedPointSetting) {
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-setting/${pointSettingId}`,
@@ -63,17 +60,7 @@ export async function createRoundPointSetting(pointSettingId, roundId) {
   }
 }
 
-export async function updateRoundPointSetting(
-  roundPointId,
-  updatedPointSetting
-) {
-  //   try {
-  //   } catch (err) {
-  //     console.log('update round point settings error: ', err)
-  //   }
-}
-
-export async function deleteRoundPointSetting(pointSettingId, roundId) {
+export async function removeRoundPointSetting(pointSettingId, roundId) {
   const roundPointSetting = { pointSettingId, roundId }
   console.log('roundPointSetting', roundPointSetting)
   try {
@@ -82,7 +69,8 @@ export async function deleteRoundPointSetting(pointSettingId, roundId) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(roundPointSetting),
     })
-    console.log('delete round point settings res: ', res.json())
+    // console.log('delete round point settings res: ', res.json())
+    return await res.json()
   } catch (err) {
     console.log('delete round point settings error: ', err)
   }

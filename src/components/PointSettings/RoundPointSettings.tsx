@@ -4,9 +4,9 @@ import { useParams, Link } from 'react-router-dom'
 import { RoundContext } from '../Round/RoundDetails'
 import {
   createRoundPointSetting,
-  deleteRoundPointSetting,
+  removeRoundPointSetting,
   fetchLeaguePointSettings,
-  updateRoundPointSetting,
+  updatePointSetting,
 } from '../../data'
 import RoundPointSettingsListItem from './RoundPointSettingsListItem'
 import { PointSetting } from '../../types'
@@ -35,26 +35,21 @@ export default function RoundPointSettings(): JSX.Element {
 
   useEffect(() => {
     getLeaguePointSettings()
-  }, [])
+  }, [roundPointSettings])
 
   async function getLeaguePointSettings() {
-    const leaguePlayers = await fetchLeaguePointSettings(leagueId)
-    setLeaguePointSettings(leaguePlayers)
+    const leaguePointSettings = await fetchLeaguePointSettings(leagueId)
+    setLeaguePointSettings(leaguePointSettings)
   }
 
   async function removePointSettingFromRound(pointSettingId) {
-    await deleteRoundPointSetting(pointSettingId, roundId)
+    await removeRoundPointSetting(pointSettingId, roundId)
     refreshRoundState()
   }
 
   async function addPointSettingToRound(pointSettingId) {
     await createRoundPointSetting(pointSettingId, roundId)
     refreshRoundState()
-  }
-
-  // TODO: implement
-  async function handleEditRoundPointSetting(pointSettingId) {
-    console.log('pointSettingId:: ', pointSettingId)
   }
 
   function selectAllInputText(e): void {
@@ -108,12 +103,12 @@ export default function RoundPointSettings(): JSX.Element {
           return (
             <li key={pointSetting.id} className={twListItems}>
               <span>{pointSetting.name}</span>
+              <span>{pointSetting.value}</span>
               <span className="list-edit-buttons non-round-point-setting">
                 <button onClick={() => addPointSettingToRound(pointSetting.id)}>
-                  Add to Round
+                  Activate Round Point
                 </button>
               </span>
-              {pointSetting.isLeagueSetting && <span>LPS</span>}
             </li>
           )
         })}

@@ -7,11 +7,10 @@ export {
 } from './player'
 export {
   createLeaguePointSetting,
-  updateLeaguePointSetting,
+  updatePointSetting,
   deleteLeaguePointSetting,
   createRoundPointSetting,
-  updateRoundPointSetting,
-  deleteRoundPointSetting,
+  removeRoundPointSetting,
 } from './point-setting'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'

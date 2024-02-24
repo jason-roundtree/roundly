@@ -20,16 +20,16 @@ body {
   --tertiary-color: rgb(208, 246, 226);
 }
 
-.checkbox-container {
+.round-point-radio label {
   display: flex;
   align-items: center;
   margin: 15px 5px 10px;
 }
 
-[type='checkbox'] {
+[type='radio'] {
   width: 20px;
   height: 20px;
-  margin: 5px;
+  margin: 5px 8px 5px;
 }
 
 button {
