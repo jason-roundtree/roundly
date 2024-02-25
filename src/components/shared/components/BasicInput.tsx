@@ -2,7 +2,7 @@ import React from 'react'
 
 type TextDateOrNumber = 'text' | 'date' | 'number'
 
-// TODO: WTF am I even doing here with T extends TextDateOrNumber and why is using T for inputRef seem to be the only way TS doesn't get mad there? Look for a generic input hook/library?
+// TODO: WTF am I even doing here with T extends TextDateOrNumber and why does using T for inputRef seem to be the only way TS doesn't get mad there? Look for a generic input hook/library?
 interface BasicInputProps<T extends TextDateOrNumber> {
   type: T
   name: string

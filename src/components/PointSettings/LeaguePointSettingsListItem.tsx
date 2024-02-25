@@ -2,18 +2,22 @@ import { useState } from 'react'
 
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import { PointSetting } from '../../types'
+import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
+import Select from '../shared/components/Select'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
 interface EditablePointSetting {
   name: string
   value: string
+  scope: string | null
 }
+
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
+  scope: null,
 }
 
 export default function LeaguePointSettingsListItem({
@@ -43,7 +47,15 @@ export default function LeaguePointSettingsListItem({
   function handleInputChange({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    console.log('updatedPointSetting', updatedPointSetting)
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
+  }
+
+  function handleSelectInputChange(e) {
+    const selectedOption = e.target.value as PointScopes
+    if (selectedOption !== '') {
+      setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
+    }
   }
 
   return (
@@ -73,10 +85,17 @@ export default function LeaguePointSettingsListItem({
             onFocus={selectAllInputText}
           />
 
+          <Select
+            options={[...scopeOptionValues]}
+            id="point-scope"
+            label="Point Scope"
+            description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+            onChange={handleSelectInputChange}
+            value={updatedPointSetting.scope ?? ''}
+          />
+
           <button onClick={handleUpdatePointSetting}>Save</button>
-          <button onClick={() => deleteLeaguePointSetting(id)}>
-            Remove from League
-          </button>
+          <button onClick={() => deleteLeaguePointSetting(id)}>Delete</button>
         </Modal>
       )}
 
@@ -86,9 +105,7 @@ export default function LeaguePointSettingsListItem({
         <span>{value}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button onClick={() => deleteLeaguePointSetting(id)}>
-            Remove from League
-          </button>
+          <button onClick={() => deleteLeaguePointSetting(id)}>Delete</button>
         </span>
       </li>
     </>

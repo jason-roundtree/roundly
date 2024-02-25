@@ -3,17 +3,18 @@ import { useParams } from 'react-router-dom'
 
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import { PointSetting } from '../../types'
+import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
 import { validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import RadioButton from '../shared/components/RadioButton'
+import Select from '../shared/components/Select'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
 const defaultNewPointState: NewPointSetting = {
   name: '',
   value: 0,
-  scope: 'hole',
+  scope: null,
   maxFrequencyPerScope: 1,
   isLeagueSetting: false,
 }
@@ -45,7 +46,6 @@ export default function AddPointSetting({
       return
     } else {
       try {
-        console.log('newPoint.isLeagueSetting: ', newPoint.isLeagueSetting)
         const newPointCopy = { ...newPoint }
         if (pointContext === 'league') {
           newPointCopy.isLeagueSetting = true
@@ -76,19 +76,30 @@ export default function AddPointSetting({
   function handleInputChange({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    console.log('newPoint', newPoint)
     setNewPoint({ ...newPoint, [tName]: tValue })
   }
 
   function handleRadioInputChange(e) {
     console.log('e.target.id', e.target.id)
+
     const isLeagueSetting = e.target.id === 'league-setting'
     setNewPoint({ ...newPoint, isLeagueSetting: isLeagueSetting })
+  }
+
+  function handleSelectInputChange(e) {
+    console.log('e.target.value', e.target.value)
+    const selectedOption = e.target.value as PointScopes
+    if (selectedOption !== '') {
+      setNewPoint({ ...newPoint, scope: selectedOption })
+    }
   }
 
   function selectAllInputText(e): void {
     e.target.select()
   }
 
+  //   TODO: move to shared util function
   function pointContextCapitalized() {
     return pointContext[0].toUpperCase() + pointContext.slice(1)
   }
@@ -114,6 +125,15 @@ export default function AddPointSetting({
         onChange={handleInputChange}
         twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
         onFocus={selectAllInputText}
+      />
+
+      <Select
+        options={[...scopeOptionValues]}
+        id="point-scope"
+        label="Point Scope"
+        description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+        onChange={handleSelectInputChange}
+        value={newPoint.scope ?? ''}
       />
 
       {pointContext === 'round' && (

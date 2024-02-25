@@ -47,12 +47,14 @@ export interface Round {
   players?: Player[]
 }
 
+export const scopeOptionValues = ['', 'hole', 'round'] as const
+export type PointScopes = (typeof scopeOptionValues)[number]
 export interface PointSetting {
   // TODO: ids in types??
   id: string
   name: string
   value: number
-  scope: 'hole' | 'round'
+  scope: PointScopes | null
   // TODO: better to use null over string like 'unlimited'??
   maxFrequencyPerScope: number | null
   isLeagueSetting?: boolean

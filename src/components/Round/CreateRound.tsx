@@ -153,8 +153,7 @@ export default function CreateRound() {
         />
 
         {/* TODO: add select/de-select all */}
-
-        <label className="block mt-4 font-semibold">Players</label>
+        <label className="block mt-4 font-semibold">Active Round Players</label>
         <ul>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
@@ -177,8 +176,8 @@ export default function CreateRound() {
           })}
         </ul>
 
-        <label className="block mt-2 font-semibold">Points</label>
-        <p>You can edit these round points once the round is created</p>
+        <label className="block mt-2 font-semibold">Active Round Points</label>
+        <p>You can add one-off round points once the round is created</p>
         <ul>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
@@ -189,6 +188,7 @@ export default function CreateRound() {
                 id={id}
                 key={id}
                 twListItems={twListItems}
+                isSelected={isSelected}
                 toggleSelectedPoint={() =>
                   toggleStringItemInList(
                     id,
@@ -196,13 +196,11 @@ export default function CreateRound() {
                     setSelectedPointSettings
                   )
                 }
-                isSelected={isSelected}
               />
             )
           })}
         </ul>
 
-        {/* <div className="flex mt-6"> */}
         {/* TODO: add validation to ensure league name has been added */}
         <button onClick={handleSaveRound}>Create Round</button>
         <SimpleInputValidationError

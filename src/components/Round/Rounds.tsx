@@ -26,7 +26,7 @@ export default function Rounds() {
       <Link to={`/league/${leagueId}/create-round`} className="text-link mt-2">
         Create Round
       </Link>
-      <ul>
+      <ul id={styles['round-cards']}>
         {rounds.map((round) => {
           const { id: roundId, name, location, date } = round
           const dateFormatted = new Date(date).toLocaleDateString()
