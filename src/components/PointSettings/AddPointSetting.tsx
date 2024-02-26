@@ -138,6 +138,7 @@ export default function AddPointSetting({
 
       {pointContext === 'round' && (
         <>
+          <p>One-off Round Point or Default League Point?</p>
           <div className="round-point-radio">
             <RadioButton
               id="round-only"

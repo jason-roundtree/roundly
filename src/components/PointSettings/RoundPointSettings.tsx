@@ -106,7 +106,7 @@ export default function RoundPointSettings(): JSX.Element {
               <span>{pointSetting.value}</span>
               <span className="list-edit-buttons non-round-point-setting">
                 <button onClick={() => addPointSettingToRound(pointSetting.id)}>
-                  Activate Round Point
+                  Activate
                 </button>
               </span>
             </li>

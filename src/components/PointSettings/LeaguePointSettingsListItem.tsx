@@ -5,6 +5,7 @@ import BasicInput from '../shared/components/BasicInput'
 import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import Select from '../shared/components/Select'
+import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -29,8 +30,9 @@ export default function LeaguePointSettingsListItem({
   selectAllInputText,
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
-  const { id, name, value } = pointSetting
+  const { id, name, value, scope } = pointSetting
 
   function handleEditingPoint(pointSetting) {
     setUpdatedPointSetting(pointSetting)
@@ -47,7 +49,6 @@ export default function LeaguePointSettingsListItem({
   function handleInputChange({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    console.log('updatedPointSetting', updatedPointSetting)
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
   }
 
@@ -58,10 +59,14 @@ export default function LeaguePointSettingsListItem({
     }
   }
 
+  function toggleShowDeleteConfirmation() {
+    setShowDeleteConfirmation(!showDeleteConfirmation)
+  }
+
   return (
     <>
       {isBeingEdited && (
-        // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
+        // TODO: move edit point and player modals to non-modal components
         <Modal
           title="Edit Point Setting"
           closeModal={() => setIsBeingEdited(false)}
@@ -95,17 +100,38 @@ export default function LeaguePointSettingsListItem({
           />
 
           <button onClick={handleUpdatePointSetting}>Save</button>
-          <button onClick={() => deleteLeaguePointSetting(id)}>Delete</button>
+          <button
+            onClick={() => setShowDeleteConfirmation(!showDeleteConfirmation)}
+          >
+            Delete
+          </button>
         </Modal>
+      )}
+
+      {showDeleteConfirmation && (
+        <DeleteConfirmationModal
+          modalTitle="Confirm Point Deletion"
+          confirmationText="Are you sure you want to delete this point from the league?"
+          buttonText="Delete"
+          onConfirmDelete={() => deleteLeaguePointSetting(id)}
+          toggleModalActive={() =>
+            setShowDeleteConfirmation(!showDeleteConfirmation)
+          }
+        />
       )}
 
       {/* TODO: change to tqListItem */}
       <li className={twListItems}>
         <span>{name}</span>
         <span>{value}</span>
+        <span>{scope}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button onClick={() => deleteLeaguePointSetting(id)}>Delete</button>
+          <button
+            onClick={() => setShowDeleteConfirmation(!showDeleteConfirmation)}
+          >
+            Delete
+          </button>
         </span>
       </li>
     </>

@@ -69,8 +69,7 @@ export async function removeRoundPointSetting(pointSettingId, roundId) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(roundPointSetting),
     })
-    // console.log('delete round point settings res: ', res.json())
-    return await res.json()
+    console.log('delete round point settings res: ', res.json())
   } catch (err) {
     console.log('delete round point settings error: ', err)
   }

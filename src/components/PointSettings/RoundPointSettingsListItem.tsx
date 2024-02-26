@@ -2,8 +2,9 @@ import { useState } from 'react'
 
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import { PointSetting } from '../../types'
+import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
+import Select from '../shared/components/Select'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -11,11 +12,13 @@ interface EditablePointSetting {
   name: string
   value: string
   isLeagueSetting: boolean
+  scope: string | null
 }
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
   isLeagueSetting: false,
+  scope: null,
 }
 
 export default function RoundPointSettingsListItem({
@@ -28,7 +31,7 @@ export default function RoundPointSettingsListItem({
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
-  const { id, name, value, isLeagueSetting } = pointSetting
+  const { id, name, value, isLeagueSetting, scope } = pointSetting
 
   function handleEditingPoint(pointSetting) {
     setUpdatedPointSetting(pointSetting)
@@ -48,6 +51,13 @@ export default function RoundPointSettingsListItem({
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
   }
 
+  function handleSelectInputChange(e) {
+    const selectedOption = e.target.value as PointScopes
+    if (selectedOption !== '') {
+      setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
+    }
+  }
+
   function modalTitle() {
     return isLeagueSetting
       ? 'Edit Default League Point'
@@ -55,7 +65,7 @@ export default function RoundPointSettingsListItem({
   }
 
   function deactivatePointButtonText() {
-    return isLeagueSetting ? 'Deactivate Round Point' : 'Delete'
+    return isLeagueSetting ? 'Deactivate' : 'Delete'
   }
 
   return (
@@ -82,6 +92,15 @@ export default function RoundPointSettingsListItem({
             onFocus={selectAllInputText}
           />
 
+          <Select
+            options={[...scopeOptionValues]}
+            id="point-scope"
+            label="Point Scope"
+            description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+            onChange={handleSelectInputChange}
+            value={updatedPointSetting.scope ?? ''}
+          />
+
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => removePointSettingFromRound(id)}>
             {deactivatePointButtonText()}
@@ -93,6 +112,7 @@ export default function RoundPointSettingsListItem({
       <li className={twListItems}>
         <span>{name}</span>
         <span>{value}</span>
+        <span>{scope}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
           <button onClick={() => removePointSettingFromRound(id)}>
