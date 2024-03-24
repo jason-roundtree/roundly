@@ -31,8 +31,6 @@ const defaultState: EditablePointSetting = {
 export default function RoundPointSettingsListItem({
   pointSetting,
   removePointSettingFromRound,
-  twEditInputs,
-  twListItems,
   refreshState,
   selectAllInputText,
 }): JSX.Element {
@@ -85,7 +83,6 @@ export default function RoundPointSettingsListItem({
           closeModal={() => setIsBeingEdited(false)}
         >
           <BasicInput
-            twClasses={`${twEditInputs} w-72`}
             type="text"
             label="Point Name"
             name="name"
@@ -94,7 +91,6 @@ export default function RoundPointSettingsListItem({
           />
 
           <BasicInput
-            twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             type="number"
             label="Point Value"
             name="value"
@@ -120,7 +116,6 @@ export default function RoundPointSettingsListItem({
               name="maxFrequencyPerScope"
               onChange={handleInputChange}
               value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-              twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             />
           )}
 
@@ -132,7 +127,7 @@ export default function RoundPointSettingsListItem({
         </ModalContainer>
       )}
 
-      <li className={twListItems}>
+      <li>
         <span>{name}</span>
         <span>{value}</span>
         <span>{scope}</span>

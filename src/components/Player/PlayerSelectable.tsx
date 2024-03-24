@@ -8,7 +8,6 @@ export default function PlayerSelectable({
 }: {
   name: string
   id: string
-  twListItems: string
   toggleSelectedPlayer: () => void
   isSelected: boolean
 }) {

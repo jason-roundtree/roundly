@@ -23,7 +23,7 @@ export default function Rounds() {
       <Link to={`/league/${leagueId}`}>League Home</Link>
 
       <h2>Rounds</h2>
-      <Link to={`/league/${leagueId}/create-round`} className="text-link mt-2">
+      <Link to={`/league/${leagueId}/create-round`} className="text-link">
         Create Round
       </Link>
       <ul id={styles['round-cards']}>

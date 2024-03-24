@@ -29,9 +29,5 @@ export default function SimpleInputValidationError({
   if (typeof errorField !== 'string') {
     return null
   }
-  return (
-    <p className="text-red-400 ml-2">
-      {generateErrorMessage(errorMsgCode, errorField)}
-    </p>
-  )
+  return <p className="">{generateErrorMessage(errorMsgCode, errorField)}</p>
 }

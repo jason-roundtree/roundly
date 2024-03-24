@@ -22,7 +22,7 @@ export default function Select({
 }: SelectProps) {
   return (
     <div>
-      <label htmlFor={id} className="block mt-4 font-semibold">
+      <label htmlFor={id} className="">
         {label}
       </label>
       <p>{description}</p>

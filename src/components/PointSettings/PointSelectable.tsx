@@ -2,11 +2,11 @@ import { useState, MouseEvent } from 'react'
 
 import CheckboxButton from '../shared/components/CheckboxButton'
 
+// TODO: consolidate with PlayerSelectable
 export default function PointSelectable({
   name,
   value,
   id,
-  twListItems,
   toggleSelectedPoint,
   isSelected,
 }: {
@@ -14,7 +14,6 @@ export default function PointSelectable({
   // TODO: remove undefined as it seems to be something weird from json data
   value: number | undefined
   id: string
-  twListItems: string
   toggleSelectedPoint: () => void
   isSelected: boolean
 }) {

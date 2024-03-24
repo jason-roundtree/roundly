@@ -22,9 +22,7 @@ export default function LeagueHomeLayout() {
 
   function pageTitle() {
     if (isHomePage) {
-      return (
-        <h1 className="text-3xl font-bold">${leagueData.name} - League Home</h1>
-      )
+      return <h1 className="">${leagueData.name} - League Home</h1>
     } else {
       return <Link to={`/league/${leagueId}`}>League Home</Link>
     }

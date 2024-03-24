@@ -18,12 +18,6 @@ export default function CreateLeague() {
   //   playerName: false,
   // })
 
-  //   TODO: if keeping these move to a separate file
-  const twEditInputs =
-    'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-  const twListItems =
-    'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
-
   function handleInputChange({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
@@ -56,14 +50,13 @@ export default function CreateLeague() {
 
   return (
     <form id="createLeague">
-      <h1 className="text-3xl font-bold">Create New League</h1>
+      <h1 className="">Create New League</h1>
       <BasicInput
         type="text"
         name="name"
         label="League Name"
         onChange={handleInputChange}
         value={league.name}
-        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
       />
 
       <BasicInput
@@ -72,7 +65,6 @@ export default function CreateLeague() {
         label="Start Date"
         onChange={handleInputChange}
         value={league.startDate}
-        twClasses={`${twEditInputs} w-64 max-w-md`}
       />
 
       <BasicInput
@@ -81,7 +73,6 @@ export default function CreateLeague() {
         label="End Date"
         onChange={handleInputChange}
         value={league.endDate}
-        twClasses={`${twEditInputs} w-64 max-w-md`}
       />
 
       <div className="flex">

@@ -33,8 +33,6 @@ const defaultState: EditablePointSetting = {
 export default function LeaguePointSettingsListItem({
   pointSetting,
   deleteLeaguePointSetting,
-  twEditInputs,
-  twListItems,
   refreshState,
   selectAllInputText,
 }): JSX.Element {
@@ -78,7 +76,6 @@ export default function LeaguePointSettingsListItem({
           closeModal={() => setIsBeingEdited(false)}
         >
           <BasicInput
-            twClasses={`${twEditInputs} w-72`}
             type="text"
             label="Point Name"
             name="name"
@@ -86,7 +83,6 @@ export default function LeaguePointSettingsListItem({
             value={updatedPointSetting.name}
           />
           <BasicInput
-            twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             type="number"
             label="Point Value"
             name="value"
@@ -104,7 +100,6 @@ export default function LeaguePointSettingsListItem({
           />
           {updatedPointSetting.scope !== 'no_scope' && (
             <BasicInput
-              twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
               type="number"
               min="1"
               label="Max Frequency Per Scope"
@@ -120,8 +115,7 @@ export default function LeaguePointSettingsListItem({
         </Modal>
       )}
 
-      {/* TODO: change to tqListItem */}
-      <li className={twListItems}>
+      <li>
         <span>{name}</span>
         <span>{value}</span>
         <span>{scope}</span>

@@ -18,7 +18,7 @@ export default function RoundDetails() {
     <>
       <Link
         to={`/league/${leagueId}/rounds/${roundId}/players`}
-        className="text-link mt-2"
+        className="text-link"
       >
         Players
       </Link>
@@ -30,7 +30,7 @@ export default function RoundDetails() {
 
       <Link
         to={`/league/${leagueId}/rounds/${roundId}/point-settings`}
-        className="text-link mt-2"
+        className="text-link"
       >
         Point Settings
       </Link>
@@ -44,7 +44,7 @@ export default function RoundDetails() {
         })}
 
         {/* TODO: */}
-        <Link to={`#`} className="text-link mt-2">
+        <Link to={`#`} className="text-link">
           Scores
         </Link>
       </ul>

@@ -28,12 +28,6 @@ export default function LeaguePointSettings(): JSX.Element {
     e.target.select()
   }
 
-  //   TODO: if keeping these move to a separate file
-  const twEditInputs =
-    'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-  const twListItems =
-    'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
-
   return (
     <>
       <Link to={`/league/${leagueId}`}>League Home</Link>
@@ -52,8 +46,6 @@ export default function LeaguePointSettings(): JSX.Element {
               key={pointSetting.id}
               pointSetting={pointSetting}
               deleteLeaguePointSetting={handleDeletePointSetting}
-              twEditInputs={twEditInputs}
-              twListItems={twListItems}
               refreshState={refreshPointSettingsState}
               selectAllInputText={selectAllInputText}
             />

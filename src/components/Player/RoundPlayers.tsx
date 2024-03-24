@@ -10,10 +10,6 @@ import {
 import { Player } from '../../types'
 import { sortArrayOfObjects } from '../shared/utils'
 
-//   TODO: if keeping these move to a separate file
-const twListItems =
-  'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
-
 // TODO: set state to refresh so list updates on delete
 export default function RoundPlayers(): JSX.Element {
   const [leaguePlayers, setLeaguePlayers] = useState<Player[]>([])
@@ -52,7 +48,7 @@ export default function RoundPlayers(): JSX.Element {
   return (
     <>
       <h3>Round Players</h3>
-      <Link to={`/league/${leagueId}/players`} className="text-link mt-2">
+      <Link to={`/league/${leagueId}/players`} className="text-link">
         League Players
       </Link>
 
@@ -63,7 +59,7 @@ export default function RoundPlayers(): JSX.Element {
         {sortArrayOfObjects(roundPlayers, 'name')?.map(
           ({ id: playerId, name }) => {
             return (
-              <li key={playerId} className={twListItems}>
+              <li key={playerId}>
                 <span>{name}</span>
                 <span className="list-edit-buttons">
                   <button
@@ -85,7 +81,7 @@ export default function RoundPlayers(): JSX.Element {
       <ul>
         {getInactiveRoundPlayers().map((player) => {
           return (
-            <li key={player.id} className={twListItems}>
+            <li key={player.id}>
               <span>{player.name}</span>
               <span className="list-edit-buttons non-round-player">
                 <button

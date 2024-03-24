@@ -27,10 +27,6 @@ const defaultNewPointState: NewPointSetting = {
   isLeagueSetting: false,
 }
 
-//   TODO: if keeping these move to a separate file
-const twEditInputs =
-  'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-
 interface AddPointSettingProps {
   refreshState: () => void
   pointContext: 'round' | 'league'
@@ -121,7 +117,6 @@ export default function AddPointSetting({
         name="name"
         onChange={handleInputChange}
         value={newPoint.name}
-        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
         inputRef={inputRef}
       />
 
@@ -131,7 +126,6 @@ export default function AddPointSetting({
         name="value"
         value={newPoint.value}
         onChange={handleInputChange}
-        twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
         onFocus={selectAllInputText}
       />
 
@@ -152,7 +146,6 @@ export default function AddPointSetting({
           name="maxFrequencyPerScope"
           onChange={handleInputChange}
           value={newPoint.maxFrequencyPerScope ?? ''}
-          twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
         />
       )}
 
@@ -183,6 +176,7 @@ export default function AddPointSetting({
         </>
       )}
 
+      <br />
       <button onClick={handleCreatePointSetting}>Add Point</button>
       <SimpleInputValidationError
         errorField={inputValidationError}

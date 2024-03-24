@@ -114,12 +114,6 @@ export default function CreateRound() {
     setRoundState({ ...roundState, [tName]: tValue })
   }
 
-  //   TODO: if keeping these move to a separate file
-  const twEditInputs =
-    'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-  const twListItems =
-    'max-w-fit rounded-lg my-1 mx-1 p-1 inline-block rounded-sm border-solid border-2 border-indigo-600'
-
   return (
     <>
       <Link to={`/league/${leagueId}`}>League Home</Link>
@@ -127,14 +121,13 @@ export default function CreateRound() {
       <form>
         <h2>Create Round</h2>
 
-        {/* <h1 className="text-3xl font-bold">Create Round</h1> */}
+        {/* <h1 className="">Create Round</h1> */}
         <BasicInput
           type="text"
           label="Round Name"
           name="name"
           value={roundState.name}
           onChange={handleInputChange}
-          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
         />
         <BasicInput
           type="text"
@@ -142,7 +135,6 @@ export default function CreateRound() {
           name="location"
           value={roundState.location || ''}
           onChange={handleInputChange}
-          twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
         />
         <BasicInput
           type="date"
@@ -150,11 +142,10 @@ export default function CreateRound() {
           name="date"
           value={roundState.date}
           onChange={handleInputChange}
-          twClasses={`${twEditInputs} w-64 max-w-md`}
         />
 
         {/* TODO: add select/de-select all */}
-        <label className="block mt-4 font-semibold">Active Round Players</label>
+        <label className="">Active Round Players</label>
         <div className={styles['create-round-selectables']}>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
@@ -163,7 +154,6 @@ export default function CreateRound() {
                 name={name}
                 id={id}
                 key={id}
-                twListItems={twListItems}
                 toggleSelectedPlayer={() =>
                   toggleStringItemInList(
                     id,
@@ -177,7 +167,7 @@ export default function CreateRound() {
           })}
         </div>
 
-        <label className="block mt-2 font-semibold">Active Round Points</label>
+        <label className="">Active Round Points</label>
         <p>You can add one-off points once the round is created</p>
         <div className={styles['create-round-selectables']}>
           {pointSettings.map(({ name, value, id }) => {
@@ -188,7 +178,6 @@ export default function CreateRound() {
                 value={value}
                 id={id}
                 key={id}
-                twListItems={twListItems}
                 isSelected={isSelected}
                 toggleSelectedPoint={() => {
                   toggleStringItemInList(

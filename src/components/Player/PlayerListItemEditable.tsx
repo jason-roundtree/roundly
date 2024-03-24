@@ -12,12 +12,7 @@ const defaultState: EditablePlayer = {
   name: '',
 }
 
-export default function PlayerEditableListItem({
-  player,
-  refreshPlayerState,
-  twEditInputs,
-  twListItems,
-}) {
+export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
@@ -48,14 +43,13 @@ export default function PlayerEditableListItem({
 
   return (
     <>
-      <li className={twListItems}>
+      <li>
         {isBeingEdited && (
           <Modal
             title="Update Player"
             closeModal={() => setIsBeingEdited(false)}
           >
             <BasicInput
-              twClasses={`${twEditInputs} w-72`}
               type="text"
               label="Player Name"
               name="name"

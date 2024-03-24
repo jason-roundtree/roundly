@@ -5,10 +5,6 @@ import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { validateSimpleInput } from '../shared/utils'
 
-//   TODO: if keeping these move to a separate file
-const twEditInputs =
-  'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-
 export default function AddPlayer({
   refreshState,
 }: {
@@ -64,7 +60,6 @@ export default function AddPlayer({
           setNewPlayerName(target.value)
         }}
         value={newPlayerName}
-        twClasses={`${twEditInputs} w-72 max-w-screen-sm`}
       />
 
       <button onClick={handleCreateLeaguePlayer}>Add Player</button>

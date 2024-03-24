@@ -13,12 +13,6 @@ import { PointSetting } from '../../types'
 import AddPointSetting from './AddPointSetting'
 import { sortArrayOfObjects } from '../shared/utils'
 
-//   TODO: if keeping these move to a separate file
-const twEditInputs =
-  'block border borderGray300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2'
-const twListItems =
-  'max-w-fit rounded-lg my-1 mx-4 p-2 list-item editable-list-item'
-
 export default function RoundPointSettings(): JSX.Element {
   const [leaguePointSettings, setLeaguePointSettings] = useState<
     PointSetting[]
@@ -88,8 +82,6 @@ export default function RoundPointSettings(): JSX.Element {
               key={pointSetting.id}
               pointSetting={pointSetting}
               removePointSettingFromRound={removePointSettingFromRound}
-              twEditInputs={twEditInputs}
-              twListItems={twListItems}
               refreshState={refreshRoundState}
               selectAllInputText={selectAllInputText}
             />
@@ -101,7 +93,7 @@ export default function RoundPointSettings(): JSX.Element {
       <ul className="mb-3 mt-5">
         {getInactiveRoundPointSettings().map((pointSetting) => {
           return (
-            <li key={pointSetting.id} className={twListItems}>
+            <li key={pointSetting.id}>
               <span>{pointSetting.name}</span>
               <span>{pointSetting.value}</span>
               <span className="list-edit-buttons non-round-point-setting">

@@ -9,7 +9,6 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   label: string
   value: string | number
   min?: string
-  twClasses?: string
   // showEmptyInputError?: boolean
   // isRequired?: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -22,7 +21,6 @@ export default function BasicInput({
   name,
   label,
   value,
-  twClasses,
   // showEmptyInputError,
   // isRequired,
   onChange,
@@ -32,11 +30,10 @@ export default function BasicInput({
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
-      <label htmlFor={name} className="block mt-4 font-semibold">
+      <label htmlFor={name} className="block">
         {label}
       </label>
       <input
-        className={`${twClasses}`}
         type={type}
         name={name}
         onChange={onChange}
@@ -46,9 +43,6 @@ export default function BasicInput({
         onFocus={onFocus}
         ref={inputRef}
       />
-      {/* {showEmptyInputError && (
-        <p className="text-red-400 ml-2">Please fill out this field</p>
-      )} */}
     </>
   )
 }
