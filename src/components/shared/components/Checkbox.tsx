@@ -1,17 +1,30 @@
 import React from 'react'
 
-interface CheckboxProps {
+export interface CheckboxProps {
   checked: boolean
   label: string
   id: string
+  onChange: () => void
   value?: string
 }
 
-// TODO: unused and still needs work
-export default function Checkbox({ checked, label, id, value }: CheckboxProps) {
+// TODO: unused (except for interface) and still needs work. Maybe just make CheckboxButton use this and style it differently
+export default function Checkbox({
+  checked,
+  label,
+  id,
+  onChange,
+  value,
+}: CheckboxProps) {
   return (
     <div>
-      <input type="checkbox" checked={checked} value={value} />
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        value={value}
+        onChange={onChange}
+      />
       <label htmlFor={id}>{label}</label>
     </div>
   )

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 
-import { RoundContext } from '../Round/RoundDetails'
+import { RoundContext } from '../Round/RoundDetailsContainer'
 import {
   deletePlayerFromRound,
   fetchLeaguePlayers,

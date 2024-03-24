@@ -1,6 +1,8 @@
 import { useState, MouseEvent } from 'react'
 
-export default function PointListItemSelectable({
+import CheckboxButton from '../shared/components/CheckboxButton'
+
+export default function PointSelectable({
   name,
   value,
   id,
@@ -13,16 +15,16 @@ export default function PointListItemSelectable({
   value: number | undefined
   id: string
   twListItems: string
-  toggleSelectedPoint: (id) => void
+  toggleSelectedPoint: () => void
   isSelected: boolean
 }) {
+  const labelText = `${name} ${value}`
   return (
-    <li
-      key={id}
-      className={`selectable-LI ${twListItems} ${isSelected && 'is-selected'}`}
-      onClick={() => toggleSelectedPoint(id)}
-    >
-      {name} {value}
-    </li>
+    <CheckboxButton
+      checked={isSelected}
+      label={labelText}
+      id={id}
+      onChange={toggleSelectedPoint}
+    />
   )
 }

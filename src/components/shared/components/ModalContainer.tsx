@@ -2,18 +2,18 @@ import { useState } from 'react'
 import Portal from './Portal'
 import './Modal.css'
 
-interface ModalProps {
+interface ModalContainerProps {
   title: string
   children: React.ReactNode
   closeModal: () => void
   deleteItemFn?: () => void
 }
 
-export default function Modal({
+export default function ModalContainer({
   title,
   children,
   closeModal,
-}: ModalProps): JSX.Element {
+}: ModalContainerProps): JSX.Element {
   return (
     <Portal selector="#portal">
       <div id="modal-container">

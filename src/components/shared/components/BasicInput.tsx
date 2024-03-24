@@ -8,6 +8,7 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   name: string
   label: string
   value: string | number
+  min?: string
   twClasses?: string
   // showEmptyInputError?: boolean
   // isRequired?: boolean
@@ -27,6 +28,7 @@ export default function BasicInput({
   onChange,
   onFocus,
   inputRef,
+  min,
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
@@ -39,6 +41,7 @@ export default function BasicInput({
         name={name}
         onChange={onChange}
         value={value}
+        min={min}
         // required={isRequired}
         onFocus={onFocus}
         ref={inputRef}

@@ -47,17 +47,41 @@ export interface Round {
   players?: Player[]
 }
 
-export const scopeOptionValues = ['', 'hole', 'round'] as const
-export type PointScopes = (typeof scopeOptionValues)[number]
 export interface PointSetting {
   // TODO: ids in types??
   id: string
   name: string
   value: number
-  scope: PointScopes | null
+  scope: PointScopeKeys
   // TODO: better to use null over string like 'unlimited'??
   maxFrequencyPerScope: number | null
   isLeagueSetting?: boolean
+}
+
+export const POINT_SCOPE_DESCRIPTION =
+  'Allows you to restrict how the point can be earned'
+export const POINT_SCOPE_SETTINGS = [
+  { key: 'no_scope', value: 'No scope' },
+  { key: 'hole', value: 'Earned by hole' },
+  { key: 'round', value: 'Earned by round' },
+] as const
+
+export type PointScopeKeys = (typeof POINT_SCOPE_SETTINGS)[number]['key']
+export type PointScopeValues = (typeof POINT_SCOPE_SETTINGS)[number]['value']
+
+export function getPointScopeValueFromKey(key: PointScopeKeys) {
+  for (const p of POINT_SCOPE_SETTINGS) {
+    if (p.key === key) {
+      return p.value
+    }
+  }
+}
+export function getPointScopeKeyFromValue(value: PointScopeValues) {
+  for (const p of POINT_SCOPE_SETTINGS) {
+    if (p.value === value) {
+      return p.key
+    }
+  }
 }
 
 export interface PointEarned {

@@ -1,7 +1,8 @@
 import React from 'react'
 
 interface SelectProps {
-  options: string[]
+  // options: string[]
+  options: readonly Record<string, string>[]
   id: string
   label: string
   onChange: (e) => void
@@ -28,8 +29,8 @@ export default function Select({
       <select name={name} id={id} onChange={onChange} value={value}>
         {options.map((option) => {
           return (
-            <option key={option} value={option}>
-              {option}
+            <option key={option.key} value={option.value}>
+              {option.value}
             </option>
           )
         })}

@@ -3,7 +3,15 @@ import { useParams } from 'react-router-dom'
 
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
+import {
+  POINT_SCOPE_DESCRIPTION,
+  POINT_SCOPE_SETTINGS,
+  PointScopeKeys,
+  PointScopeValues,
+  getPointScopeKeyFromValue,
+  getPointScopeValueFromKey,
+  PointSetting,
+} from '../../types'
 import { validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import RadioButton from '../shared/components/RadioButton'
@@ -14,7 +22,7 @@ type NewPointSetting = Omit<PointSetting, 'id'>
 const defaultNewPointState: NewPointSetting = {
   name: '',
   value: 0,
-  scope: null,
+  scope: 'no_scope',
   maxFrequencyPerScope: 1,
   isLeagueSetting: false,
 }
@@ -82,17 +90,17 @@ export default function AddPointSetting({
 
   function handleRadioInputChange(e) {
     console.log('e.target.id', e.target.id)
-
     const isLeagueSetting = e.target.id === 'league-setting'
     setNewPoint({ ...newPoint, isLeagueSetting: isLeagueSetting })
   }
 
   function handleSelectInputChange(e) {
     console.log('e.target.value', e.target.value)
-    const selectedOption = e.target.value as PointScopes
-    if (selectedOption !== '') {
-      setNewPoint({ ...newPoint, scope: selectedOption })
-    }
+    const selectedOption = getPointScopeKeyFromValue(
+      e.target.value
+    ) as PointScopeKeys
+    console.log('selectedOption', selectedOption)
+    setNewPoint({ ...newPoint, scope: selectedOption })
   }
 
   function selectAllInputText(e): void {
@@ -128,13 +136,25 @@ export default function AddPointSetting({
       />
 
       <Select
-        options={[...scopeOptionValues]}
+        options={POINT_SCOPE_SETTINGS}
         id="point-scope"
         label="Point Scope"
-        description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+        description={POINT_SCOPE_DESCRIPTION}
         onChange={handleSelectInputChange}
-        value={newPoint.scope ?? ''}
+        value={getPointScopeValueFromKey(newPoint.scope) ?? ''}
       />
+
+      {newPoint.scope !== 'no_scope' && (
+        <BasicInput
+          type="number"
+          min="1"
+          label="Max Frequency Per Scope"
+          name="maxFrequencyPerScope"
+          onChange={handleInputChange}
+          value={newPoint.maxFrequencyPerScope ?? ''}
+          twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
+        />
+      )}
 
       {pointContext === 'round' && (
         <>

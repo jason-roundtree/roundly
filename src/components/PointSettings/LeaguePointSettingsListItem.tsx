@@ -1,24 +1,33 @@
 import { useState } from 'react'
 
-import Modal from '../shared/components/Modal'
+import Modal from '../shared/components/ModalContainer'
 import BasicInput from '../shared/components/BasicInput'
-import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
+import {
+  POINT_SCOPE_DESCRIPTION,
+  POINT_SCOPE_SETTINGS,
+  PointScopeKeys,
+  PointScopeValues,
+  PointSetting,
+  getPointScopeKeyFromValue,
+  getPointScopeValueFromKey,
+} from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import Select from '../shared/components/Select'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
-interface EditablePointSetting {
-  name: string
+
+type EditablePointSetting = Omit<PointSetting, 'id' | 'value'> & {
   value: string
-  scope: string | null
 }
 
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
-  scope: null,
+  scope: 'no_scope',
+  isLeagueSetting: true,
+  maxFrequencyPerScope: 1,
 }
 
 export default function LeaguePointSettingsListItem({
@@ -53,14 +62,11 @@ export default function LeaguePointSettingsListItem({
   }
 
   function handleSelectInputChange(e) {
-    const selectedOption = e.target.value as PointScopes
-    if (selectedOption !== '') {
-      setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
-    }
-  }
-
-  function toggleShowDeleteConfirmation() {
-    setShowDeleteConfirmation(!showDeleteConfirmation)
+    const selectedOption = getPointScopeKeyFromValue(
+      e.target.value
+    ) as PointScopeKeys
+    console.log('selectedOption', selectedOption)
+    setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
   }
 
   return (
@@ -79,7 +85,6 @@ export default function LeaguePointSettingsListItem({
             onChange={handleInputChange}
             value={updatedPointSetting.name}
           />
-
           <BasicInput
             twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
             type="number"
@@ -89,35 +94,30 @@ export default function LeaguePointSettingsListItem({
             onChange={handleInputChange}
             onFocus={selectAllInputText}
           />
-
           <Select
-            options={[...scopeOptionValues]}
+            options={POINT_SCOPE_SETTINGS}
             id="point-scope"
             label="Point Scope"
-            description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+            // description={POINT_SCOPE_DESCRIPTION}
             onChange={handleSelectInputChange}
-            value={updatedPointSetting.scope ?? ''}
+            value={getPointScopeValueFromKey(updatedPointSetting.scope) ?? ''}
           />
-
+          {updatedPointSetting.scope !== 'no_scope' && (
+            <BasicInput
+              twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
+              type="number"
+              min="1"
+              label="Max Frequency Per Scope"
+              name="maxFrequencyPerScope"
+              onChange={handleInputChange}
+              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+            />
+          )}
           <button onClick={handleUpdatePointSetting}>Save</button>
-          <button
-            onClick={() => setShowDeleteConfirmation(!showDeleteConfirmation)}
-          >
+          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
             Delete
           </button>
         </Modal>
-      )}
-
-      {showDeleteConfirmation && (
-        <DeleteConfirmationModal
-          modalTitle="Confirm Point Deletion"
-          confirmationText="Are you sure you want to delete this point from the league?"
-          buttonText="Delete"
-          onConfirmDelete={() => deleteLeaguePointSetting(id)}
-          toggleModalActive={() =>
-            setShowDeleteConfirmation(!showDeleteConfirmation)
-          }
-        />
       )}
 
       {/* TODO: change to tqListItem */}
@@ -127,13 +127,21 @@ export default function LeaguePointSettingsListItem({
         <span>{scope}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button
-            onClick={() => setShowDeleteConfirmation(!showDeleteConfirmation)}
-          >
+          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
             Delete
           </button>
         </span>
       </li>
+
+      {showDeleteConfirmation && (
+        <DeleteConfirmationModal
+          modalTitle="Confirm Point Deletion"
+          confirmationText="Are you sure you want to delete this point from the league?"
+          buttonText="Delete"
+          onConfirmDelete={() => deleteLeaguePointSetting(id)}
+          toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
+        />
+      )}
     </>
   )
 }

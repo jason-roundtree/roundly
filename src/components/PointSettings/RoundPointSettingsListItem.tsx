@@ -1,24 +1,31 @@
 import { useState } from 'react'
 
-import Modal from '../shared/components/Modal'
+import ModalContainer from '../shared/components/ModalContainer'
 import BasicInput from '../shared/components/BasicInput'
-import { PointScopes, PointSetting, scopeOptionValues } from '../../types'
+import {
+  POINT_SCOPE_DESCRIPTION,
+  POINT_SCOPE_SETTINGS,
+  PointScopeKeys,
+  PointScopeValues,
+  PointSetting,
+  getPointScopeKeyFromValue,
+  getPointScopeValueFromKey,
+} from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import Select from '../shared/components/Select'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
-interface EditablePointSetting {
-  name: string
+type EditablePointSetting = Omit<PointSetting, 'id' | 'value'> & {
   value: string
-  isLeagueSetting: boolean
-  scope: string | null
 }
+
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
+  scope: 'no_scope',
   isLeagueSetting: false,
-  scope: null,
+  maxFrequencyPerScope: 1,
 }
 
 export default function RoundPointSettingsListItem({
@@ -52,10 +59,11 @@ export default function RoundPointSettingsListItem({
   }
 
   function handleSelectInputChange(e) {
-    const selectedOption = e.target.value as PointScopes
-    if (selectedOption !== '') {
-      setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
-    }
+    const selectedOption = getPointScopeKeyFromValue(
+      e.target.value
+    ) as PointScopeKeys
+    console.log('selectedOption', selectedOption)
+    setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
   }
 
   function modalTitle() {
@@ -72,7 +80,10 @@ export default function RoundPointSettingsListItem({
     <>
       {isBeingEdited && (
         // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
-        <Modal title={modalTitle()} closeModal={() => setIsBeingEdited(false)}>
+        <ModalContainer
+          title={modalTitle()}
+          closeModal={() => setIsBeingEdited(false)}
+        >
           <BasicInput
             twClasses={`${twEditInputs} w-72`}
             type="text"
@@ -93,20 +104,32 @@ export default function RoundPointSettingsListItem({
           />
 
           <Select
-            options={[...scopeOptionValues]}
+            options={POINT_SCOPE_SETTINGS}
             id="point-scope"
             label="Point Scope"
-            description="Allows you to set the scope of the point so that it applies to each hole, or the round in general"
+            description={POINT_SCOPE_DESCRIPTION}
             onChange={handleSelectInputChange}
-            value={updatedPointSetting.scope ?? ''}
+            value={getPointScopeValueFromKey(updatedPointSetting.scope) ?? ''}
           />
+
+          {updatedPointSetting.scope !== 'no_scope' && (
+            <BasicInput
+              type="number"
+              min="1"
+              label="Max Frequency Per Scope"
+              name="maxFrequencyPerScope"
+              onChange={handleInputChange}
+              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+              twClasses={`${twEditInputs} w-24 max-w-screen-sm`}
+            />
+          )}
 
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => removePointSettingFromRound(id)}>
             {deactivatePointButtonText()}
           </button>
           {/* TODO: add remove point from league if isLeagueSetting */}
-        </Modal>
+        </ModalContainer>
       )}
 
       <li className={twListItems}>

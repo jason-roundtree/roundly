@@ -4,8 +4,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Player, PointSetting, Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
-import PlayerListItemSelectable from '../Player/PlayerListItemSelectable'
-import PointListItemSelectable from '../PointSettings/PointListItemSelectable'
+import PlayerListItemSelectable from '../Player/PlayerSelectable'
+import { PointSelectable } from '../PointSettings'
 import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
 import {
   createRoundPointSetting,
@@ -15,6 +15,7 @@ import {
 } from '../../data'
 import { validateSimpleInput } from '../shared/utils'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
+import styles from './CreateRound.module.css'
 
 interface RoundState {
   name: string
@@ -154,7 +155,7 @@ export default function CreateRound() {
 
         {/* TODO: add select/de-select all */}
         <label className="block mt-4 font-semibold">Active Round Players</label>
-        <ul>
+        <div className={styles['create-round-selectables']}>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
             return (
@@ -174,32 +175,32 @@ export default function CreateRound() {
               />
             )
           })}
-        </ul>
+        </div>
 
         <label className="block mt-2 font-semibold">Active Round Points</label>
-        <p>You can add one-off round points once the round is created</p>
-        <ul>
+        <p>You can add one-off points once the round is created</p>
+        <div className={styles['create-round-selectables']}>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
             return (
-              <PointListItemSelectable
+              <PointSelectable
                 name={name}
                 value={value}
                 id={id}
                 key={id}
                 twListItems={twListItems}
                 isSelected={isSelected}
-                toggleSelectedPoint={() =>
+                toggleSelectedPoint={() => {
                   toggleStringItemInList(
                     id,
                     selectedPointSettings,
                     setSelectedPointSettings
                   )
-                }
+                }}
               />
             )
           })}
-        </ul>
+        </div>
 
         {/* TODO: add validation to ensure league name has been added */}
         <button onClick={handleSaveRound}>Create Round</button>

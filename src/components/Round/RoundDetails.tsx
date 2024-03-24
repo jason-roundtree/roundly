@@ -1,73 +1,67 @@
-import { useEffect, useState, createContext } from 'react'
-import {
-  Link,
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom'
+import { useContext, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
-import { Round, Player, PointSetting } from '../../types'
-import { fetchRound, deleteRound } from '../../data'
+import { RoundContext } from './RoundDetailsContainer'
+import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
-const RoundContextDefault = {
-  id: '',
-  name: '',
-  location: '',
-  date: '',
-  players: [] as Player[],
-  pointSettings: [] as PointSetting[],
-  refreshRoundState: () => {},
-  handleDeleteRound: () => {},
-}
+export default function RoundDetails() {
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const { leagueId } = useParams()
+  const {
+    id: roundId,
+    players,
+    pointSettings,
+    handleDeleteRound,
+  } = useContext(RoundContext)
 
-type RoundContextDefaultType = typeof RoundContextDefault
-
-export const RoundContext = createContext(
-  RoundContextDefault as RoundContextDefaultType
-)
-
-export default function RoundDetails(): JSX.Element {
-  const [roundData, setRoundData] = useState(RoundContextDefault)
-  const { id, name, location, date, players, pointSettings } = roundData
-  const { roundId, leagueId } = useParams()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    refreshRoundState()
-  }, [])
-
-  async function handleDeleteRound() {
-    await deleteRound(roundId)
-    navigate(`/league/${leagueId}/rounds`)
-  }
-
-  async function refreshRoundState() {
-    const roundData = await fetchRound(roundId)
-    setRoundData(roundData)
-  }
-
-  const dateFormatted = new Date(date).toLocaleDateString()
   return (
-    <RoundContext.Provider
-      value={{
-        id,
-        name,
-        location,
-        date: dateFormatted,
-        players,
-        pointSettings,
-        refreshRoundState,
-        handleDeleteRound,
-      }}
-    >
-      <Link to={`/league/${leagueId}`}>League Home</Link>
-      {/* TODO: add link bavk to round details */}
-      <h2>Round</h2>
-      <p>{name}</p>
-      <p>{location && location}</p>
-      <p>{dateFormatted}</p>
-      <Outlet />
-    </RoundContext.Provider>
+    <>
+      <Link
+        to={`/league/${leagueId}/rounds/${roundId}/players`}
+        className="text-link mt-2"
+      >
+        Players
+      </Link>
+      <ul>
+        {players?.map((player) => {
+          return <li key={player.id}>{player.name}</li>
+        })}
+      </ul>
+
+      <Link
+        to={`/league/${leagueId}/rounds/${roundId}/point-settings`}
+        className="text-link mt-2"
+      >
+        Point Settings
+      </Link>
+      <ul>
+        {pointSettings?.map((ps) => {
+          return (
+            <li key={ps.id}>
+              <span>{ps.name}</span> / <span>{ps.value}</span>
+            </li>
+          )
+        })}
+
+        {/* TODO: */}
+        <Link to={`#`} className="text-link mt-2">
+          Scores
+        </Link>
+      </ul>
+
+      <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+        Delete Round
+      </button>
+
+      {showDeleteConfirmation && (
+        <DeleteConfirmationModal
+          modalTitle="Confirm Round Deletion"
+          confirmationText="Are you sure you want to delete this round from the league?"
+          buttonText="Delete"
+          onConfirmDelete={handleDeleteRound}
+          toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
+        />
+      )}
+    </>
   )
 }

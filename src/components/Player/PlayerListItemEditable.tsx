@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
-import Modal from '../shared/components/Modal'
+import Modal from '../shared/components/ModalContainer'
 import BasicInput from '../shared/components/BasicInput'
 import { updatePlayer, deletePlayerFromLeague } from '../../data'
+import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
 interface EditablePlayer {
   name: string
@@ -19,6 +20,7 @@ export default function PlayerEditableListItem({
 }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const { id: playerId, name } = player
 
   function handleEditingState(name) {
@@ -33,7 +35,7 @@ export default function PlayerEditableListItem({
     setIsBeingEdited(false)
   }
 
-  async function handleDeletePlayer(playerId) {
+  async function handleDeletePlayer() {
     await deletePlayerFromLeague(playerId)
     refreshPlayerState()
   }
@@ -45,27 +47,42 @@ export default function PlayerEditableListItem({
   }
 
   return (
-    <li className={twListItems}>
-      {isBeingEdited && (
-        <Modal title="Update Player" closeModal={() => setIsBeingEdited(false)}>
-          <BasicInput
-            twClasses={`${twEditInputs} w-72`}
-            type="text"
-            label="Player Name"
-            name="name"
-            onChange={handleInputChange}
-            value={updatedPlayer.name}
-          />
-          <button onClick={() => handleUpdatePlayer()}>Save</button>
-        </Modal>
+    <>
+      <li className={twListItems}>
+        {isBeingEdited && (
+          <Modal
+            title="Update Player"
+            closeModal={() => setIsBeingEdited(false)}
+          >
+            <BasicInput
+              twClasses={`${twEditInputs} w-72`}
+              type="text"
+              label="Player Name"
+              name="name"
+              onChange={handleInputChange}
+              value={updatedPlayer.name}
+            />
+            <button onClick={() => handleUpdatePlayer()}>Save</button>
+          </Modal>
+        )}
+        <span>{name}</span>
+        <span className="list-edit-buttons">
+          <button onClick={() => handleEditingState(player)}>Update</button>
+          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+            Delete From League
+          </button>
+        </span>
+      </li>
+
+      {showDeleteConfirmation && (
+        <DeleteConfirmationModal
+          modalTitle="Confirm Player Deletion"
+          confirmationText="Are you sure you want to delete this player from the league?"
+          buttonText="Delete"
+          onConfirmDelete={handleDeletePlayer}
+          toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
+        />
       )}
-      <span>{name}</span>
-      <span className="list-edit-buttons">
-        <button onClick={() => handleEditingState(player)}>Update</button>
-        <button onClick={() => handleDeletePlayer(player.id)}>
-          Remove From League
-        </button>
-      </span>
-    </li>
+    </>
   )
 }
