@@ -29,5 +29,9 @@ export default function SimpleInputValidationError({
   if (typeof errorField !== 'string') {
     return null
   }
-  return <p className="">{generateErrorMessage(errorMsgCode, errorField)}</p>
+  return (
+    <p className="input-error">
+      {generateErrorMessage(errorMsgCode, errorField)}
+    </p>
+  )
 }

@@ -12,6 +12,7 @@ body {
 
 #page-container {
   min-height: 100vh;
+  margin: 20px;
 }
 
 :root {
@@ -33,8 +34,8 @@ body {
 }
 
 button {
-  border-radius: 0.5rem;
-  padding: 7px 15px;
+  /* border-radius: 50px; */
+  padding: 5px 10px;
   background: var(--primary-color);
   color: var(--secondary-color);
   margin: 0.5em 0;
@@ -49,24 +50,97 @@ button:hover {
     color: grey;
 } */
 
+/* input[type='text'],
+input[type='number'] */
+input {
+  border: 1px solid rgb(231, 240, 236);
+  padding: 5px 8px;
+}
+
 input::-webkit-calendar-picker-indicator:hover {
   cursor: pointer;
 }
 
-/* .list-item {
-  border-radius: 3px;
-  border: 0.5px solid var(--primary-color);
-} */
-.editable-list-item {
-  background: var(--tertiary-color);
+.input-error {
+  color: rgb(252, 104, 104);
 }
-.editable-list-item span:not(:first-of-type) {
-  margin: 0 0 0 1em;
-  width: 65vw;
+
+.editable-list-item li {
+  /* background: var(--tertiary-color); */
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  display: grid;
+  grid-template-columns: 5fr 1fr 3fr;
+  align-items: center;
+  /* gap: 20px; */
+  padding: 3px 10px;
+  margin: 3px 0;
+  border: 1px solid var(--tertiary-color);
 }
-.editable-list-item button {
-  padding: 3px;
-  margin: 0 0 0 0.5em;
+
+.list-edit-buttons {
+  text-align: right;
+}
+
+.list-edit-buttons button {
+  padding: 2px 6px;
+  font-size: 0.9em;
+  margin: 0.25em 0.15em;
+}
+
+.list-point-value {
+  text-align: center;
+}
+
+.list-point-name {
+  line-height: 1;
+}
+
+/* TODO: make common breakpoint variables */
+@media (max-width: 550px) {
+  .editable-list-item li {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    min-width: 100%;
+  }
+
+  .list-point-value {
+    text-align: left;
+    grid-row: 2 / 3;
+    grid-column: 1 / 2;
+  }
+
+  .list-edit-buttons {
+    /* grid-row: 2 / 3;
+    grid-column: 1 / 3; */
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    text-align: center;
+  }
+}
+
+@media (max-width: 350px) {
+  .editable-list-item li span {
+    /* grid-template-columns: 1fr; */
+    text-align: center;
+  }
+  .list-point-name {
+    grid-row: 1;
+    grid-column: 1 / 3;
+  }
+  .list-point-value {
+    /* text-align: left; */
+    grid-row: 2;
+    grid-column: 1 / 3;
+  }
+  .list-edit-buttons {
+    /* grid-row: 2 / 3;
+    grid-column: 1 / 3; */
+    /* grid-column: 2 / 3; */
+    grid-row: 3;
+    grid-column: 1 / 3;
+  }
 }
 
 .selectable-LI {

@@ -65,17 +65,14 @@ export default function RoundPointSettings(): JSX.Element {
     <>
       <h3>Round Point Settings</h3>
 
-      <Link
-        to={`/league/${leagueId}/point-settings`}
-        className="text-link mt-2"
-      >
+      <Link to={`/league/${leagueId}/point-settings`} className="text-link">
         League Point Settings
       </Link>
 
       <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
 
       <p>Active Round Points</p>
-      <ul className="mb-3 mt-5">
+      <ul className="editable-list-item">
         {sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
           return (
             <RoundPointSettingsListItem
@@ -90,7 +87,7 @@ export default function RoundPointSettings(): JSX.Element {
       </ul>
 
       <p>Inactive Round Points</p>
-      <ul className="mb-3 mt-5">
+      <ul className="">
         {getInactiveRoundPointSettings().map((pointSetting) => {
           return (
             <li key={pointSetting.id}>

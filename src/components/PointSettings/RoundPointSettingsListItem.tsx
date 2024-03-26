@@ -128,9 +128,8 @@ export default function RoundPointSettingsListItem({
       )}
 
       <li>
-        <span>{name}</span>
-        <span>{value}</span>
-        <span>{scope}</span>
+        <span className="list-point-name">{name}</span>
+        <span className="list-point-value">{value}</span>
         <span className="list-edit-buttons">
           <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
           <button onClick={() => removePointSettingFromRound(id)}>
