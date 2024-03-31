@@ -12,7 +12,7 @@ export default function PlayersListEditable({
   refreshPlayerState,
 }: PlayerProps) {
   return (
-    <ul className="mb-3 mt-5">
+    <ul className="editable-list--players">
       {players.map((player) => {
         return (
           <PlayerListItemEditable

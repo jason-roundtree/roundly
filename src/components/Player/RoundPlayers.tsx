@@ -55,7 +55,7 @@ export default function RoundPlayers(): JSX.Element {
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
       <p>Active Round Players</p>
-      <ul>
+      <ul className="editable-list--players">
         {sortArrayOfObjects(roundPlayers, 'name')?.map(
           ({ id: playerId, name }) => {
             return (
@@ -78,7 +78,7 @@ export default function RoundPlayers(): JSX.Element {
 
       <br />
       <p>Inactive Round Players</p>
-      <ul>
+      <ul className="editable-list--players">
         {getInactiveRoundPlayers().map((player) => {
           return (
             <li key={player.id}>

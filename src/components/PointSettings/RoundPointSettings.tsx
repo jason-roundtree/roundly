@@ -72,7 +72,7 @@ export default function RoundPointSettings(): JSX.Element {
       <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
 
       <p>Active Round Points</p>
-      <ul className="editable-list-item">
+      <ul className="editable-list--points">
         {sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
           return (
             <RoundPointSettingsListItem
@@ -88,7 +88,7 @@ export default function RoundPointSettings(): JSX.Element {
 
       <p>Inactive Round Points</p>
       {/* TODO: add edit button to inactive points? If not then probably change this className */}
-      <ul className="editable-list-item">
+      <ul className="editable-list--points">
         {getInactiveRoundPointSettings().map((pointSetting) => {
           return (
             <li key={pointSetting.id}>

@@ -62,6 +62,7 @@ export default function AddPlayer({
         value={newPlayerName}
       />
 
+      <br />
       <button onClick={handleCreateLeaguePlayer}>Add Player</button>
       <SimpleInputValidationError
         errorField={inputValidationError}

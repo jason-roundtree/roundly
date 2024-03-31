@@ -39,7 +39,7 @@ export default function LeaguePointSettings(): JSX.Element {
         pointContext="league"
       />
 
-      <ul className="editable-list-item">
+      <ul className="editable-list--points">
         {pointSettings.map((pointSetting) => {
           return (
             <LeaguePointSettingsListItem

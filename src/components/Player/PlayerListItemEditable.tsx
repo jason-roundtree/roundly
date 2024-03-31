@@ -61,9 +61,10 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
         )}
         <span>{name}</span>
         <span className="list-edit-buttons">
-          <button onClick={() => handleEditingState(player)}>Update</button>
+          <button onClick={() => handleEditingState(player)}>Edit</button>
           <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
-            Delete From League
+            Delete
+            {/* Delete From League */}
           </button>
         </span>
       </li>
