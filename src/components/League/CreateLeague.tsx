@@ -77,7 +77,7 @@ export default function CreateLeague() {
 
       <div className="flex">
         {/* TODO: add validation to ensure league name has been added */}
-        <button className="mx-auto" onClick={handleCreateLeague}>
+        <button className="" onClick={handleCreateLeague}>
           Create League
         </button>
       </div>

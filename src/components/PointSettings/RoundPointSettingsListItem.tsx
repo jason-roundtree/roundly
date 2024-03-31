@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import ModalContainer from '../shared/components/ModalContainer'
 import BasicInput from '../shared/components/BasicInput'
+import Select from '../shared/components/Select'
+import { EditablePointSettingListItem } from '.'
 import {
   POINT_SCOPE_DESCRIPTION,
   POINT_SCOPE_SETTINGS,
@@ -12,7 +14,6 @@ import {
   getPointScopeValueFromKey,
 } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
-import Select from '../shared/components/Select'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -127,17 +128,14 @@ export default function RoundPointSettingsListItem({
         </ModalContainer>
       )}
 
-      <li>
-        <span className="list-point-name">{name}</span>
-        <span className="list-point-value">{value}</span>
-        <span className="list-edit-buttons">
-          <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button onClick={() => removePointSettingFromRound(id)}>
-            {/* TODO: add color key or icon to differentiate one-off round point */}
-            {deactivatePointButtonText()}
-          </button>
-        </span>
-      </li>
+      <EditablePointSettingListItem
+        name={name}
+        value={value}
+        onEdit={handleEditingPoint}
+        // TODO: Add delete confirmation modal?
+        onRemove={() => removePointSettingFromRound(id)}
+        removeButtonText={deactivatePointButtonText()}
+      />
     </>
   )
 }

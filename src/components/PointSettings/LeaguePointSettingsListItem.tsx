@@ -2,6 +2,9 @@ import { useState } from 'react'
 
 import Modal from '../shared/components/ModalContainer'
 import BasicInput from '../shared/components/BasicInput'
+import Select from '../shared/components/Select'
+import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
+import { EditablePointSettingListItem } from '.'
 import {
   POINT_SCOPE_DESCRIPTION,
   POINT_SCOPE_SETTINGS,
@@ -12,8 +15,6 @@ import {
   getPointScopeValueFromKey,
 } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
-import Select from '../shared/components/Select'
-import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -41,7 +42,7 @@ export default function LeaguePointSettingsListItem({
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value, scope } = pointSetting
 
-  function handleEditingPoint(pointSetting) {
+  function handleEditingPoint() {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
@@ -115,21 +116,17 @@ export default function LeaguePointSettingsListItem({
         </Modal>
       )}
 
-      <li>
-        <span>{name}</span>
-        <span>{value}</span>
-        <span>{scope}</span>
-        <span className="list-edit-buttons">
-          <button onClick={() => handleEditingPoint(pointSetting)}>Edit</button>
-          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
-            Delete
-          </button>
-        </span>
-      </li>
+      <EditablePointSettingListItem
+        name={name}
+        value={value}
+        onEdit={handleEditingPoint}
+        onRemove={() => setShowDeleteConfirmation((show) => !show)}
+        removeButtonText="Delete"
+      />
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal
-          modalTitle="Confirm Point Deletion"
+          modalTitle={`Confirm Point Deletion: ${name}`}
           confirmationText="Are you sure you want to delete this point from the league?"
           buttonText="Delete"
           onConfirmDelete={() => deleteLeaguePointSetting(id)}

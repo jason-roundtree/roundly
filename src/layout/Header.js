@@ -3,7 +3,7 @@ import './Header.css'
 
 export default function Header() {
   return (
-    <header className="h-16 flex items-center">
+    <header>
       <nav>
         <span>ROUNDLY</span>
       </nav>

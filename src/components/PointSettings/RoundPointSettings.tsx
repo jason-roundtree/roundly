@@ -87,12 +87,13 @@ export default function RoundPointSettings(): JSX.Element {
       </ul>
 
       <p>Inactive Round Points</p>
-      <ul className="">
+      {/* TODO: add edit button to inactive points? If not then probably change this className */}
+      <ul className="editable-list-item">
         {getInactiveRoundPointSettings().map((pointSetting) => {
           return (
             <li key={pointSetting.id}>
-              <span>{pointSetting.name}</span>
-              <span>{pointSetting.value}</span>
+              <span className="list-point-name">{pointSetting.name}</span>
+              <span className="list-point-value">{pointSetting.value}</span>
               <span className="list-edit-buttons non-round-point-setting">
                 <button onClick={() => addPointSettingToRound(pointSetting.id)}>
                   Activate
