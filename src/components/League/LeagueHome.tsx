@@ -51,11 +51,9 @@ export default function LeagueHome() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold">{name} - League Home</h1>
-      <h2 className="text-xl font-bold mt-4">
-        <Link to={`/league/${leagueId}/players`} className="text-link mt-2">
-          Players
-        </Link>
+      <h1>{name} - League Home</h1>
+      <h2>
+        <Link to={`/league/${leagueId}/players`}>Players</Link>
       </h2>
       <ul>
         {players.map(({ id, name }) => {
@@ -63,13 +61,8 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <h2 className="text-xl font-bold mt-4">
-        <Link
-          to={`/league/${leagueId}/point-settings`}
-          className="text-link mt-2"
-        >
-          Point Settings
-        </Link>
+      <h2>
+        <Link to={`/league/${leagueId}/point-settings`}>Point Settings</Link>
       </h2>
       <ul>
         {pointSettings.map(({ id, name, value }) => {
@@ -81,7 +74,7 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <h2 className="text-xl font-bold mt-4">
+      <h2>
         <Link to={`/league/${leagueId}/rounds`} className="text-link">
           Rounds
         </Link>
@@ -92,7 +85,7 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <h2 className="text-xl font-bold mt-4">Standings</h2>
+      <h2>Standings</h2>
     </>
   )
 }

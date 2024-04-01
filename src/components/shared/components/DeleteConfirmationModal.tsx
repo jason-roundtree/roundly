@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Modal from './ModalContainer'
+import Modal from './Modal'
 
 interface DeleteConfirmationModalProps {
   modalTitle: string
@@ -17,10 +17,17 @@ export default function DeleteConfirmationModal({
   toggleModalActive,
   onConfirmDelete,
 }: DeleteConfirmationModalProps) {
+  function ConfirmDeletionButton(): JSX.Element {
+    return <button onClick={onConfirmDelete}>{buttonText}</button>
+  }
   return (
-    <Modal title={modalTitle} closeModal={toggleModalActive}>
+    <Modal
+      title={modalTitle}
+      closeModal={toggleModalActive}
+      renderButtons={() => <ConfirmDeletionButton />}
+    >
       <p>{confirmationText}</p>
-      <button onClick={onConfirmDelete}>{buttonText}</button>
+      {/* <button onClick={onConfirmDelete}>{buttonText}</button> */}
     </Modal>
   )
 }

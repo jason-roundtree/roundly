@@ -67,7 +67,7 @@ export default function RoundPlayers(): JSX.Element {
                       handleDeletePlayerFromRound(playerId, roundId)
                     }
                   >
-                    Remove From Round
+                    Deactivate
                   </button>
                 </span>
               </li>
@@ -87,7 +87,7 @@ export default function RoundPlayers(): JSX.Element {
                 <button
                   onClick={() => handleAddPlayerToRound(player.id, roundId)}
                 >
-                  Add to Round
+                  Activate
                 </button>
               </span>
             </li>

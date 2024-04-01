@@ -2,31 +2,36 @@ import { useState } from 'react'
 import Portal from './Portal'
 import './Modal.css'
 
-interface ModalContainerProps {
+interface ModalProps {
   title: string
   children: React.ReactNode
   closeModal: () => void
   deleteItemFn?: () => void
+  renderButtons: () => JSX.Element
 }
 
-export default function ModalContainer({
+export default function Modal({
   title,
   children,
   closeModal,
-}: ModalContainerProps): JSX.Element {
+  renderButtons,
+}: ModalProps): JSX.Element {
   return (
     <Portal selector="#portal">
       <div id="modal-container">
-        <div id="modal">
+        <div id="modal-content">
+          <button
+            onClick={closeModal}
+            id="close-modal-button"
+            aria-label="Close modal"
+          >
+            X
+          </button>
           <h2 className="" id="modal-title">
             {title}
           </h2>
           <div id="modal-body">{children}</div>
-          <div id="modal-footer">
-            <button onClick={closeModal} id="close-modal-button">
-              Cancel
-            </button>
-          </div>
+          <div id="modal-edit-buttons">{renderButtons()}</div>
         </div>
       </div>
     </Portal>

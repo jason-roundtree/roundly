@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import Modal from '../shared/components/ModalContainer'
+import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
@@ -68,6 +68,17 @@ export default function LeaguePointSettingsListItem({
     setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
   }
 
+  function EditPointSettingModalButtons(): JSX.Element {
+    return (
+      <>
+        <button onClick={handleUpdatePointSetting}>Save</button>
+        <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+          Delete
+        </button>
+      </>
+    )
+  }
+
   return (
     <>
       {isBeingEdited && (
@@ -75,6 +86,7 @@ export default function LeaguePointSettingsListItem({
         <Modal
           title="Edit Point Setting"
           closeModal={() => setIsBeingEdited(false)}
+          renderButtons={() => <EditPointSettingModalButtons />}
         >
           <BasicInput
             type="text"
@@ -109,10 +121,12 @@ export default function LeaguePointSettingsListItem({
               value={updatedPointSetting.maxFrequencyPerScope ?? ''}
             />
           )}
+
+          {/* <br />
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
             Delete
-          </button>
+          </button> */}
         </Modal>
       )}
 
@@ -126,8 +140,8 @@ export default function LeaguePointSettingsListItem({
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal
-          modalTitle={`Confirm Point Deletion: ${name}`}
-          confirmationText="Are you sure you want to delete this point from the league?"
+          modalTitle="Confirm Point Deletion"
+          confirmationText={`Are you sure you want to delete ${name} from the league?`}
           buttonText="Delete"
           onConfirmDelete={() => deleteLeaguePointSetting(id)}
           toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}

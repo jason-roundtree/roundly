@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import ModalContainer from '../shared/components/ModalContainer'
+import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import { EditablePointSettingListItem } from '.'
@@ -75,13 +75,24 @@ export default function RoundPointSettingsListItem({
     return isLeagueSetting ? 'Deactivate' : 'Delete'
   }
 
+  function EditPointSettingModalButtons(): JSX.Element {
+    return (
+      <>
+        <button onClick={handleUpdatePointSetting}>Save</button>
+        <button onClick={() => removePointSettingFromRound(id)}>
+          {deactivatePointButtonText()}
+        </button>
+      </>
+    )
+  }
   return (
     <>
       {isBeingEdited && (
         // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
-        <ModalContainer
+        <Modal
           title={modalTitle()}
           closeModal={() => setIsBeingEdited(false)}
+          renderButtons={() => <EditPointSettingModalButtons />}
         >
           <BasicInput
             type="text"
@@ -120,12 +131,12 @@ export default function RoundPointSettingsListItem({
             />
           )}
 
-          <button onClick={handleUpdatePointSetting}>Save</button>
+          {/* <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => removePointSettingFromRound(id)}>
             {deactivatePointButtonText()}
-          </button>
+          </button> */}
           {/* TODO: add remove point from league if isLeagueSetting */}
-        </ModalContainer>
+        </Modal>
       )}
 
       <EditablePointSettingListItem

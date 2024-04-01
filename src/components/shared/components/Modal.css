@@ -13,30 +13,52 @@
   background: rgba(255, 255, 255, 0.9);
 }
 
-#modal {
+#modal-content {
   margin: 1em;
-  padding: 1em;
+  padding: 1em 1em 2em;
   background: var(--tertiary-color);
   border-radius: 3px;
+  /* position: relative; */
 }
 
+@media (min-width: 451px) {
+  #modal-content {
+    width: 65%;
+    max-width: 550px;
+  }
+}
 @media (max-width: 450px) {
-  #modal {
+  #modal-content {
     width: 90%;
     padding: 0.5em;
   }
-  #modal input {
+  #modal-content input {
     width: 95% !important;
   }
+  /* #close-modal-button {
+    margin-right: 0.5em;
+  } */
 }
 
-#modal-footer {
+#close-modal-button {
+  /* position: absolute; */
+  /* 
+  top: 0;
+  right: 0;
+  margin-right: 0.5em; */
+  display: block;
+  margin: 0 0 0 auto;
+  padding: 3px 8px;
+  line-height: 1.2;
+}
+
+#modal-edit-buttons {
   display: flex;
   /* justify-content: center; */
   justify-content: flex-end;
 }
 
-#modal button + button {
+#modal-content button + button {
   margin-left: 15px;
 }
 /* #modal-container > button {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import Modal from '../shared/components/ModalContainer'
+import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { updatePlayer, deletePlayerFromLeague } from '../../data'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
@@ -41,6 +41,17 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
     setUpdatedPlayer({ ...updatedPlayer, [name]: value })
   }
 
+  function EditPlayerModalButtons(): JSX.Element {
+    return (
+      <>
+        <button onClick={() => handleUpdatePlayer()}>Save</button>
+        <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+          Delete
+        </button>
+      </>
+    )
+  }
+
   return (
     <>
       <li>
@@ -48,6 +59,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
           <Modal
             title="Update Player"
             closeModal={() => setIsBeingEdited(false)}
+            renderButtons={() => <EditPlayerModalButtons />}
           >
             <BasicInput
               type="text"
@@ -56,7 +68,10 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
               onChange={handleInputChange}
               value={updatedPlayer.name}
             />
-            <button onClick={() => handleUpdatePlayer()}>Save</button>
+            {/* <button onClick={() => handleUpdatePlayer()}>Save</button>
+            <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+              Delete
+            </button> */}
           </Modal>
         )}
         <span>{name}</span>
@@ -64,7 +79,6 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
           <button onClick={() => handleEditingState(player)}>Edit</button>
           <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
             Delete
-            {/* Delete From League */}
           </button>
         </span>
       </li>
@@ -72,7 +86,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
       {showDeleteConfirmation && (
         <DeleteConfirmationModal
           modalTitle="Confirm Player Deletion"
-          confirmationText="Are you sure you want to delete this player from the league?"
+          confirmationText={`Are you sure you want to delete ${name} from the league?`}
           buttonText="Delete"
           onConfirmDelete={handleDeletePlayer}
           toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
