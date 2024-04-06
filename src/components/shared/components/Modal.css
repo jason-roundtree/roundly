@@ -15,7 +15,7 @@
 
 #modal-content {
   margin: 1em;
-  padding: 1em 1em 2em;
+  padding: 1em;
   background: var(--tertiary-color);
   border-radius: 3px;
   /* position: relative; */
@@ -48,7 +48,7 @@
   margin-right: 0.5em; */
   display: block;
   margin: 0 0 0 auto;
-  padding: 3px 8px;
+  padding: 3px 8px 2px;
   line-height: 1.2;
 }
 
@@ -56,14 +56,9 @@
   display: flex;
   /* justify-content: center; */
   justify-content: flex-end;
+  margin-top: 1em;
 }
 
 #modal-content button + button {
   margin-left: 15px;
 }
-/* #modal-container > button {
-  color: var(--primary-color);
-  font-weight: 700;
-  background: var(--secondary-color);
-  border: 1px solid var(--primary-color);
-} */

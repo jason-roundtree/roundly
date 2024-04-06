@@ -110,7 +110,7 @@ export default function AddPointSetting({
 
   return (
     <div>
-      <p>Add New Point to {pointContextCapitalized()}</p>
+      <h4>Add New Point to {pointContextCapitalized()}</h4>
       <BasicInput
         type="text"
         label="Point Name"
@@ -150,33 +150,29 @@ export default function AddPointSetting({
       )}
 
       {pointContext === 'round' && (
-        <>
-          <p>One-off Round Point or Default League Point?</p>
-          <div className="round-point-radio">
-            <RadioButton
-              id="round-only"
-              value="round-only"
-              name="round-point-radio-buttons"
-              label="Add as one-off round point"
-              onChange={handleRadioInputChange}
-              checked={!newPoint.isLeagueSetting}
-            />
-          </div>
+        <fieldset className="round-point-radios">
+          <legend>One-off Round Point or Default League Point?</legend>
+          <RadioButton
+            id="round-only"
+            value="round-only"
+            name="round-point-radio-buttons"
+            label="Add as one-off round point"
+            onChange={handleRadioInputChange}
+            checked={!newPoint.isLeagueSetting}
+          />
 
-          <div className="round-point-radio">
-            <RadioButton
-              id="league-setting"
-              value="league-setting"
-              name="round-point-radio-buttons"
-              label="Add to default league point settings"
-              onChange={handleRadioInputChange}
-              checked={newPoint.isLeagueSetting}
-            />
-          </div>
-        </>
+          <RadioButton
+            id="league-setting"
+            value="league-setting"
+            name="round-point-radio-buttons"
+            label="Add to default league point settings"
+            onChange={handleRadioInputChange}
+            checked={newPoint.isLeagueSetting}
+          />
+        </fieldset>
       )}
 
-      <br />
+      {/* <br /> */}
       <button onClick={handleCreatePointSetting}>Add Point</button>
       <SimpleInputValidationError
         errorField={inputValidationError}

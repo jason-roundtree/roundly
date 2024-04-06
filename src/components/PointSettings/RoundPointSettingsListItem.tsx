@@ -39,7 +39,7 @@ export default function RoundPointSettingsListItem({
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value, isLeagueSetting, scope } = pointSetting
 
-  function handleEditingPoint(pointSetting) {
+  function handleEditingPoint() {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
