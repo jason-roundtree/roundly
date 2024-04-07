@@ -4,8 +4,11 @@
 }
 
 .round-card {
-  border: 1px solid black;
-  border-radius: 3px;
+  border: 1px solid var(--tertiary-color);
+  /* border-radius: 3px; */
   margin: 5px;
   padding: 5px;
+}
+.round-card:hover {
+  background: var(--tertiary-color);
 }

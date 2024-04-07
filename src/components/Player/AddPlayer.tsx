@@ -62,11 +62,13 @@ export default function AddPlayer({
         value={newPlayerName}
       />
 
-      <button onClick={handleCreateLeaguePlayer}>Add Player</button>
-      <SimpleInputValidationError
-        errorField={inputValidationError}
-        errorMsgCode="MISSNG_VALUE"
-      />
+      <div className="form-submit">
+        <button onClick={handleCreateLeaguePlayer}>Add Player</button>
+        <SimpleInputValidationError
+          errorField={inputValidationError}
+          errorMsgCode="MISSNG_VALUE"
+        />
+      </div>
     </>
   )
 }

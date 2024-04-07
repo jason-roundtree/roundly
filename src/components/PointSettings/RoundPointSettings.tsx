@@ -73,17 +73,21 @@ export default function RoundPointSettings(): JSX.Element {
 
       <p className="non-input-label">Active Round Points</p>
       <ul className="editable-list--points">
-        {sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
-          return (
-            <RoundPointSettingsListItem
-              key={pointSetting.id}
-              pointSetting={pointSetting}
-              removePointSettingFromRound={removePointSettingFromRound}
-              refreshState={refreshRoundState}
-              selectAllInputText={selectAllInputText}
-            />
-          )
-        })}
+        {roundPointSettings.length ? (
+          sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
+            return (
+              <RoundPointSettingsListItem
+                key={pointSetting.id}
+                pointSetting={pointSetting}
+                removePointSettingFromRound={removePointSettingFromRound}
+                refreshState={refreshRoundState}
+                selectAllInputText={selectAllInputText}
+              />
+            )
+          })
+        ) : (
+          <p className="no-active-list-items">No active points</p>
+        )}
       </ul>
 
       <p className="non-input-label">Inactive Round Points</p>

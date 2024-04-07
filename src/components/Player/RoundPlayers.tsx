@@ -54,30 +54,33 @@ export default function RoundPlayers(): JSX.Element {
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
-      <p>Active Round Players</p>
+      <p className="non-input-label">Active Round Players</p>
       <ul className="editable-list--players">
-        {sortArrayOfObjects(roundPlayers, 'name')?.map(
-          ({ id: playerId, name }) => {
-            return (
-              <li key={playerId}>
-                <span>{name}</span>
-                <span className="list-edit-buttons">
-                  <button
-                    onClick={() =>
-                      handleDeletePlayerFromRound(playerId, roundId)
-                    }
-                  >
-                    Deactivate
-                  </button>
-                </span>
-              </li>
-            )
-          }
+        {roundPlayers.length ? (
+          sortArrayOfObjects(roundPlayers, 'name')?.map(
+            ({ id: playerId, name }) => {
+              return (
+                <li key={playerId}>
+                  <span>{name}</span>
+                  <span className="list-edit-buttons">
+                    <button
+                      onClick={() =>
+                        handleDeletePlayerFromRound(playerId, roundId)
+                      }
+                    >
+                      Deactivate
+                    </button>
+                  </span>
+                </li>
+              )
+            }
+          )
+        ) : (
+          <p className="no-active-list-items">No active players</p>
         )}
       </ul>
 
-      <br />
-      <p>Inactive Round Players</p>
+      <p className="non-input-label">Inactive Round Players</p>
       <ul className="editable-list--players">
         {getInactiveRoundPlayers().map((player) => {
           return (

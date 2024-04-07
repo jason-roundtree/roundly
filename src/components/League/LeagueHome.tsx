@@ -75,9 +75,7 @@ export default function LeagueHome() {
       </ul>
 
       <h2>
-        <Link to={`/league/${leagueId}/rounds`} className="text-link">
-          Rounds
-        </Link>
+        <Link to={`/league/${leagueId}/rounds`}>Rounds</Link>
       </h2>
       <ul>
         {rounds.map(({ id, name, location, date }) => {

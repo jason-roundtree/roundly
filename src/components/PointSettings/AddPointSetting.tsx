@@ -43,7 +43,8 @@ export default function AddPointSetting({
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams()
 
-  async function handleCreatePointSetting() {
+  async function handleCreatePointSetting(e) {
+    e.preventDefault()
     if (
       !validateSimpleInput(newPoint.name, 'Point Name', setInputValidationError)
     ) {
@@ -109,8 +110,8 @@ export default function AddPointSetting({
   }
 
   return (
-    <div>
-      <h4>Add New Point to {pointContextCapitalized()}</h4>
+    <form>
+      <h3>Add New Point to {pointContextCapitalized()}</h3>
       <BasicInput
         type="text"
         label="Point Name"
@@ -172,12 +173,13 @@ export default function AddPointSetting({
         </fieldset>
       )}
 
-      {/* <br /> */}
-      <button onClick={handleCreatePointSetting}>Add Point</button>
-      <SimpleInputValidationError
-        errorField={inputValidationError}
-        errorMsgCode="MISSNG_VALUE"
-      />
-    </div>
+      <div className="form-submit">
+        <button onClick={handleCreatePointSetting}>Add Point</button>
+        <SimpleInputValidationError
+          errorField={inputValidationError}
+          errorMsgCode="MISSNG_VALUE"
+        />
+      </div>
+    </form>
   )
 }

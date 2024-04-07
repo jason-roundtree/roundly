@@ -93,7 +93,6 @@ export default function CreateRound() {
   }, [leagueId])
 
   async function handleSaveRound(e) {
-    console.log('save round')
     e.preventDefault()
     if (
       !validateSimpleInput(
@@ -145,7 +144,7 @@ export default function CreateRound() {
         />
 
         {/* TODO: add select/de-select all */}
-        <label className="">Active Round Players</label>
+        <label>Active Round Players</label>
         <div className={styles['create-round-selectables']}>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
@@ -167,7 +166,7 @@ export default function CreateRound() {
           })}
         </div>
 
-        <label className="">Active Round Points</label>
+        <label>Active Round Points</label>
         <p>You can add one-off points once the round is created</p>
         <div className={styles['create-round-selectables']}>
           {pointSettings.map(({ name, value, id }) => {
@@ -192,12 +191,15 @@ export default function CreateRound() {
         </div>
 
         {/* TODO: add validation to ensure league name has been added */}
-        <button onClick={handleSaveRound}>Create Round</button>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
-          errorMsgCode="MISSNG_VALUE"
-        />
-        {/* </div> */}
+        <div className="form-submit">
+          <button onClick={handleSaveRound} className="form-submit">
+            Create Round
+          </button>
+          <SimpleInputValidationError
+            errorField={inputValidationError}
+            errorMsgCode="MISSNG_VALUE"
+          />
+        </div>
       </form>
     </>
   )
