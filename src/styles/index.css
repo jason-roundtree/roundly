@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
 :root {
   --primary-color: rgb(75, 184, 97);
   --secondary-color: whitesmoke;
   --tertiary-color: rgb(208, 246, 226);
-  --label-margin-top: 1.25em;
+  --label-margin-top: 1.1em;
 }
 * {
   margin: 0;
@@ -14,10 +14,10 @@
   box-sizing: border-box;
 }
 body {
-  font-family: 'Sofia Sans', sans-serif;
+  font-family: 'Cabin', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
+  line-height: 1.3;
 }
 #root {
   isolation: isolate;
@@ -90,14 +90,36 @@ a {
   color: inherit;
   text-decoration: none;
 }
+a:hover {
+  color: var(--primary-color);
+}
 
 #page-container {
   min-height: 100vh;
   margin: 20px;
 }
 
+.page-title {
+  text-align: center;
+  margin-bottom: 0.75em;
+}
+
+.form-title {
+  text-transform: uppercase;
+}
+
+.svg-inline--fa {
+  height: 0.75em;
+  vertical-align: -1px;
+}
+
 .form-submit {
   margin: 1em 0 1.5em;
+}
+
+[class*='edit-page-links'] {
+  margin-top: 0.75em;
+  font-weight: bold;
 }
 
 .round-point-radios label {

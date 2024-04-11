@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { BasicLeagueState, Player, PointSetting, Round } from '../../types'
 import { defaultLeagueState } from '../League/CreateLeague'
@@ -9,6 +11,7 @@ import {
   fetchBasicLeagueData,
   fetchLeagueRounds,
 } from '../../data'
+import styles from './LeagueHome.module.css'
 
 export default function LeagueHome() {
   const [leagueData, setBasicLeagueData] =
@@ -52,18 +55,22 @@ export default function LeagueHome() {
   return (
     <>
       <h1>{name} - League Home</h1>
-      <h2>
-        <Link to={`/league/${leagueId}/players`}>Players</Link>
-      </h2>
+      <p className={styles['edit-page-links']}>
+        <Link to={`/league/${leagueId}/players`}>
+          PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </p>
       <ul>
         {players.map(({ id, name }) => {
           return <li key={id}>{name}</li>
         })}
       </ul>
 
-      <h2>
-        <Link to={`/league/${leagueId}/point-settings`}>Point Settings</Link>
-      </h2>
+      <p className={styles['edit-page-links']}>
+        <Link to={`/league/${leagueId}/point-settings`}>
+          POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </p>
       <ul>
         {pointSettings.map(({ id, name, value }) => {
           return (
@@ -74,16 +81,20 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <h2>
-        <Link to={`/league/${leagueId}/rounds`}>Rounds</Link>
-      </h2>
+      <p className={styles['edit-page-links']}>
+        <Link to={`/league/${leagueId}/rounds`}>
+          ROUNDS <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </p>
       <ul>
         {rounds.map(({ id, name, location, date }) => {
           return <li key={id}>{name}</li>
         })}
       </ul>
 
-      <h2>Standings</h2>
+      <p className={styles['edit-page-links']}>
+        STANDINGS <FontAwesomeIcon icon={faAnglesRight} />
+      </p>
     </>
   )
 }

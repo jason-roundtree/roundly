@@ -32,7 +32,7 @@ export default function LeaguePointSettings(): JSX.Element {
     <>
       <Link to={`/league/${leagueId}`}>League Home</Link>
 
-      <h2>Point Settings</h2>
+      <h2 className="page-title">League Point Settings</h2>
 
       <AddPointSetting
         refreshState={refreshPointSettingsState}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { Round } from '../../types'
 import { fetchLeagueRounds } from '../../data'
@@ -22,9 +24,10 @@ export default function Rounds() {
     <>
       <Link to={`/league/${leagueId}`}>League Home</Link>
 
-      <h2>Rounds</h2>
-      <Link to={`/league/${leagueId}/create-round`} className="text-link">
-        Create Round
+      <h2 className="page-title">Rounds</h2>
+      <Link to={`/league/${leagueId}/create-round`} id={styles['create-round']}>
+        CREATE ROUND
+        <FontAwesomeIcon icon={faAnglesRight} />
       </Link>
       <ul id={styles['round-cards']}>
         {rounds.map((round) => {

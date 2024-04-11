@@ -59,7 +59,7 @@ export interface PointSetting {
 }
 
 export const POINT_SCOPE_DESCRIPTION =
-  'Allows you to restrict how the point can be earned'
+  'Allows you to restrict where the point can be earned'
 export const POINT_SCOPE_SETTINGS = [
   { key: 'no_scope', value: 'No scope' },
   { key: 'hole', value: 'Earned by hole' },

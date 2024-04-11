@@ -1,7 +1,7 @@
 .checkbox-button {
   display: inline-block;
   padding: 5px 10px;
-  border: 1px solid black;
+  border: 1px solid var(--tertiary-color);
   margin: 5px 5px 0 0;
   font-weight: normal;
 }

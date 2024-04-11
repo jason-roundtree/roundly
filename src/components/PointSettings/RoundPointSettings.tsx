@@ -63,11 +63,11 @@ export default function RoundPointSettings(): JSX.Element {
 
   return (
     <>
-      <h3>Round Point Settings</h3>
+      <h3 className="page-title">Round Point Settings</h3>
 
-      <Link to={`/league/${leagueId}/point-settings`} className="text-link">
+      {/* <Link to={`/league/${leagueId}/point-settings`} className="text-link">
         League Point Settings
-      </Link>
+      </Link> */}
 
       <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
 

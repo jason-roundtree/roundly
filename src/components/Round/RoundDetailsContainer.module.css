@@ -1,0 +1,7 @@
+#basic-round-info {
+  margin: 0.5em 0;
+  padding: 0.5em 0;
+  /* background: var(--secondary-color); */
+  border-top: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--primary-color);
+}

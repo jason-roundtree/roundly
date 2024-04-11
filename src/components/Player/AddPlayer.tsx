@@ -52,6 +52,7 @@ export default function AddPlayer({
 
   return (
     <>
+      <h3 className="form-title">Add New Player to League</h3>
       <BasicInput
         type="text"
         name="playerName"

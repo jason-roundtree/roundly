@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import {
@@ -9,6 +11,7 @@ import {
 } from '../../data'
 import { Player } from '../../types'
 import { sortArrayOfObjects } from '../shared/utils'
+import styles from './RoundPlayers.module.css'
 
 // TODO: set state to refresh so list updates on delete
 export default function RoundPlayers(): JSX.Element {
@@ -47,10 +50,17 @@ export default function RoundPlayers(): JSX.Element {
 
   return (
     <>
-      <h3>Round Players</h3>
-      <Link to={`/league/${leagueId}/players`} className="text-link">
-        League Players
-      </Link>
+      <h3 className={`${styles['decrease-bottom-margin']} page-title`}>
+        Round Players
+      </h3>
+      <div className={styles['link-container-centered']}>
+        <Link
+          to={`/league/${leagueId}/players`}
+          className={styles['league-players-link']}
+        >
+          League Players <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}

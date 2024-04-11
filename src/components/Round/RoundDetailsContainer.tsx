@@ -9,6 +9,7 @@ import {
 
 import { Round, Player, PointSetting } from '../../types'
 import { fetchRound, deleteRound } from '../../data'
+import styles from './RoundDetailsContainer.module.css'
 
 const RoundContextDefault = {
   id: '',
@@ -63,10 +64,13 @@ export default function RoundDetailsContainer(): JSX.Element {
     >
       <Link to={`/league/${leagueId}`}>League Home</Link>
       {/* TODO: add link bavk to round details */}
-      <h2>Round</h2>
-      <p>{name}</p>
-      <p>{location && location}</p>
-      <p>{dateFormatted}</p>
+      <div id={styles['basic-round-info']}>
+        <h2>Round</h2>
+        <p>{name}</p>
+        <p>{location && location}</p>
+        <p>{dateFormatted}</p>
+      </div>
+
       <Outlet />
     </RoundContext.Provider>
   )

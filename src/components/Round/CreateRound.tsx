@@ -120,7 +120,6 @@ export default function CreateRound() {
       <form>
         <h2>Create Round</h2>
 
-        {/* <h1 className="">Create Round</h1> */}
         <BasicInput
           type="text"
           label="Round Name"
@@ -167,7 +166,7 @@ export default function CreateRound() {
         </div>
 
         <label>Active Round Points</label>
-        <p>You can add one-off points once the round is created</p>
+        <p>You can edit and add one-off points once the round is created</p>
         <div className={styles['create-round-selectables']}>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
@@ -192,9 +191,7 @@ export default function CreateRound() {
 
         {/* TODO: add validation to ensure league name has been added */}
         <div className="form-submit">
-          <button onClick={handleSaveRound} className="form-submit">
-            Create Round
-          </button>
+          <button onClick={handleSaveRound}>Create Round</button>
           <SimpleInputValidationError
             errorField={inputValidationError}
             errorMsgCode="MISSNG_VALUE"

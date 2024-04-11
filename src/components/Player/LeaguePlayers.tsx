@@ -23,7 +23,7 @@ export default function LeaguePlayers(): JSX.Element {
     <>
       <Link to={`/league/${leagueId}`}>League Home</Link>
 
-      <h2>League Players</h2>
+      <h2 className="page-title">League Players</h2>
 
       <AddPlayer refreshState={refreshPlayersState} />
 

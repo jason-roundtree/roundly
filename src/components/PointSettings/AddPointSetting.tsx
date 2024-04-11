@@ -111,7 +111,9 @@ export default function AddPointSetting({
 
   return (
     <form>
-      <h3>Add New Point to {pointContextCapitalized()}</h3>
+      <h3 className="form-title">
+        Add New Point to {pointContextCapitalized()}
+      </h3>
       <BasicInput
         type="text"
         label="Point Name"
@@ -152,12 +154,12 @@ export default function AddPointSetting({
 
       {pointContext === 'round' && (
         <fieldset className="round-point-radios">
-          <legend>One-off Round Point or Default League Point?</legend>
+          <legend>One-off or League Point Setting</legend>
           <RadioButton
             id="round-only"
             value="round-only"
             name="round-point-radio-buttons"
-            label="Add as one-off round point"
+            label="One-off point setting for this round"
             onChange={handleRadioInputChange}
             checked={!newPoint.isLeagueSetting}
           />
@@ -166,7 +168,7 @@ export default function AddPointSetting({
             id="league-setting"
             value="league-setting"
             name="round-point-radio-buttons"
-            label="Add to default league point settings"
+            label="Add to default point settings for league"
             onChange={handleRadioInputChange}
             checked={newPoint.isLeagueSetting}
           />
