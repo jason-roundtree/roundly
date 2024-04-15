@@ -32,6 +32,7 @@ import {
   Rounds,
   RoundDetailsContainer,
   RoundDetails,
+  RoundScoring,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
 import {
@@ -71,6 +72,10 @@ export default function Router() {
         element={<RoundDetailsContainer />}
       >
         <Route index element={<RoundDetails />} />
+        <Route path="scoring" element={<RoundScoring />} />
+        <Route path=":playerId/points" element={<PlayerRoundPointsEarned />} />
+        {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
+        <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} />
         <Route path="point-settings" element={<RoundPointSettings />} />
         <Route
           // path="league/:leagueId/rounds/:roundId/players"
@@ -86,30 +91,6 @@ export default function Router() {
       {/* <Route path="league/:id/schedule" element={< />} /> */}
       {/* event history */}
       {/* <Route path="league/:id/history" element={< />} /> */}
-
-      {/* <Route path="rounds/:id" element={<RoundDetails />} /> */}
-      {/* user rounds */}
-      {/* <Route path="rounds/:name" element={<PlayerRounds />} /> */}
-
-      {/* TODO: should following 2 be shared component? */}
-      <Route
-        path="rounds/:id/:name/points"
-        element={<PlayerRoundPointsEarned />}
-      />
-      <Route
-        path="rounds/:id/:name/scorecard"
-        element={<PlayerRoundScorecard />}
-      />
-      {/* TODO: are both details and summary needed? */}
-      <Route
-        path="rounds/:id/:name/round-details"
-        element={<PlayerRoundDetails />}
-      />
-      <Route
-        path="rounds/:id/:name/round-summary"
-        element={<PlayerRoundSummary />}
-      />
-      <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} />
     </Routes>
   )
 }

@@ -13,7 +13,7 @@ export default function CheckboxButton({
   return (
     <label
       htmlFor={id}
-      className={`${styles['checkbox-button']} ${checked ? 'is-selected' : ''}`}
+      className={`${styles.checkboxButton} ${checked ? 'is-selected' : ''}`}
     >
       <input
         id={id}

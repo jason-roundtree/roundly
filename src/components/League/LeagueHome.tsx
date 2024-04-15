@@ -55,7 +55,7 @@ export default function LeagueHome() {
   return (
     <>
       <h1>{name} - League Home</h1>
-      <p className={styles['edit-page-links']}>
+      <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/players`}>
           PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
@@ -66,7 +66,7 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <p className={styles['edit-page-links']}>
+      <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/point-settings`}>
           POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
@@ -81,7 +81,7 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <p className={styles['edit-page-links']}>
+      <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/rounds`}>
           ROUNDS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
@@ -92,7 +92,7 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <p className={styles['edit-page-links']}>
+      <p className={styles.editPageLinks}>
         STANDINGS <FontAwesomeIcon icon={faAnglesRight} />
       </p>
     </>

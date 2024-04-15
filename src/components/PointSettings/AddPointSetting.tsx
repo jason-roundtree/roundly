@@ -14,8 +14,9 @@ import {
 } from '../../types'
 import { validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
-import RadioButton from '../shared/components/RadioButton'
+import Radio from '../shared/components/Radio'
 import Select from '../shared/components/Select'
+import styles from './AddPointSetting.module.css'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
@@ -153,9 +154,9 @@ export default function AddPointSetting({
       )}
 
       {pointContext === 'round' && (
-        <fieldset className="round-point-radios">
+        <fieldset className={styles.roundPointRadios}>
           <legend>One-off or League Point Setting</legend>
-          <RadioButton
+          <Radio
             id="round-only"
             value="round-only"
             name="round-point-radio-buttons"
@@ -164,7 +165,7 @@ export default function AddPointSetting({
             checked={!newPoint.isLeagueSetting}
           />
 
-          <RadioButton
+          <Radio
             id="league-setting"
             value="league-setting"
             name="round-point-radio-buttons"

@@ -1,12 +1,12 @@
-.link-container-centered {
+.linkContainerCentered {
   text-align: center;
 }
 
-.league-players-link {
+.leaguePlayersLink {
   /* text-align: center; */
   /* margin: 0 auto; */
 }
 
-.decrease-bottom-margin.decrease-bottom-margin {
+.decreaseBottomMargin.decreaseBottomMargin {
   margin-bottom: 0.2em;
 }

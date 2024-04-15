@@ -117,18 +117,13 @@ a:hover {
   margin: 1em 0 1.5em;
 }
 
-[class*='edit-page-links'] {
+[class*='editPageLinks'] {
   margin-top: 0.75em;
   font-weight: bold;
 }
 
-.round-point-radios label {
-  display: flex;
-  align-items: center;
-  margin: 5px 5px 10px;
-}
-
 [type='radio'] {
+  cursor: pointer;
   width: 20px;
   height: 20px;
   margin: 5px 8px 5px;
@@ -149,7 +144,7 @@ input::-webkit-calendar-picker-indicator:hover {
 }
 
 /* TODO: move some of the players and point specific css to the corresponding folder as css modules */
-[class^='editable-list'] li {
+[class*='editable-list'] li {
   /* background: var(--tertiary-color); */
   display: grid;
   align-items: center;
@@ -158,7 +153,8 @@ input::-webkit-calendar-picker-indicator:hover {
   border: 1px solid var(--tertiary-color);
 }
 
-.editable-list--points li {
+.editable-list--points li,
+.editable-list--player-scoring li {
   grid-template-columns: 5fr 1fr 3fr;
 }
 .editable-list--players li {
@@ -182,7 +178,8 @@ input::-webkit-calendar-picker-indicator:hover {
 
 /* TODO: make common breakpoint variables */
 @media (max-width: 550px) {
-  .editable-list--points li {
+  .editable-list--points li,
+  .editable-list--player-scoring li {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr 1fr;
     min-width: 100%;

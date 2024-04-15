@@ -1,4 +1,4 @@
-.checkboxButton {
+.radioLabel {
   display: inline-block;
   padding: 5px 10px;
   border: 1px solid var(--tertiary-color);
@@ -6,6 +6,11 @@
   font-weight: normal;
 }
 
-.checkboxButton:hover {
+.radioLabel:hover {
   cursor: pointer;
+}
+
+.radioBox {
+  margin: 0 5px 0 0;
+  width: 0.75em;
 }

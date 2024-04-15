@@ -19,7 +19,14 @@ export default function RoundDetails() {
 
   return (
     <>
-      <p className={styles['edit-page-links']}>
+      {/* TODO: */}
+      <p className={styles.editPageLinks}>
+        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+          SCORING <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </p>
+
+      <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/rounds/${roundId}/players`}>
           PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
@@ -29,7 +36,8 @@ export default function RoundDetails() {
           return <li key={player.id}>{player.name}</li>
         })}
       </ul>
-      <p className={styles['edit-page-links']}>
+
+      <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/rounds/${roundId}/point-settings`}>
           POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
@@ -42,13 +50,6 @@ export default function RoundDetails() {
             </li>
           )
         })}
-
-        {/* TODO: */}
-        <p className={styles['edit-page-links']}>
-          <Link to={`#`}>
-            SCORES <FontAwesomeIcon icon={faAnglesRight} />
-          </Link>
-        </p>
       </ul>
 
       <button onClick={() => setShowDeleteConfirmation((show) => !show)}>

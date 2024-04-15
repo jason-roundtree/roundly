@@ -144,7 +144,7 @@ export default function CreateRound() {
 
         {/* TODO: add select/de-select all */}
         <label>Active Round Players</label>
-        <div className={styles['create-round-selectables']}>
+        <div className={styles.createRoundSelectables}>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
             return (
@@ -167,7 +167,7 @@ export default function CreateRound() {
 
         <label>Active Round Points</label>
         <p>You can edit and add one-off points once the round is created</p>
-        <div className={styles['create-round-selectables']}>
+        <div className={styles.createRoundSelectables}>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
             return (

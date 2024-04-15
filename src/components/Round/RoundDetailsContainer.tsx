@@ -64,7 +64,7 @@ export default function RoundDetailsContainer(): JSX.Element {
     >
       <Link to={`/league/${leagueId}`}>League Home</Link>
       {/* TODO: add link bavk to round details */}
-      <div id={styles['basic-round-info']}>
+      <div id={styles.basicRoundInfo}>
         <h2>Round</h2>
         <p>{name}</p>
         <p>{location && location}</p>

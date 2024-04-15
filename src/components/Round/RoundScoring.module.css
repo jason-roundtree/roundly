@@ -1,0 +1,9 @@
+.playerScoringList {
+  margin-top: 1.5em;
+}
+
+.sortingRadios label {
+  display: inline-flex;
+  align-items: center;
+  margin: 5px;
+}
