@@ -146,6 +146,7 @@ export default function AddPointSetting({
         <BasicInput
           type="number"
           min="1"
+          // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
           label="Max Frequency Per Scope"
           name="maxFrequencyPerScope"
           onChange={handleInputChange}

@@ -1,5 +1,7 @@
 export { default as PlayerHole } from './PlayerHole'
-export { default as PlayerRoundPointsEarned } from './PlayerRoundPointsEarned'
+export { default as PlayerRoundScoring } from './PlayerRoundScoring'
+export { default as PlayerRoundPointsEarnedTable } from './PlayerRoundPointsEarnedTable'
+export { default as PlayerRoundEnterScoring } from './PlayerRoundEnterScoring'
 export { default as PlayerRoundScorecard } from './PlayerRoundScorecard'
 export { default as PlayerRoundSummary } from './PlayerRoundSummary'
 export { default as PlayerRounds } from './PlayerRounds'

@@ -22,21 +22,24 @@ export default function Rounds() {
 
   return (
     <>
-      <Link to={`/league/${leagueId}`}>League Home</Link>
+      <Link to={`/league/${leagueId}`} className="leagueHomeLink">
+        League Home
+        <FontAwesomeIcon icon={faAnglesRight} />
+      </Link>
 
       <h2 className="page-title">Rounds</h2>
-      <Link to={`/league/${leagueId}/create-round`} id={styles['create-round']}>
+      <Link to={`/league/${leagueId}/create-round`} id={styles.createRound}>
         CREATE ROUND
         <FontAwesomeIcon icon={faAnglesRight} />
       </Link>
-      <ul id={styles['round-cards']}>
+      <ul id={styles.roundCards}>
         {rounds.map((round) => {
           const { id: roundId, name, location, date } = round
           const dateFormatted = new Date(date).toLocaleDateString()
           return (
             <li key={roundId}>
               <Link to={`/league/${leagueId}/rounds/${roundId}`} state={round}>
-                <div className={styles['round-card']}>
+                <div className={styles.roundCard}>
                   <p>{name}</p>
                   <p>{dateFormatted.toString()}</p>
                   {location && <p>{location}</p>}

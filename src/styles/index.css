@@ -65,7 +65,7 @@ fieldset {
 fieldset label {
   font-weight: normal;
 }
-.non-input-label {
+.nonInputLabel {
   margin-top: var(--label-margin-top);
   font-weight: bold;
 }
@@ -148,7 +148,7 @@ input::-webkit-calendar-picker-indicator:hover {
   /* background: var(--tertiary-color); */
   display: grid;
   align-items: center;
-  padding: 3px 10px;
+  padding: 1px 5px;
   margin: 3px 0;
   border: 1px solid var(--tertiary-color);
 }
@@ -166,7 +166,7 @@ input::-webkit-calendar-picker-indicator:hover {
 .list-edit-buttons button {
   padding: 2px 6px;
   font-size: 0.9em;
-  margin: 0.25em 0.15em;
+  margin: 0.15em;
 }
 .list-point-value {
   text-align: center;
@@ -249,4 +249,32 @@ input::-webkit-calendar-picker-indicator:hover {
 }
 .breadcrumb a:hover {
   color: #0096ff;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  overflow-x: auto;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+td,
+th {
+  padding: 0.2em;
+}
+
+.leagueHomeLink {
+  display: block;
+  margin-left: auto;
+  width: fit-content;
 }

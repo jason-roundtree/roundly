@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 // import { v4 as uuid } from 'uuid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { Player, PointSetting, Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
@@ -115,7 +117,10 @@ export default function CreateRound() {
 
   return (
     <>
-      <Link to={`/league/${leagueId}`}>League Home</Link>
+      <Link to={`/league/${leagueId}`} className="leagueHomeLink">
+        League Home
+        <FontAwesomeIcon icon={faAnglesRight} />
+      </Link>
 
       <form>
         <h2>Create Round</h2>

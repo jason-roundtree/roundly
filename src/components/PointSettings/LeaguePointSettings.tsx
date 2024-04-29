@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { AddPointSetting, LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
@@ -30,7 +32,10 @@ export default function LeaguePointSettings(): JSX.Element {
 
   return (
     <>
-      <Link to={`/league/${leagueId}`}>League Home</Link>
+      <Link to={`/league/${leagueId}`} className="leagueHomeLink">
+        League Home
+        <FontAwesomeIcon icon={faAnglesRight} />
+      </Link>
 
       <h2 className="page-title">League Point Settings</h2>
 

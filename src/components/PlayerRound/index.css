@@ -1,0 +1,41 @@
+#pointAndScoreSummaryCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1em;
+}
+
+#pointAndScoreSummaryCards > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* justify-content: center; */
+  align-items: center;
+  /* text-align: center; */
+  border: 1px solid var(--tertiary-color);
+  min-height: 75px;
+  padding: 10px 5px 5px;
+}
+
+/* #totalPoints {
+}
+
+#totalScore {
+} */
+
+.cardLabel {
+  font-size: 1.25em;
+}
+
+.cardTotal {
+  font-size: 1.5em;
+}
+
+.pointsEarnedTable tbody td:first-of-type {
+  text-align: left;
+}
+
+#enterPointEarned {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}

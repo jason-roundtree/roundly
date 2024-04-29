@@ -64,7 +64,7 @@ export default function RoundPlayers(): JSX.Element {
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
-      <p className="non-input-label">Active Round Players</p>
+      <p className="nonInputLabel">Active Round Players</p>
       <ul className="editable-list--players">
         {roundPlayers.length ? (
           sortArrayOfObjects(roundPlayers, 'name')?.map(
@@ -90,7 +90,7 @@ export default function RoundPlayers(): JSX.Element {
         )}
       </ul>
 
-      <p className="non-input-label">Inactive Round Players</p>
+      <p className="nonInputLabel">Inactive Round Players</p>
       <ul className="editable-list--players">
         {getInactiveRoundPlayers().map((player) => {
           return (

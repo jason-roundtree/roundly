@@ -20,7 +20,8 @@ import {
 } from './components/Player'
 import {
   PlayerRoundDetails,
-  PlayerRoundPointsEarned,
+  PlayerRoundScoring,
+  PlayerRoundEnterPoint,
   PlayerRounds,
   PlayerRoundSummary,
   PlayerRoundScorecard,
@@ -73,9 +74,13 @@ export default function Router() {
       >
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
-        <Route path=":playerId/points" element={<PlayerRoundPointsEarned />} />
+        <Route path=":playerId/points" element={<PlayerRoundScoring />} />
+        <Route
+          path=":playerId/enter-point"
+          element={<PlayerRoundEnterPoint />}
+        />
         {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
-        <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} />
+        {/* <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} /> */}
         <Route path="point-settings" element={<RoundPointSettings />} />
         <Route
           // path="league/:leagueId/rounds/:roundId/players"

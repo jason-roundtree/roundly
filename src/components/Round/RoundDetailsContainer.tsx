@@ -6,6 +6,8 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { Round, Player, PointSetting } from '../../types'
 import { fetchRound, deleteRound } from '../../data'
@@ -62,12 +64,23 @@ export default function RoundDetailsContainer(): JSX.Element {
         handleDeleteRound,
       }}
     >
-      <Link to={`/league/${leagueId}`}>League Home</Link>
+      <Link to={`/league/${leagueId}`} className="leagueHomeLink">
+        League Home
+        <FontAwesomeIcon icon={faAnglesRight} />
+      </Link>
       {/* TODO: add link bavk to round details */}
       <div id={styles.basicRoundInfo}>
-        <h2>Round</h2>
-        <p>{name}</p>
+        <p id={styles.basicRoundInfoTitle}>Round -&nbsp;</p>
+        {name && (
+          <>
+            <p>{name}</p>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+          </>
+        )}
+
         <p>{location && location}</p>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+
         <p>{dateFormatted}</p>
       </div>
 
