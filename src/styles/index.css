@@ -3,6 +3,9 @@
   --primary-color: rgb(75, 184, 97);
   --secondary-color: whitesmoke;
   --tertiary-color: rgb(208, 246, 226);
+  --lighter-gray: #dfdfdf;
+  --light-gray: #cccccc;
+  --gray: #b5b5b5;
   --label-margin-top: 1.1em;
 }
 * {
@@ -127,7 +130,22 @@ a:hover {
   width: 20px;
   height: 20px;
   margin: 5px 8px 5px;
+  /* TODO: is this OK to do for radios if i'm using color to show which one is selected? */
+  /* display: none; */
 }
+
+.isDisabled {
+  color: var(--lighter-gray);
+}
+.isDisabled + input {
+  color: var(--gray);
+  /* chrome bg color for disabled input */
+  /* color: rgba(239, 239, 239, 0.3); */
+}
+
+/* input:disabled::placeholder {
+  color: #909;
+} */
 
 /* button:disabled {
     cursor: not-allowed;

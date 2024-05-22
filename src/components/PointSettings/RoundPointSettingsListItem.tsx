@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
+import { RoundPointScopeRadios } from '.'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
+import Radio from '../shared/components/Radio'
 import Select from '../shared/components/Select'
 import { EditablePointSettingListItem } from '.'
 import {
@@ -55,6 +57,11 @@ export default function RoundPointSettingsListItem({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
+  }
+
+  function handleRadioInputChange(e) {
+    console.log('e.target.id', e.target.id)
+    setUpdatedPointSetting({ ...updatedPointSetting, scope: e.target.id })
   }
 
   function handleSelectInputChange(e) {
@@ -111,26 +118,20 @@ export default function RoundPointSettingsListItem({
             onFocus={selectAllInputText}
           />
 
-          <Select
-            options={POINT_SCOPE_SETTINGS}
-            id="point-scope"
-            label="Point Scope"
-            description={POINT_SCOPE_DESCRIPTION}
-            onChange={handleSelectInputChange}
-            value={getPointScopeValueFromKey(updatedPointSetting.scope) ?? ''}
+          <RoundPointScopeRadios
+            onChange={handleRadioInputChange}
+            selectedScope={updatedPointSetting.scope}
           />
-
-          {updatedPointSetting.scope !== 'no_scope' && (
-            <BasicInput
-              type="number"
-              min="1"
-              // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-              label="Max Frequency Per Scope"
-              name="maxFrequencyPerScope"
-              onChange={handleInputChange}
-              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-            />
-          )}
+          <BasicInput
+            disabled={updatedPointSetting.scope === 'no_scope'}
+            type="number"
+            min="1"
+            // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
+            label="Max Frequency Per Scope"
+            name="maxFrequencyPerScope"
+            onChange={handleInputChange}
+            value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+          />
 
           {/* <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => removePointSettingFromRound(id)}>

@@ -1,3 +1,4 @@
+import { isDisabled } from '@testing-library/user-event/dist/utils'
 import React from 'react'
 
 type TextDateOrNumber = 'text' | 'date' | 'number'
@@ -14,6 +15,8 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
   inputRef?: T
+  // className?: string
+  disabled?: boolean
 }
 
 export default function BasicInput({
@@ -27,10 +30,13 @@ export default function BasicInput({
   onFocus,
   inputRef,
   min,
+  disabled,
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className={disabled ? 'isDisabled' : ''}>
+        {label}
+      </label>
       <input
         type={type}
         name={name}
@@ -40,6 +46,7 @@ export default function BasicInput({
         // required={isRequired}
         onFocus={onFocus}
         ref={inputRef}
+        disabled={disabled}
       />
     </>
   )

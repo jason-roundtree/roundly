@@ -6,3 +6,4 @@ export { default as LeaguePointSettingsListItem } from './LeaguePointSettingsLis
 export { default as RoundPointSettingsListItem } from './RoundPointSettingsListItem'
 export { default as EditablePointSettingListItem } from './EditablePointSettingListItem'
 export { default as RoundPointSettings } from './RoundPointSettings'
+export { default as RoundPointScopeRadios } from './RoundPointScopeRadios'

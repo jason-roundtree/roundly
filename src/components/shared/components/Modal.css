@@ -10,13 +10,13 @@
   left: 0;
   height: 100vh;
   width: 100%;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(47, 47, 47, 0.9);
 }
 
 #modal-content {
   margin: 1em;
   padding: 1em;
-  background: var(--tertiary-color);
+  background: #fff;
   border-radius: 3px;
   /* position: relative; */
 }

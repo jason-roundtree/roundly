@@ -17,6 +17,7 @@ import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import Select from '../shared/components/Select'
 import styles from './AddPointSetting.module.css'
+import RoundPointScopeRadios from './RoundPointScopeRadios'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
@@ -88,8 +89,16 @@ export default function AddPointSetting({
 
   function handleRadioInputChange(e) {
     console.log('e.target.id', e.target.id)
-    const isLeagueSetting = e.target.id === 'league-setting'
-    setNewPoint({ ...newPoint, isLeagueSetting: isLeagueSetting })
+    console.log('e.target.name', e.target.name)
+    if (e.target.name === 'isLeaguePoint-radios') {
+      // const isLeagueSetting = e.target.id === 'league-setting'
+      setNewPoint({
+        ...newPoint,
+        isLeagueSetting: e.target.id === 'league-setting',
+      })
+    } else if (e.target.name === 'roundPointScope-radios') {
+      setNewPoint({ ...newPoint, scope: e.target.id })
+    }
   }
 
   function handleSelectInputChange(e) {
@@ -133,26 +142,20 @@ export default function AddPointSetting({
         onFocus={selectAllInputText}
       />
 
-      <Select
-        options={POINT_SCOPE_SETTINGS}
-        id="point-scope"
-        label="Point Scope"
-        description={POINT_SCOPE_DESCRIPTION}
-        onChange={handleSelectInputChange}
-        value={getPointScopeValueFromKey(newPoint.scope) ?? ''}
+      <RoundPointScopeRadios
+        onChange={handleRadioInputChange}
+        selectedScope={newPoint.scope}
       />
-
-      {newPoint.scope !== 'no_scope' && (
-        <BasicInput
-          type="number"
-          min="1"
-          // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-          label="Max Frequency Per Scope"
-          name="maxFrequencyPerScope"
-          onChange={handleInputChange}
-          value={newPoint.maxFrequencyPerScope ?? ''}
-        />
-      )}
+      <BasicInput
+        disabled={newPoint.scope === 'no_scope'}
+        type="number"
+        min="1"
+        // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
+        label="Max Frequency Per Scope"
+        name="maxFrequencyPerScope"
+        onChange={handleInputChange}
+        value={newPoint.maxFrequencyPerScope ?? ''}
+      />
 
       {pointContext === 'round' && (
         <fieldset className={styles.roundPointRadios}>
@@ -160,7 +163,7 @@ export default function AddPointSetting({
           <Radio
             id="round-only"
             value="round-only"
-            name="round-point-radio-buttons"
+            name="isLeaguePoint-radios"
             label="One-off point setting for this round"
             onChange={handleRadioInputChange}
             checked={!newPoint.isLeagueSetting}
@@ -169,7 +172,7 @@ export default function AddPointSetting({
           <Radio
             id="league-setting"
             value="league-setting"
-            name="round-point-radio-buttons"
+            name="isLeaguePoint-radio"
             label="Add to default point settings for league"
             onChange={handleRadioInputChange}
             checked={newPoint.isLeagueSetting}

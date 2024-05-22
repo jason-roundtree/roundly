@@ -21,7 +21,7 @@ import {
 import {
   PlayerRoundDetails,
   PlayerRoundScoring,
-  PlayerRoundEnterPoint,
+  PlayerRoundEnterScoring,
   PlayerRounds,
   PlayerRoundSummary,
   PlayerRoundScorecard,
@@ -77,7 +77,7 @@ export default function Router() {
         <Route path=":playerId/points" element={<PlayerRoundScoring />} />
         <Route
           path=":playerId/enter-point"
-          element={<PlayerRoundEnterPoint />}
+          element={<PlayerRoundEnterScoring />}
         />
         {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
         {/* <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} /> */}
