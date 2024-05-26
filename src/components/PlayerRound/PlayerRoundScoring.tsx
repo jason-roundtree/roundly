@@ -5,9 +5,10 @@ import { PlayerRoundPointsEarnedTable, PlayerRoundScorecard } from '.'
 import './index.css'
 
 export default function PlayerRoundPointsEarned() {
-  const { leagueId, roundId, playerId } = useParams()
+  const { leagueId, roundId } = useParams()
   const [searchParams] = useSearchParams()
-  const playerName = searchParams.get('player')
+  const playerName = searchParams.get('playerName')
+  const playerId = searchParams.get('playerId')
   console.log('playerName from params', playerName)
 
   return (
@@ -16,7 +17,7 @@ export default function PlayerRoundPointsEarned() {
 
       <div id="enterPointEarned">
         <Link
-          to={`/league/${leagueId}/rounds/${roundId}/${playerId}/enter-point`}
+          to={`/league/${leagueId}/rounds/${roundId}/enter-point?playerId=${playerId}`}
         >
           <button>Enter Point Earned / Score</button>
         </Link>
