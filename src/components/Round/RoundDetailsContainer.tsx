@@ -69,20 +69,22 @@ export default function RoundDetailsContainer(): JSX.Element {
         <FontAwesomeIcon icon={faAnglesRight} />
       </Link>
       {/* TODO: add link bavk to round details */}
-      <div id={styles.basicRoundInfo}>
-        <p id={styles.basicRoundInfoTitle}>Round -&nbsp;</p>
-        {name && (
-          <>
-            <p>{name}</p>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-          </>
-        )}
+      <Link to={`/league/${leagueId}/rounds/${roundId}`} className="">
+        <div id={styles.basicRoundInfo}>
+          <p id={styles.basicRoundInfoTitle}>Round -&nbsp;</p>
+          {name && (
+            <>
+              <p>{name}</p>
+              <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            </>
+          )}
 
-        <p>{location && location}</p>
-        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+          <p>{location && location}</p>
+          <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
 
-        <p>{dateFormatted}</p>
-      </div>
+          <p>{dateFormatted}</p>
+        </div>
+      </Link>
 
       <Outlet />
     </RoundContext.Provider>
