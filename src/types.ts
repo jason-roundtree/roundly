@@ -52,7 +52,7 @@ export interface PointSetting {
   id: string
   name: string
   value: number
-  scope: PointScopeKeys
+  scope: (typeof POINT_SCOPE_SETTINGS)[number]['key']
   // TODO: better to use null over string like 'unlimited'??
   maxFrequencyPerScope: number | null
   isLeagueSetting?: boolean
@@ -60,29 +60,30 @@ export interface PointSetting {
 
 export const POINT_SCOPE_DESCRIPTION =
   'Allows you to restrict where the point can be earned'
+
 export const POINT_SCOPE_SETTINGS = [
-  { key: 'no_scope', value: 'No scope' },
-  { key: 'hole', value: 'Earned by hole' },
-  { key: 'round', value: 'Earned by round' },
+  { key: 'no_scope', label: 'No scope' },
+  { key: 'hole', label: 'Earned by hole' },
+  { key: 'round', label: 'Earned by round' },
 ] as const
 
-export type PointScopeKeys = (typeof POINT_SCOPE_SETTINGS)[number]['key']
-export type PointScopeValues = (typeof POINT_SCOPE_SETTINGS)[number]['value']
+// export type PointScopeKeys = (typeof POINT_SCOPE_SETTINGS)[number]['key']
+// export type PointScopeValues = (typeof POINT_SCOPE_SETTINGS)[number]['label']
 
-export function getPointScopeValueFromKey(key: PointScopeKeys) {
-  for (const p of POINT_SCOPE_SETTINGS) {
-    if (p.key === key) {
-      return p.value
-    }
-  }
-}
-export function getPointScopeKeyFromValue(value: PointScopeValues) {
-  for (const p of POINT_SCOPE_SETTINGS) {
-    if (p.value === value) {
-      return p.key
-    }
-  }
-}
+// export function getPointScopeLabelFromKey(key: PointScopeKeys) {
+//   for (const p of POINT_SCOPE_SETTINGS) {
+//     if (p.key === key) {
+//       return p.label
+//     }
+//   }
+// }
+// export function getPointScopeKeyFromValue(label: PointScopeValues) {
+//   for (const p of POINT_SCOPE_SETTINGS) {
+//     if (p.label === label) {
+//       return p.key
+//     }
+//   }
+// }
 
 export interface PointEarned {
   // TODO: ids in types??

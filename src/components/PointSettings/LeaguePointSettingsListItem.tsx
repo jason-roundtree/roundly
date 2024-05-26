@@ -4,16 +4,8 @@ import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import { EditablePointSettingListItem } from '.'
-import {
-  POINT_SCOPE_DESCRIPTION,
-  POINT_SCOPE_SETTINGS,
-  PointScopeKeys,
-  PointScopeValues,
-  PointSetting,
-  getPointScopeKeyFromValue,
-  getPointScopeValueFromKey,
-} from '../../types'
+import { EditablePointSettingListItem, RoundPointScopeRadios } from '.'
+import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
@@ -60,12 +52,8 @@ export default function LeaguePointSettingsListItem({
     setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
   }
 
-  function handleSelectInputChange(e) {
-    const selectedOption = getPointScopeKeyFromValue(
-      e.target.value
-    ) as PointScopeKeys
-    console.log('selectedOption', selectedOption)
-    setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
+  function handleRadioInputChange(e) {
+    setUpdatedPointSetting({ ...updatedPointSetting, scope: e.target.value })
   }
 
   function EditPointSettingModalButtons(): JSX.Element {
@@ -103,25 +91,22 @@ export default function LeaguePointSettingsListItem({
             onChange={handleInputChange}
             onFocus={selectAllInputText}
           />
-          <Select
-            options={POINT_SCOPE_SETTINGS}
-            id="point-scope"
-            label="Point Scope"
-            // description={POINT_SCOPE_DESCRIPTION}
-            onChange={handleSelectInputChange}
-            value={getPointScopeValueFromKey(updatedPointSetting.scope) ?? ''}
+
+          <RoundPointScopeRadios
+            name="leaguePointScope-radios-modal"
+            onChange={handleRadioInputChange}
+            selectedScope={updatedPointSetting.scope}
           />
-          {updatedPointSetting.scope !== 'no_scope' && (
-            <BasicInput
-              type="number"
-              min="1"
-              // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-              label="Max Frequency Per Scope"
-              name="maxFrequencyPerScope"
-              onChange={handleInputChange}
-              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-            />
-          )}
+          <BasicInput
+            disabled={updatedPointSetting.scope === 'no_scope'}
+            type="number"
+            min="1"
+            // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
+            label="Max Frequency Per Scope"
+            name="maxFrequencyPerScope"
+            onChange={handleInputChange}
+            value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+          />
 
           {/* <br />
           <button onClick={handleUpdatePointSetting}>Save</button>

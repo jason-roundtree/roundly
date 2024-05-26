@@ -3,19 +3,10 @@ import { useParams } from 'react-router-dom'
 
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import {
-  POINT_SCOPE_DESCRIPTION,
-  POINT_SCOPE_SETTINGS,
-  PointScopeKeys,
-  PointScopeValues,
-  getPointScopeKeyFromValue,
-  getPointScopeValueFromKey,
-  PointSetting,
-} from '../../types'
+import { PointSetting } from '../../types'
 import { validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
-import Select from '../shared/components/Select'
 import styles from './AddPointSetting.module.css'
 import RoundPointScopeRadios from './RoundPointScopeRadios'
 
@@ -87,27 +78,20 @@ export default function AddPointSetting({
     setNewPoint({ ...newPoint, [tName]: tValue })
   }
 
-  function handleRadioInputChange(e) {
-    console.log('e.target.id', e.target.id)
-    console.log('e.target.name', e.target.name)
-    if (e.target.name === 'isLeaguePoint-radios') {
-      // const isLeagueSetting = e.target.id === 'league-setting'
-      setNewPoint({
-        ...newPoint,
-        isLeagueSetting: e.target.id === 'league-setting',
-      })
-    } else if (e.target.name === 'roundPointScope-radios') {
-      setNewPoint({ ...newPoint, scope: e.target.id })
+  function handleRadioInputChange({ target: { name, value } }) {
+    switch (name) {
+      case 'isLeaguePoint-radios':
+        setNewPoint({
+          ...newPoint,
+          isLeagueSetting: value === 'league-setting',
+        })
+        break
+      case 'roundPointScope-radios-main':
+        setNewPoint({ ...newPoint, scope: value })
+        break
+      default:
+        console.log('no matching radio')
     }
-  }
-
-  function handleSelectInputChange(e) {
-    console.log('e.target.value', e.target.value)
-    const selectedOption = getPointScopeKeyFromValue(
-      e.target.value
-    ) as PointScopeKeys
-    console.log('selectedOption', selectedOption)
-    setNewPoint({ ...newPoint, scope: selectedOption })
   }
 
   function selectAllInputText(e): void {
@@ -143,6 +127,7 @@ export default function AddPointSetting({
       />
 
       <RoundPointScopeRadios
+        name="roundPointScope-radios-main"
         onChange={handleRadioInputChange}
         selectedScope={newPoint.scope}
       />
@@ -172,7 +157,7 @@ export default function AddPointSetting({
           <Radio
             id="league-setting"
             value="league-setting"
-            name="isLeaguePoint-radio"
+            name="isLeaguePoint-radios"
             label="Add to default point settings for league"
             onChange={handleRadioInputChange}
             checked={newPoint.isLeagueSetting}

@@ -1,15 +1,18 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 
 import { PlayerRoundPointsEarnedTable, PlayerRoundScorecard } from '.'
 import './index.css'
 
 export default function PlayerRoundPointsEarned() {
   const { leagueId, roundId, playerId } = useParams()
+  const [searchParams] = useSearchParams()
+  const playerName = searchParams.get('player')
+  console.log('playerName from params', playerName)
 
   return (
     <>
-      <h3 className="page-title">Player Round Scoring</h3>
+      <h3 className="page-title">Player Round Scoring - {playerName}</h3>
 
       <div id="enterPointEarned">
         <Link

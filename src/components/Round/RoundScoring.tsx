@@ -106,7 +106,7 @@ export default function RoundScoring() {
               <span className="list-point-value">#ofpoints</span>
               <span className="list-edit-buttons">
                 <Link
-                  to={`/league/${leagueId}/rounds/${roundId}/${player.id}/points`}
+                  to={`/league/${leagueId}/rounds/${roundId}/${player.id}/points?player=${player.name}`}
                 >
                   <button>Edit</button>
                 </Link>

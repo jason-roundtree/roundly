@@ -9,7 +9,6 @@ interface RadioProps {
   value: string
   id: string
   name: string
-  hidden?: boolean
 }
 
 export default function Radio({
@@ -19,7 +18,6 @@ export default function Radio({
   value,
   id,
   name,
-  hidden,
 }: RadioProps): JSX.Element {
   return (
     <label
@@ -34,7 +32,6 @@ export default function Radio({
         value={value}
         id={id}
         name={name}
-        hidden={hidden}
       />
       {label}
     </label>

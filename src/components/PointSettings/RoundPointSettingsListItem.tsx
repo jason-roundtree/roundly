@@ -3,18 +3,8 @@ import { useState } from 'react'
 import { RoundPointScopeRadios } from '.'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import Radio from '../shared/components/Radio'
-import Select from '../shared/components/Select'
 import { EditablePointSettingListItem } from '.'
-import {
-  POINT_SCOPE_DESCRIPTION,
-  POINT_SCOPE_SETTINGS,
-  PointScopeKeys,
-  PointScopeValues,
-  PointSetting,
-  getPointScopeKeyFromValue,
-  getPointScopeValueFromKey,
-} from '../../types'
+import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 
 // TODO: add same defaultState typing for LeaguePlayers?
@@ -60,16 +50,7 @@ export default function RoundPointSettingsListItem({
   }
 
   function handleRadioInputChange(e) {
-    console.log('e.target.id', e.target.id)
-    setUpdatedPointSetting({ ...updatedPointSetting, scope: e.target.id })
-  }
-
-  function handleSelectInputChange(e) {
-    const selectedOption = getPointScopeKeyFromValue(
-      e.target.value
-    ) as PointScopeKeys
-    console.log('selectedOption', selectedOption)
-    setUpdatedPointSetting({ ...updatedPointSetting, scope: selectedOption })
+    setUpdatedPointSetting({ ...updatedPointSetting, scope: e.target.value })
   }
 
   function modalTitle() {
@@ -119,9 +100,11 @@ export default function RoundPointSettingsListItem({
           />
 
           <RoundPointScopeRadios
+            name="roundPointScope-radios-modal"
             onChange={handleRadioInputChange}
             selectedScope={updatedPointSetting.scope}
           />
+          {/* TODO: make into component or fold into RoundPointScopeRadios since it's currently used in 3 components */}
           <BasicInput
             disabled={updatedPointSetting.scope === 'no_scope'}
             type="number"
