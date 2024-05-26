@@ -7,9 +7,8 @@ import './index.css'
 export default function PlayerRoundPointsEarned() {
   const { leagueId, roundId } = useParams()
   const [searchParams] = useSearchParams()
-  const playerName = searchParams.get('playerName')
-  const playerId = searchParams.get('playerId')
-  console.log('playerName from params', playerName)
+  const playerName = searchParams.get('playerName') ?? ''
+  const playerId = searchParams.get('playerId') ?? ''
 
   return (
     <>
@@ -17,7 +16,9 @@ export default function PlayerRoundPointsEarned() {
 
       <div id="enterPointEarned">
         <Link
-          to={`/league/${leagueId}/rounds/${roundId}/enter-point?playerId=${playerId}`}
+          to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring?playerId=${playerId}&playerName=${encodeURIComponent(
+            playerName
+          )}`}
         >
           <button>Enter Point Earned / Score</button>
         </Link>

@@ -10,6 +10,7 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   label: string
   value: string | number
   min?: string
+  max?: string
   // showEmptyInputError?: boolean
   // isRequired?: boolean
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -30,6 +31,7 @@ export default function BasicInput({
   onFocus,
   inputRef,
   min,
+  max,
   disabled,
 }: BasicInputProps<typeof type>): JSX.Element {
   return (

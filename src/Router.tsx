@@ -74,8 +74,11 @@ export default function Router() {
       >
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
-        <Route path="points" element={<PlayerRoundScoring />} />
-        <Route path="enter-point" element={<PlayerRoundEnterScoring />} />
+        <Route path="player-scoring" element={<PlayerRoundScoring />} />
+        <Route
+          path="round-player-scoring"
+          element={<PlayerRoundEnterScoring />}
+        />
         {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
         {/* <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} /> */}
         <Route path="point-settings" element={<RoundPointSettings />} />

@@ -25,11 +25,11 @@ export default function Select({
       <label htmlFor={id} className="">
         {label}
       </label>
-      <p>{description}</p>
+      {description && <p>{description}</p>}
       <select name={name} id={id} onChange={onChange} value={value}>
         {options.map((option) => {
           return (
-            <option key={option.key} value={option.value}>
+            <option key={option.id} id={option.id} value={option.value}>
               {option.value}
             </option>
           )
