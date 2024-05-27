@@ -18,6 +18,7 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   inputRef?: T
   // className?: string
   disabled?: boolean
+  placeholder?: string
 }
 
 export default function BasicInput({
@@ -33,6 +34,7 @@ export default function BasicInput({
   min,
   max,
   disabled,
+  placeholder,
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
@@ -49,6 +51,7 @@ export default function BasicInput({
         onFocus={onFocus}
         ref={inputRef}
         disabled={disabled}
+        placeholder={placeholder}
       />
     </>
   )
