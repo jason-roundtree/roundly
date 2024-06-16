@@ -22,14 +22,12 @@ export default function Select({
 }: SelectProps) {
   return (
     <div>
-      <label htmlFor={id} className="">
-        {label}
-      </label>
+      <label htmlFor={id}>{label}</label>
       {description && <p>{description}</p>}
       <select name={name} id={id} onChange={onChange} value={value}>
         {options.map((option) => {
           return (
-            <option key={option.id} id={option.id} value={option.value}>
+            <option key={option.id} value={option.value}>
               {option.value}
             </option>
           )
