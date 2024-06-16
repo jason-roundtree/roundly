@@ -8,7 +8,7 @@ export default function PlayerSelectable({
 }: {
   name: string
   id: string
-  toggleSelectedPlayer: () => void
+  toggleSelectedPlayer(): void
   isSelected: boolean
 }) {
   return (

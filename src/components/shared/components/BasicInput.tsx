@@ -13,8 +13,8 @@ interface BasicInputProps<T extends TextDateOrNumber> {
   max?: string
   // showEmptyInputError?: boolean
   // isRequired?: boolean
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange(e: React.ChangeEvent<HTMLInputElement>): void
+  onFocus?(e: React.ChangeEvent<HTMLInputElement>): void
   inputRef?: T
   // className?: string
   disabled?: boolean

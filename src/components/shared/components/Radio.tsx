@@ -5,7 +5,7 @@ import styles from './Radio.module.css'
 interface RadioProps {
   label: string
   checked?: boolean
-  onChange: (e) => void
+  onChange(e): void
   value: string
   id: string
   name: string

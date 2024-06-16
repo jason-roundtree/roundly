@@ -9,19 +9,17 @@ import { sortArrayOfObjects } from '../shared/utils'
 import { createRoundPlayerPointEarned, createPlayerHole } from '../../data'
 
 export default function PlayerRoundEnterScoring() {
-  const [player, setPlayer] = useState({ name: '', id: '' })
-  const [hole, setHole] = useState('')
-  const [holeScore, setHoleScore] = useState<number | null>(null)
-  const [point, setPoint] = useState({ name: '', id: '' })
   const [searchParams] = useSearchParams()
   const { id: roundId, players, pointSettings } = useContext(RoundContext)
-  console.log('point', point)
+  const [player, setPlayer] = useState({ name: '', id: '' })
+  const [point, setPoint] = useState({ name: '', id: '' })
+  const [hole, setHole] = useState('')
+  const [holeScore, setHoleScore] = useState<number | null>(null)
   console.log('player', player)
-  console.log('hole', hole)
 
   useEffect(() => {
-    const initialPlayerName = searchParams.get('playerName') ?? ''
-    const initialPlayerId = searchParams.get('playerId') ?? ''
+    const initialPlayerName = searchParams.get('playerName') || players[0].name
+    const initialPlayerId = searchParams.get('playerId') || players[0].id
     setPlayer({ id: initialPlayerId, name: initialPlayerName })
   }, [searchParams])
 
@@ -153,10 +151,10 @@ export default function PlayerRoundEnterScoring() {
           }
         }}
       />
-      {/* TODO: style side-by-side and different colors? */}
-      <button onClick={addPointEarned}>Add</button>
-      <br />
-      <button onClick={clearForm}>Clear Form</button>
+      <div className="form-action-buttons-container">
+        <button onClick={addPointEarned}>Add</button>
+        <button onClick={clearForm}>Clear Form</button>
+      </div>
     </>
   )
 }

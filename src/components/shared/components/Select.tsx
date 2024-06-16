@@ -5,7 +5,7 @@ interface SelectProps {
   options: readonly Record<string, string>[]
   id: string
   label: string
-  onChange: (e) => void
+  onChange(e): void
   description?: string
   name?: string
   value: string

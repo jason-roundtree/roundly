@@ -96,12 +96,8 @@ export interface PointEarned {
 }
 
 export interface ListEditProps {
-  updateListItem?: (
-    id: string,
-    updatedItem: ListObject,
-    listName: string
-  ) => void
-  deleteItemFromList?: (id: string, list: string) => void
+  updateListItem?(id: string, updatedItem: ListObject, listName: string): void
+  deleteItemFromList?(id: string, list: string): void
 }
 
 export interface ListObject {

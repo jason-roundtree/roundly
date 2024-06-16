@@ -14,7 +14,7 @@ export default function PointSelectable({
   // TODO: remove undefined as it seems to be something weird from json data
   value: number | undefined
   id: string
-  toggleSelectedPoint: () => void
+  toggleSelectedPoint(): void
   isSelected: boolean
 }) {
   const labelText = `${name} ${value}`

@@ -21,7 +21,7 @@ const defaultNewPointState: NewPointSetting = {
 }
 
 interface AddPointSettingProps {
-  refreshState: () => void
+  refreshState(): void
   pointContext: 'round' | 'league'
 }
 

@@ -32,7 +32,7 @@ export const RoundContext = createContext(
 
 export default function RoundDetailsContainer(): JSX.Element {
   const [roundData, setRoundData] = useState(RoundContextDefault)
-  const { id, name, location, date, players, pointSettings } = roundData
+  const { id, name, location, date, players, pointSettings } = roundData || {}
   const { roundId, leagueId } = useParams()
   const navigate = useNavigate()
 

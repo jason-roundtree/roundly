@@ -3,8 +3,8 @@ import React from 'react'
 interface EditablePointSettingListItemProps {
   name: string
   value: string
-  onEdit: (pointSetting) => void
-  onRemove: () => void
+  onEdit(pointSetting): void
+  onRemove(): void
   removeButtonText: string
 }
 

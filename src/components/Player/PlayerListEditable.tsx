@@ -4,7 +4,7 @@ import { PlayerListItemEditable } from './'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
-  refreshPlayerState?: () => void
+  refreshPlayerState?(): void
 }
 
 export default function PlayersListEditable({

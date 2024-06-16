@@ -6,8 +6,8 @@ interface DeleteConfirmationModalProps {
   modalTitle: string
   confirmationText: string
   buttonText: string
-  toggleModalActive: () => void
-  onConfirmDelete: () => void
+  toggleModalActive(): void
+  onConfirmDelete(): void
 }
 
 export default function DeleteConfirmationModal({

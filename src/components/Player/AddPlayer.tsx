@@ -8,7 +8,7 @@ import { validateSimpleInput } from '../shared/utils'
 export default function AddPlayer({
   refreshState,
 }: {
-  refreshState: () => void
+  refreshState(): void
 }): JSX.Element {
   const [newPlayerName, setNewPlayerName] = useState<string>('')
   const [inputValidationError, setInputValidationError] = useState<

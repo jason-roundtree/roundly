@@ -5,9 +5,9 @@ import './Modal.css'
 interface ModalProps {
   title: string
   children: React.ReactNode
-  closeModal: () => void
-  deleteItemFn?: () => void
-  renderButtons: () => JSX.Element
+  closeModal(): void
+  deleteItemFn?(): void
+  renderButtons(): JSX.Element
 }
 
 export default function Modal({
