@@ -6,22 +6,33 @@ import Select from '../shared/components/Select'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import { PointSetting, Player } from '../../types'
 import { sortArrayOfObjects } from '../shared/utils'
-import { createRoundPlayerPointEarned, createPlayerHole } from '../../data'
+import {
+  createRoundPlayerPointEarned,
+  createOrFindPlayerHole,
+  updatePlayerHoleScore,
+} from '../../data'
 
+const defaultPlayerAndPointEarnedState = { id: '', name: '' }
+
+// TODO: add checks for existing hole score and point earned frequency
 export default function PlayerRoundEnterScoring() {
   const [searchParams] = useSearchParams()
   const { id: roundId, players, pointSettings } = useContext(RoundContext)
-  const [player, setPlayer] = useState({ name: '', id: '' })
-  const [point, setPoint] = useState({ name: '', id: '' })
+  const [player, setPlayer] = useState(defaultPlayerAndPointEarnedState)
+  const [pointEarned, setPointEarned] = useState(
+    defaultPlayerAndPointEarnedState
+  )
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
   console.log('player', player)
+  console.log('hole', hole)
+  console.log('holeScore', holeScore)
 
   useEffect(() => {
-    const initialPlayerName = searchParams.get('playerName') || players[0].name
-    const initialPlayerId = searchParams.get('playerId') || players[0].id
+    const initialPlayerName = searchParams.get('playerName') || players[0]?.name
+    const initialPlayerId = searchParams.get('playerId') || players[0]?.id
     setPlayer({ id: initialPlayerId, name: initialPlayerName })
-  }, [searchParams])
+  }, [searchParams, players])
 
   function getSelectableOptions(
     arr: Array<any>
@@ -43,52 +54,66 @@ export default function PlayerRoundEnterScoring() {
     })
   }
 
-  async function addPointEarned(): Promise<void> {
+  async function handleFormSubmit(e): Promise<void> {
+    e.preventDefault()
     const playerId = player.id
-    const pointEarnedData = {
-      playerId: playerId,
-      pointSettingId: point.id,
-      roundId: roundId,
-    }
+    let playerHoleId = null
+
+    // TODO: add validation to check for hole number if hole score exists
     if (hole) {
       const holeData = {
         playerId: playerId,
         hole: +hole,
         roundId: roundId,
+        score: holeScore ? +holeScore : null,
       }
-      const playerHoleRes = await createPlayerHole(holeData)
+      const playerHoleRes = await createOrFindPlayerHole(holeData)
       if (playerHoleRes.ok) {
-        const { id } = await playerHoleRes.json()
-        pointEarnedData['playerHoleId'] = id
-        const pointEarnedWithHoleRes = await createRoundPlayerPointEarned(
-          pointEarnedData
-        )
-        console.log('pointEarnedWithHoleRes: ', pointEarnedWithHoleRes)
-        if (pointEarnedWithHoleRes.ok) {
-          clearForm()
+        const [playerHole, created] = await playerHoleRes.json()
+        console.log('playerHole', playerHole)
+        console.log('created', created)
+        playerHoleId = playerHole.id
+        if (!created) {
+          const updatePlayerHoleRes = await updatePlayerHoleScore(
+            playerHoleId,
+            holeScore
+          )
+          if (updatePlayerHoleRes.ok) {
+            // TODO: do anything here?
+          }
         }
       }
-    } else {
-      const pointEarnedNoHoleRes = await createRoundPlayerPointEarned(
-        pointEarnedData
-      )
-      console.log('pointEarnedNoHoleRes: ', pointEarnedNoHoleRes)
-      if (pointEarnedNoHoleRes.ok) {
-        clearForm()
+    }
+
+    if (pointEarned) {
+      const pointEarnedData = {
+        playerId: playerId,
+        pointSettingId: pointEarned.id,
+        roundId: roundId,
+      }
+      if (playerHoleId) {
+        pointEarnedData['playerHoleId'] = playerHoleId
+      }
+      const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
+      console.log('pointEarnedRes: ', pointEarnedRes)
+      if (pointEarnedRes.ok) {
+        // TODO: do anything here?
       }
     }
+
+    playerHoleId = null
+    clearForm()
   }
 
   function clearForm(): void {
     // setPlayer({ name: '', id: '' })
     setHole('')
     setHoleScore(null)
-    setPoint({ name: '', id: '' })
+    setPointEarned(defaultPlayerAndPointEarnedState)
   }
 
   return (
-    // TODO: add <form>?
-    <>
+    <form>
       <h3 className="page-title">Add Player Point / Score</h3>
 
       <Select
@@ -106,6 +131,31 @@ export default function PlayerRoundEnterScoring() {
         }}
       />
 
+      <Select
+        options={[
+          { id: 'noPointSelected', value: '' },
+          ...getSelectableOptions(pointSettings),
+        ]}
+        id="roundPlayerPointSelect"
+        label="Point Earned"
+        // name="roundPlayerAddPointEarnedAndOrScore"
+        value={pointEarned.name}
+        onChange={(e) => {
+          const pointName = e.target.value
+          const pointSetting = pointSettings.find(
+            (point) => point.name === pointName
+          ) as PointSetting
+          if (pointSetting) {
+            setPointEarned({ id: pointSetting.id, name: pointName })
+          } else {
+            setPointEarned(defaultPlayerAndPointEarnedState)
+          }
+        }}
+        // const index = e.target.selectedIndex;
+        // const el = e.target.childNodes[index]
+        // const option =  el.getAttribute('id');
+      />
+
       <label htmlFor="hole-select">Hole</label>
       <select
         id="hole-select"
@@ -115,33 +165,12 @@ export default function PlayerRoundEnterScoring() {
         {selectableHoles()}
       </select>
 
-      <Select
-        options={[
-          { id: 'noPointSelected', value: '' },
-          ...getSelectableOptions(pointSettings),
-        ]}
-        id="roundPlayerPointSelect"
-        label="Point Earned"
-        // name="roundPlayerAddPointEarned"
-        value={point.name}
-        onChange={(e) => {
-          const pointName = e.target.value
-          const pointSetting = pointSettings.find(
-            (point) => point.name === pointName
-          ) as PointSetting
-          setPoint({ id: pointSetting.id, name: pointName })
-        }}
-        // const index = e.target.selectedIndex;
-        // const el = e.target.childNodes[index]
-        // const option =  el.getAttribute('id');
-      />
-
       <BasicInput
         type="number"
         min="0"
         name="playerScoringHoleScore"
         label="Hole Score"
-        value={holeScore ? holeScore : ''}
+        value={holeScore ?? ''}
         onChange={(e) => {
           const inputValue = e.target.value
           if (inputValue === '0') {
@@ -152,9 +181,9 @@ export default function PlayerRoundEnterScoring() {
         }}
       />
       <div className="form-action-buttons-container">
-        <button onClick={addPointEarned}>Add</button>
+        <button onClick={handleFormSubmit}>Add</button>
         <button onClick={clearForm}>Clear Form</button>
       </div>
-    </>
+    </form>
   )
 }

@@ -78,10 +78,12 @@ export default function RoundDetailsContainer(): JSX.Element {
               <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             </>
           )}
-
-          <p>{location && location}</p>
-          <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-
+          {location && (
+            <>
+              <p>{location}</p>
+              <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            </>
+          )}
           <p>{dateFormatted}</p>
         </div>
       </Link>
