@@ -1,17 +1,25 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import { RoundContext } from './RoundDetailsContainer'
 import styles from './RoundScoring.module.css'
 import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'
+import { getRoundPlayerPointsEarnedTotal } from '../../data'
 
 type RoundScoringSortBy = 'a-z' | 'z-a' | 'high-low' | 'low-high'
+interface PlayersWithPointTotals {
+  total_points: number
+  id: string
+  name: string
+}
 
 export default function RoundScoring() {
   const [filterQuery, setFilterQuery] = useState('')
   const [sortBy, setSortBy] = useState<RoundScoringSortBy>('a-z')
-
+  const [playersWithPoints, setPlayersWithPoints] = useState<
+    Array<PlayersWithPointTotals>
+  >([])
   const { leagueId } = useParams()
   const {
     id: roundId,
@@ -19,6 +27,34 @@ export default function RoundScoring() {
     pointSettings,
     handleDeleteRound,
   } = useContext(RoundContext)
+
+  async function generatePlayersWithPointTotals() {
+    const playersWithPointTotals = await Promise.all(
+      players.map(async (p) => {
+        const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
+        console.log('res', res)
+        // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
+        if (res.ok) {
+          const { total_points } = await res.json()
+          console.log('totalPoints: ', total_points)
+          return {
+            ...p,
+            total_points: total_points,
+          }
+        } else {
+          return {
+            ...p,
+            total_points: 0,
+          }
+        }
+      })
+    )
+    setPlayersWithPoints(playersWithPointTotals)
+  }
+
+  useEffect(() => {
+    generatePlayersWithPointTotals()
+  }, [players])
 
   function handleInputChange({
     target: { value },
@@ -105,11 +141,12 @@ export default function RoundScoring() {
         className={`${styles.playerScoringList} editable-list--player-scoring`}
       >
         {/* <ul className="editable-list--player-scoring"> */}
-        {players.map((player) => {
+        {playersWithPoints.map((player) => {
+          console.log('player render map', player)
           return (
             <li key={player.id}>
               <span>{player.name}</span>
-              <span className="list-point-value">#ofpoints</span>
+              <span className="list-point-value">{player.total_points}</span>
               <span className="list-edit-buttons">
                 <Link
                   to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${

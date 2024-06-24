@@ -1,5 +1,4 @@
-// TODO: add hole score and rename things to PointScoringEarned?
-interface PointEarned {
+export interface PointEarned {
   playerId: string
   pointSettingId: string
   roundId?: string
