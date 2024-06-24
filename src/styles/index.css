@@ -312,3 +312,9 @@ th {
 .form-action-buttons-container button {
   margin-right: 15px;
 }
+
+.player-scoring-form [name='hole-score'],
+.player-scoring-form [id='hole-select'],
+.player-scoring-form [name='point-earned-frequency'] {
+  width: 5em;
+}

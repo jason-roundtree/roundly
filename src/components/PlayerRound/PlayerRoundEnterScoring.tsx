@@ -22,6 +22,7 @@ export default function PlayerRoundEnterScoring() {
   const [pointEarned, setPointEarned] = useState(
     defaultPlayerAndPointEarnedState
   )
+  const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
   console.log('player', player)
@@ -90,6 +91,7 @@ export default function PlayerRoundEnterScoring() {
         playerId: playerId,
         pointSettingId: pointEarned.id,
         roundId: roundId,
+        frequency: pointEarnedFrequency,
       }
       if (playerHoleId) {
         pointEarnedData['playerHoleId'] = playerHoleId
@@ -106,14 +108,14 @@ export default function PlayerRoundEnterScoring() {
   }
 
   function clearForm(): void {
-    // setPlayer({ name: '', id: '' })
     setHole('')
     setHoleScore(null)
+    setPointEarnedFrequency(1)
     setPointEarned(defaultPlayerAndPointEarnedState)
   }
 
   return (
-    <form>
+    <form className="player-scoring-form">
       <h3 className="page-title">Add Player Point / Score</h3>
 
       <Select
@@ -136,7 +138,7 @@ export default function PlayerRoundEnterScoring() {
           { id: 'noPointSelected', value: '' },
           ...getSelectableOptions(pointSettings),
         ]}
-        id="roundPlayerPointSelect"
+        id="point-type-select"
         label="Point Earned"
         // name="roundPlayerAddPointEarnedAndOrScore"
         value={pointEarned.name}
@@ -156,6 +158,18 @@ export default function PlayerRoundEnterScoring() {
         // const option =  el.getAttribute('id');
       />
 
+      <BasicInput
+        type="number"
+        min="1"
+        name="point-earned-frequency"
+        label="Point Earned Frequency"
+        value={pointEarnedFrequency}
+        onChange={(e) => {
+          setPointEarnedFrequency(+e.target.value)
+        }}
+        disabled={!Boolean(pointEarned.id)}
+      />
+
       <label htmlFor="hole-select">Hole</label>
       <select
         id="hole-select"
@@ -168,7 +182,7 @@ export default function PlayerRoundEnterScoring() {
       <BasicInput
         type="number"
         min="0"
-        name="playerScoringHoleScore"
+        name="hole-score"
         label="Hole Score"
         value={holeScore ?? ''}
         onChange={(e) => {
@@ -180,9 +194,12 @@ export default function PlayerRoundEnterScoring() {
           }
         }}
       />
+
       <div className="form-action-buttons-container">
         <button onClick={handleFormSubmit}>Add</button>
-        <button onClick={clearForm}>Clear Form</button>
+        <button onClick={clearForm} type="button">
+          Clear Form
+        </button>
       </div>
     </form>
   )

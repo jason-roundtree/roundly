@@ -4,6 +4,7 @@ interface PointEarned {
   pointSettingId: string
   roundId?: string
   playerHoleId?: string
+  frequency: number
 }
 
 export async function createRoundPlayerPointEarned({
@@ -11,6 +12,7 @@ export async function createRoundPlayerPointEarned({
   pointSettingId,
   roundId,
   playerHoleId,
+  frequency,
 }: PointEarned): Promise<any> {
   try {
     const res = await fetch('http://localhost:3001/api/player-point-earned', {
@@ -21,6 +23,7 @@ export async function createRoundPlayerPointEarned({
         pointSettingId: pointSettingId,
         roundId: roundId,
         playerHoleId: playerHoleId,
+        frequency: frequency,
       }),
     })
     console.log('createRoundPlayerPointEarned res', res)
