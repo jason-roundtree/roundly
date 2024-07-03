@@ -75,7 +75,7 @@ export default function LeagueHome() {
         {pointSettings.map(({ id, name, value }) => {
           return (
             <li key={id}>
-              {name} / {value}
+              {name} &nbsp;&nbsp;-&nbsp;&nbsp; {value}
             </li>
           )
         })}
@@ -88,7 +88,12 @@ export default function LeagueHome() {
       </p>
       <ul>
         {rounds.map(({ id, name, location, date }) => {
-          return <li key={id}>{name}</li>
+          const dateFormatted = new Date(date).toLocaleDateString()
+          return (
+            <li key={id}>
+              {name} &nbsp;&nbsp;-&nbsp;&nbsp; {dateFormatted}
+            </li>
+          )
         })}
       </ul>
 

@@ -31,7 +31,7 @@ export default function Modal({
             {title}
           </h2>
           <div id="modal-body">{children}</div>
-          <div id="modal-edit-buttons">{renderButtons()}</div>
+          <div id="modal-edit-buttons-container">{renderButtons()}</div>
         </div>
       </div>
     </Portal>

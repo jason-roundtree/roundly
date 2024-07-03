@@ -6,6 +6,8 @@ import BasicInput from '../shared/components/BasicInput'
 import { EditablePointSettingListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
+import { validateSimpleInput } from '../shared/utils'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -30,6 +32,9 @@ export default function RoundPointSettingsListItem({
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value, isLeagueSetting, scope } = pointSetting
+  const [inputValidationError, setInputValidationError] = useState<
+    string | null
+  >(null)
 
   function handleEditingPoint() {
     setUpdatedPointSetting(pointSetting)
@@ -37,10 +42,20 @@ export default function RoundPointSettingsListItem({
   }
 
   async function handleUpdatePointSetting(): Promise<void> {
-    await updatePointSetting(id, updatedPointSetting)
-    refreshState()
-    setIsBeingEdited(false)
-    setUpdatedPointSetting(defaultState)
+    if (
+      !validateSimpleInput(
+        updatedPointSetting.name,
+        'Point Name',
+        setInputValidationError
+      )
+    ) {
+      return
+    } else {
+      await updatePointSetting(id, updatedPointSetting)
+      refreshState()
+      setIsBeingEdited(false)
+      setUpdatedPointSetting(defaultState)
+    }
   }
 
   function handleInputChange({
@@ -66,10 +81,16 @@ export default function RoundPointSettingsListItem({
   function EditPointSettingModalButtons(): JSX.Element {
     return (
       <>
-        <button onClick={handleUpdatePointSetting}>Save</button>
-        <button onClick={() => removePointSettingFromRound(id)}>
-          {deactivatePointButtonText()}
-        </button>
+        <div id="modal-edit-buttons">
+          <button onClick={handleUpdatePointSetting}>Save</button>
+          <button onClick={() => removePointSettingFromRound(id)}>
+            {deactivatePointButtonText()}
+          </button>
+        </div>
+        <SimpleInputValidationError
+          errorField={inputValidationError}
+          errorMsgCode="MISSNG_VALUE"
+        />
       </>
     )
   }

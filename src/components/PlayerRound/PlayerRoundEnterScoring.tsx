@@ -12,22 +12,43 @@ import {
   updatePlayerHoleScore,
 } from '../../data'
 
-const defaultPlayerAndPointEarnedState = { id: '', name: '' }
+// TODO: setup additional default that includes maxFrequencyPerScope so you don't need to add it each time you want to set state
+interface NameAndId {
+  id: string
+  name: string
+}
+type NumberOrNull = number | null
+interface MaxFreqAndValue {
+  maxFrequencyPerScope: NumberOrNull
+  value: NumberOrNull
+}
+const defaultPlayerState: NameAndId = { id: '', name: '' }
+const defaultPointEarnedState: MaxFreqAndValue & NameAndId = {
+  id: '',
+  name: '',
+  maxFrequencyPerScope: 1,
+  value: null,
+}
 
 // TODO: add checks for existing hole score and point earned frequency
 export default function PlayerRoundEnterScoring() {
   const [searchParams] = useSearchParams()
   const { id: roundId, players, pointSettings } = useContext(RoundContext)
-  const [player, setPlayer] = useState(defaultPlayerAndPointEarnedState)
-  const [pointEarned, setPointEarned] = useState(
-    defaultPlayerAndPointEarnedState
-  )
+  const [player, setPlayer] = useState(defaultPlayerState)
+  const [pointEarned, setPointEarned] = useState(defaultPointEarnedState)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
   console.log('player', player)
   console.log('hole', hole)
   console.log('holeScore', holeScore)
+  console.log('pointEarned', pointEarned)
+  console.log('pointSettings', pointSettings)
+  const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
+  const frequencyIsActive =
+    typeof peMaxFrequencyPerScope === 'number'
+      ? peMaxFrequencyPerScope > 1
+      : peMaxFrequencyPerScope === null
 
   useEffect(() => {
     const initialPlayerName = searchParams.get('playerName') || players[0]?.name
@@ -111,7 +132,7 @@ export default function PlayerRoundEnterScoring() {
     setHole('')
     setHoleScore(null)
     setPointEarnedFrequency(1)
-    setPointEarned(defaultPlayerAndPointEarnedState)
+    setPointEarned(defaultPointEarnedState)
   }
 
   return (
@@ -141,16 +162,21 @@ export default function PlayerRoundEnterScoring() {
         id="point-type-select"
         label="Point Earned"
         // name="roundPlayerAddPointEarnedAndOrScore"
-        value={pointEarned.name}
+        value={`${pointEarned.name}`}
         onChange={(e) => {
           const pointName = e.target.value
           const pointSetting = pointSettings.find(
             (point) => point.name === pointName
           ) as PointSetting
           if (pointSetting) {
-            setPointEarned({ id: pointSetting.id, name: pointName })
+            setPointEarned({
+              id: pointSetting.id,
+              name: pointName,
+              maxFrequencyPerScope: pointSetting.maxFrequencyPerScope ?? 1,
+              value: pointSetting.value,
+            })
           } else {
-            setPointEarned(defaultPlayerAndPointEarnedState)
+            setPointEarned(defaultPointEarnedState)
           }
         }}
         // const index = e.target.selectedIndex;
@@ -167,7 +193,7 @@ export default function PlayerRoundEnterScoring() {
         onChange={(e) => {
           setPointEarnedFrequency(+e.target.value)
         }}
-        disabled={!Boolean(pointEarned.id)}
+        disabled={!frequencyIsActive}
       />
 
       <label htmlFor="hole-select">Hole</label>

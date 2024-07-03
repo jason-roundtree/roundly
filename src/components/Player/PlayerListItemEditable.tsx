@@ -4,7 +4,8 @@ import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { updatePlayer, deletePlayerFromLeague } from '../../data'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
+import { validateSimpleInput } from '../shared/utils'
 interface EditablePlayer {
   name: string
 }
@@ -16,6 +17,9 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [inputValidationError, setInputValidationError] = useState<
+    string | null
+  >(null)
   const { id: playerId, name } = player
 
   function handleEditingState(name) {
@@ -24,10 +28,20 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   }
 
   async function handleUpdatePlayer() {
-    await updatePlayer(playerId, updatedPlayer)
-    refreshPlayerState()
-    setUpdatedPlayer(defaultState)
-    setIsBeingEdited(false)
+    if (
+      !validateSimpleInput(
+        updatedPlayer.name,
+        'Player Name',
+        setInputValidationError
+      )
+    ) {
+      return
+    } else {
+      await updatePlayer(playerId, updatedPlayer)
+      refreshPlayerState()
+      setUpdatedPlayer(defaultState)
+      setIsBeingEdited(false)
+    }
   }
 
   async function handleDeletePlayer() {
@@ -44,10 +58,16 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   function EditPlayerModalButtons(): JSX.Element {
     return (
       <>
-        <button onClick={() => handleUpdatePlayer()}>Save</button>
-        <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
-          Delete
-        </button>
+        <div id="modal-edit-buttons">
+          <button onClick={() => handleUpdatePlayer()}>Save</button>
+          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+            Delete
+          </button>
+        </div>
+        <SimpleInputValidationError
+          errorField={inputValidationError}
+          errorMsgCode="MISSNG_VALUE"
+        />
       </>
     )
   }
