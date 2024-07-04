@@ -138,6 +138,18 @@ a:hover {
   /* display: none; */
 }
 
+#checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top: var(--label-margin-top);
+}
+#checkbox-container label {
+  margin: 1px 0 0 0.5em;
+}
+#checkbox-container input {
+  width: 1em;
+}
+
 /* label[class*="radio" i] {
 
 } */

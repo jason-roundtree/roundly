@@ -17,7 +17,7 @@ export default function Checkbox({
   value,
 }: CheckboxProps) {
   return (
-    <div>
+    <div id="checkbox-container">
       <input
         id={id}
         type="checkbox"

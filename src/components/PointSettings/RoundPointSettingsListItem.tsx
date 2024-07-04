@@ -7,6 +7,7 @@ import { EditablePointSettingListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
+import Checkbox from '../shared/components/Checkbox'
 import { validateSimpleInput } from '../shared/utils'
 
 // TODO: add same defaultState typing for LeaguePlayers?
@@ -137,10 +138,19 @@ export default function RoundPointSettingsListItem({
             value={updatedPointSetting.maxFrequencyPerScope ?? ''}
           />
 
-          {/* <button onClick={handleUpdatePointSetting}>Save</button>
-          <button onClick={() => removePointSettingFromRound(id)}>
-            {deactivatePointButtonText()}
-          </button> */}
+          {!isLeagueSetting && (
+            <Checkbox
+              id="updateRoundPointToLeague"
+              checked={Boolean(updatedPointSetting.isLeagueSetting)}
+              label="Add to league point settings?"
+              onChange={() =>
+                setUpdatedPointSetting((ps) => ({
+                  ...updatedPointSetting,
+                  isLeagueSetting: !ps.isLeagueSetting,
+                }))
+              }
+            />
+          )}
           {/* TODO: add remove point from league if isLeagueSetting */}
         </Modal>
       )}
