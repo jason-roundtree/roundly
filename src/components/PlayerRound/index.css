@@ -33,9 +33,3 @@
 .pointsEarnedTable tbody td:first-of-type {
   text-align: left;
 }
-
-#enterPointEarned {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1em;
-}

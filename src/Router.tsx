@@ -39,6 +39,7 @@ import { Signup, Login, Profile } from './components/User'
 import {
   LeaguePointSettings,
   RoundPointSettings,
+  AddPointSetting,
 } from './components/PointSettings'
 
 export default function Router() {
@@ -65,6 +66,10 @@ export default function Router() {
         path="league/:leagueId/point-settings"
         element={<LeaguePointSettings />}
       />
+      <Route
+        path="league/:leagueId/new-point"
+        element={<AddPointSetting pointContext="league" />}
+      />
       <Route path="league/:leagueId/rounds" element={<Rounds />} />
       <Route path="league/:leagueId/create-round" element={<CreateRound />} />
       <Route path="league/:leagueId/standings" element={<LeagueStandings />} />
@@ -75,6 +80,10 @@ export default function Router() {
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
         <Route path="player-scoring" element={<PlayerRoundScoring />} />
+        <Route
+          path="new-point"
+          element={<AddPointSetting pointContext="round" />}
+        />
         <Route
           path="round-player-scoring"
           element={<PlayerRoundEnterScoring />}

@@ -65,11 +65,16 @@ export default function RoundPointSettings(): JSX.Element {
     <>
       <h3 className="page-title">Round Point Settings</h3>
 
+      {/* TODO: make this round/league agnostic? */}
+      <div className="primary-centered-button">
+        <Link to={`/league/${leagueId}/rounds/${roundId}/new-point`}>
+          <button>Create New Round Point</button>
+        </Link>
+      </div>
+
       {/* <Link to={`/league/${leagueId}/point-settings`} className="text-link">
         League Point Settings
       </Link> */}
-
-      <AddPointSetting refreshState={refreshRoundState} pointContext="round" />
 
       <p className="nonInputLabel">Active Round Points</p>
       <ul className="editable-list--points">
@@ -107,6 +112,8 @@ export default function RoundPointSettings(): JSX.Element {
           )
         })}
       </ul>
+
+      {/* <AddPointSetting refreshState={refreshRoundState} pointContext="round" /> */}
     </>
   )
 }

@@ -111,8 +111,23 @@ a:hover {
   margin-bottom: 0.75em;
 }
 
-.form-title {
+.primary-centered-button {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5em;
+}
+
+.secondary-page-title {
+  text-align: center;
   text-transform: uppercase;
+}
+
+.linkContainerCentered {
+  text-align: center;
+}
+
+.decreaseBottomMargin {
+  margin-bottom: 0.2em;
 }
 
 .svg-inline--fa {

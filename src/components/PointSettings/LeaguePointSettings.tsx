@@ -39,10 +39,11 @@ export default function LeaguePointSettings(): JSX.Element {
 
       <h2 className="page-title">League Point Settings</h2>
 
-      <AddPointSetting
-        refreshState={refreshPointSettingsState}
-        pointContext="league"
-      />
+      <div className="primary-centered-button">
+        <Link to={`/league/${leagueId}/new-point`}>
+          <button>Create New League Point</button>
+        </Link>
+      </div>
 
       <ul className="editable-list--points">
         {pointSettings.map((pointSetting) => {

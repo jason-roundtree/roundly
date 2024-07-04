@@ -50,14 +50,9 @@ export default function RoundPlayers(): JSX.Element {
 
   return (
     <>
-      <h3 className={`${styles.decreaseBottomMargin} page-title`}>
-        Round Players
-      </h3>
-      <div className={styles.linkContainerCentered}>
-        <Link
-          to={`/league/${leagueId}/players`}
-          className={styles.leaguePlayersLink}
-        >
+      <h3 className="decreaseBottomMargin page-title">Round Players</h3>
+      <div className="linkContainerCentered">
+        <Link to={`/league/${leagueId}/players`}>
           League Players <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>

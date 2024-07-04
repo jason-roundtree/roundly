@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { PointSetting } from '../../types'
-import { validateSimpleInput } from '../shared/utils'
+import { pointContextCapitalized, validateSimpleInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
@@ -21,12 +23,10 @@ const defaultNewPointState: NewPointSetting = {
 }
 
 interface AddPointSettingProps {
-  refreshState(): void
   pointContext: 'round' | 'league'
 }
 
 export default function AddPointSetting({
-  refreshState,
   pointContext,
 }: AddPointSettingProps): JSX.Element {
   const [newPoint, setNewPoint] = useState(defaultNewPointState)
@@ -61,7 +61,7 @@ export default function AddPointSetting({
           console.log('roundPointJson JSON', roundPointJson)
         }
 
-        refreshState()
+        // refreshState()
         setNewPoint(defaultNewPointState)
         inputRef.current && inputRef.current.focus()
       } catch (err) {
@@ -98,16 +98,17 @@ export default function AddPointSetting({
     e.target.select()
   }
 
-  //   TODO: move to shared util function
-  function pointContextCapitalized() {
-    return pointContext[0].toUpperCase() + pointContext.slice(1)
-  }
-
   return (
     <form>
-      <h3 className="form-title">
-        Add New Point to {pointContextCapitalized()}
+      <h3 className="decreaseBottomMargin page-title">
+        Add New Point to {pointContextCapitalized(pointContext)}
       </h3>
+      <div className="linkContainerCentered">
+        <Link to={`/league/${leagueId}/point-settings`}>
+          League Point Settings <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
+
       <BasicInput
         type="text"
         label="Point Name"

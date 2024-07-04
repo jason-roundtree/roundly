@@ -76,7 +76,7 @@ export default function RoundScoring() {
     <>
       <h3 className="page-title">Round Scoring</h3>
 
-      <div id="enterPointEarned">
+      <div className="primary-centered-button">
         <Link to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}>
           <button>Enter Point Earned / Score</button>
         </Link>
