@@ -11,13 +11,14 @@ import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import RoundPointScopeRadios from './RoundPointScopeRadios'
+import { no_scope_key } from './RoundPointScopeRadios'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
-const defaultNewPointState: NewPointSetting = {
+const defaultNewPointSettingState: NewPointSetting = {
   name: '',
   value: 0,
-  scope: 'no_scope',
+  scope: no_scope_key,
   maxFrequencyPerScope: 1,
   isLeagueSetting: false,
 }
@@ -29,7 +30,9 @@ interface AddPointSettingProps {
 export default function AddPointSetting({
   pointContext,
 }: AddPointSettingProps): JSX.Element {
-  const [newPoint, setNewPoint] = useState(defaultNewPointState)
+  const [newPointSetting, setNewPointSetting] = useState(
+    defaultNewPointSettingState
+  )
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null)
@@ -39,19 +42,23 @@ export default function AddPointSetting({
   async function handleCreatePointSetting(e) {
     e.preventDefault()
     if (
-      !validateSimpleInput(newPoint.name, 'Point Name', setInputValidationError)
+      !validateSimpleInput(
+        newPointSetting.name,
+        'Point Name',
+        setInputValidationError
+      )
     ) {
       return
     } else {
       try {
-        const newPointCopy = { ...newPoint }
+        const newPointSettingCopy = { ...newPointSetting }
         if (pointContext === 'league') {
-          newPointCopy.isLeagueSetting = true
+          newPointSettingCopy.isLeagueSetting = true
         }
 
         const leaguePointJson = await createLeaguePointSetting(
           leagueId,
-          newPointCopy
+          newPointSettingCopy
         )
         const { id: pointId } = leaguePointJson
 
@@ -62,7 +69,7 @@ export default function AddPointSetting({
         }
 
         // refreshState()
-        setNewPoint(defaultNewPointState)
+        setNewPointSetting(defaultNewPointSettingState)
         inputRef.current && inputRef.current.focus()
       } catch (err) {
         console.log('create point setting error: ', err)
@@ -74,20 +81,28 @@ export default function AddPointSetting({
   function handleInputChange({
     target: { name: tName, value: tValue },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    console.log('newPoint', newPoint)
-    setNewPoint({ ...newPoint, [tName]: tValue })
+    console.log('newPointSetting', newPointSetting)
+    setNewPointSetting({ ...newPointSetting, [tName]: tValue })
   }
 
   function handleRadioInputChange({ target: { name, value } }) {
     switch (name) {
       case 'isLeaguePoint-radios':
-        setNewPoint({
-          ...newPoint,
+        setNewPointSetting({
+          ...newPointSetting,
           isLeagueSetting: value === 'league-setting',
         })
         break
-      case 'roundPointScope-radios-main':
-        setNewPoint({ ...newPoint, scope: value })
+      case 'roundPointScope-radios':
+        const updatedScope = value
+        const isNoScope = updatedScope === no_scope_key
+        setNewPointSetting({
+          ...newPointSetting,
+          scope: value,
+          maxFrequencyPerScope: isNoScope
+            ? 1
+            : newPointSetting.maxFrequencyPerScope,
+        })
         break
       default:
         console.log('no matching radio')
@@ -114,7 +129,7 @@ export default function AddPointSetting({
         label="Point Name"
         name="name"
         onChange={handleInputChange}
-        value={newPoint.name}
+        value={newPointSetting.name}
         inputRef={inputRef}
       />
 
@@ -122,25 +137,25 @@ export default function AddPointSetting({
         type="number"
         label="Point Value"
         name="value"
-        value={newPoint.value}
+        value={newPointSetting.value}
         onChange={handleInputChange}
         onFocus={selectAllInputText}
       />
 
       <RoundPointScopeRadios
-        name="roundPointScope-radios-main"
+        name="roundPointScope-radios"
         onChange={handleRadioInputChange}
-        selectedScope={newPoint.scope}
+        selectedScope={newPointSetting.scope}
       />
       <BasicInput
-        disabled={newPoint.scope === 'no_scope'}
+        disabled={newPointSetting.scope === 'no_scope'}
         type="number"
         min="1"
         // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
         label="Max Frequency Per Scope"
         name="maxFrequencyPerScope"
         onChange={handleInputChange}
-        value={newPoint.maxFrequencyPerScope ?? ''}
+        value={newPointSetting.maxFrequencyPerScope ?? ''}
       />
 
       {pointContext === 'round' && (
@@ -152,7 +167,7 @@ export default function AddPointSetting({
             name="isLeaguePoint-radios"
             label="One-off point setting for this round"
             onChange={handleRadioInputChange}
-            checked={!newPoint.isLeagueSetting}
+            checked={!newPointSetting.isLeagueSetting}
           />
 
           <Radio
@@ -161,7 +176,7 @@ export default function AddPointSetting({
             name="isLeaguePoint-radios"
             label="Add to default point settings for league"
             onChange={handleRadioInputChange}
-            checked={newPoint.isLeagueSetting}
+            checked={newPointSetting.isLeagueSetting}
           />
         </fieldset>
       )}

@@ -30,7 +30,7 @@ export default function LeaguePlayers(): JSX.Element {
 
       <h2 className="page-title">League Players</h2>
 
-      <div className="primary-centered-button">
+      <div className="centered-button">
         <Link to={`/league/${leagueId}/new-player`}>
           <button>Add New League Player</button>
         </Link>

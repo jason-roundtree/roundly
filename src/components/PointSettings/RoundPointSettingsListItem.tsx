@@ -9,6 +9,7 @@ import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import Checkbox from '../shared/components/Checkbox'
 import { validateSimpleInput } from '../shared/utils'
+import { no_scope_key } from './RoundPointScopeRadios'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -19,7 +20,7 @@ type EditablePointSetting = Omit<PointSetting, 'id' | 'value'> & {
 const defaultState: EditablePointSetting = {
   name: '',
   value: '',
-  scope: 'no_scope',
+  scope: no_scope_key,
   isLeagueSetting: false,
   maxFrequencyPerScope: 1,
 }
@@ -66,7 +67,15 @@ export default function RoundPointSettingsListItem({
   }
 
   function handleRadioInputChange(e) {
-    setUpdatedPointSetting({ ...updatedPointSetting, scope: e.target.value })
+    const updatedScope = e.target.value
+    const isNoScope = updatedScope === no_scope_key
+    setUpdatedPointSetting({
+      ...updatedPointSetting,
+      scope: updatedScope,
+      maxFrequencyPerScope: isNoScope
+        ? 1
+        : updatedPointSetting.maxFrequencyPerScope,
+    })
   }
 
   function modalTitle() {

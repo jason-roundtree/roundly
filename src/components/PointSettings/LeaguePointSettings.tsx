@@ -39,7 +39,7 @@ export default function LeaguePointSettings(): JSX.Element {
 
       <h2 className="page-title">League Point Settings</h2>
 
-      <div className="primary-centered-button">
+      <div className="centered-button">
         <Link to={`/league/${leagueId}/new-point`}>
           <button>Create New League Point</button>
         </Link>

@@ -27,6 +27,7 @@ export default function RoundScoring() {
     pointSettings,
     handleDeleteRound,
   } = useContext(RoundContext)
+  console.log('roundplayers', players)
 
   async function generatePlayersWithPointTotals() {
     const playersWithPointTotals = await Promise.all(
@@ -76,90 +77,107 @@ export default function RoundScoring() {
     <>
       <h3 className="page-title">Round Scoring</h3>
 
-      <div className="primary-centered-button">
-        <Link to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}>
-          <button>Enter Point Earned / Score</button>
-        </Link>
-      </div>
+      {players.length ? (
+        <>
+          <div className="centered-button">
+            <Link
+              to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}
+            >
+              <button>Enter Point Earned / Score</button>
+            </Link>
+          </div>
 
-      <BasicInput
-        type="text"
-        name="player-search"
-        label="Filter Players"
-        onChange={handleInputChange}
-        value={filterQuery}
-      />
-
-      <form>
-        <fieldset
-          className={`${styles.sortingRadios} sort-round-player-scoring`}
-        >
-          <legend>Sort</legend>
-          <Radio
-            id="a-z"
-            value="A-Z"
-            name="sort-round-player-scoring-radio-buttons"
-            label="Player - A to Z"
-            onChange={handleSorting}
-            checked={sortBy === 'a-z'}
-            // hidden
+          <BasicInput
+            type="text"
+            name="player-search"
+            label="Filter Players"
+            onChange={handleInputChange}
+            value={filterQuery}
           />
 
-          <Radio
-            id="z-a"
-            value="Z-A"
-            name="sort-round-player-scoring-radio-buttons"
-            label="Player - Z to A"
-            onChange={handleSorting}
-            checked={sortBy === 'z-a'}
-            // hidden
-          />
+          <form>
+            <fieldset
+              className={`${styles.sortingRadios} sort-round-player-scoring`}
+            >
+              <legend>Sort</legend>
+              <Radio
+                id="a-z"
+                value="A-Z"
+                name="sort-round-player-scoring-radio-buttons"
+                label="Player - A to Z"
+                onChange={handleSorting}
+                checked={sortBy === 'a-z'}
+                // hidden
+              />
 
-          <Radio
-            id="high-low"
-            value="high-low"
-            name="sort-round-player-scoring-radio-buttons"
-            label="Score - high to low"
-            onChange={handleSorting}
-            checked={sortBy === 'high-low'}
-            // hidden
-          />
+              <Radio
+                id="z-a"
+                value="Z-A"
+                name="sort-round-player-scoring-radio-buttons"
+                label="Player - Z to A"
+                onChange={handleSorting}
+                checked={sortBy === 'z-a'}
+                // hidden
+              />
 
-          <Radio
-            id="low-high"
-            value="low-high"
-            name="sort-round-player-scoring-radio-buttons"
-            label="Score - low to high"
-            onChange={handleSorting}
-            checked={sortBy === 'low-high'}
-            // hidden
-          />
-        </fieldset>
-      </form>
+              <Radio
+                id="high-low"
+                value="high-low"
+                name="sort-round-player-scoring-radio-buttons"
+                label="Score - high to low"
+                onChange={handleSorting}
+                checked={sortBy === 'high-low'}
+                // hidden
+              />
 
-      <ul
-        className={`${styles.playerScoringList} editable-list--player-scoring`}
-      >
-        {/* <ul className="editable-list--player-scoring"> */}
-        {playersWithPoints.map((player) => {
-          console.log('player render map', player)
-          return (
-            <li key={player.id}>
-              <span>{player.name}</span>
-              <span className="list-point-value">{player.total_points}</span>
-              <span className="list-edit-buttons">
-                <Link
-                  to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
-                    player.id
-                  }&playerName=${encodeURIComponent(player.name)}`}
-                >
-                  <button>Edit</button>
-                </Link>
-              </span>
-            </li>
-          )
-        })}
-      </ul>
+              <Radio
+                id="low-high"
+                value="low-high"
+                name="sort-round-player-scoring-radio-buttons"
+                label="Score - low to high"
+                onChange={handleSorting}
+                checked={sortBy === 'low-high'}
+                // hidden
+              />
+            </fieldset>
+          </form>
+
+          <ul
+            className={`${styles.playerScoringList} editable-list--player-scoring`}
+          >
+            {/* <ul className="editable-list--player-scoring"> */}
+            {playersWithPoints.map((player) => {
+              console.log('player render map', player)
+              return (
+                <li key={player.id}>
+                  <span>{player.name}</span>
+                  <span className="list-point-value">
+                    {player.total_points}
+                  </span>
+                  <span className="list-edit-buttons">
+                    <Link
+                      to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
+                        player.id
+                      }&playerName=${encodeURIComponent(player.name)}`}
+                    >
+                      <button>Edit</button>
+                    </Link>
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </>
+      ) : (
+        <>
+          <p>No players have been activated for this round</p>
+          <div className="centered-button">
+            <Link to={`/league/${leagueId}/rounds/${roundId}/players`}>
+              <button className="centered-button">Activate Players</button>
+            </Link>
+          </div>
+        </>
+      )}
     </>
   )
 }

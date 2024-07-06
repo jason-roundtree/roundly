@@ -14,7 +14,7 @@ export default function PlayerRoundPointsEarned() {
     <>
       <h3 className="page-title">Player Round Scoring - {playerName}</h3>
 
-      <div className="primary-centered-button">
+      <div className="centered-button">
         <Link
           to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring?playerId=${playerId}&playerName=${encodeURIComponent(
             playerName

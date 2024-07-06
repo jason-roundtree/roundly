@@ -70,7 +70,7 @@ export default function RoundPointSettings(): JSX.Element {
       <h3 className="page-title">Round Point Settings</h3>
 
       {/* TODO: make this round/league agnostic? */}
-      <div className="primary-centered-button">
+      <div className="centered-button">
         <Link to={`/league/${leagueId}/rounds/${roundId}/new-point`}>
           <button>Create New Round Point</button>
         </Link>
