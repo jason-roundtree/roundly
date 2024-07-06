@@ -30,7 +30,11 @@ export default function LeaguePlayers(): JSX.Element {
 
       <h2 className="page-title">League Players</h2>
 
-      <AddPlayer refreshState={refreshPlayersState} />
+      <div className="primary-centered-button">
+        <Link to={`/league/${leagueId}/new-player`}>
+          <button>Add New League Player</button>
+        </Link>
+      </div>
 
       <PlayerListEditable
         players={players}

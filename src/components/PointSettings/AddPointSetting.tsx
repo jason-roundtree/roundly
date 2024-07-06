@@ -100,7 +100,7 @@ export default function AddPointSetting({
 
   return (
     <form>
-      <h3 className="decreaseBottomMargin page-title">
+      <h3 className="decrease-bottom-margin page-title">
         Add New Point to {pointContextCapitalized(pointContext)}
       </h3>
       <div className="linkContainerCentered">

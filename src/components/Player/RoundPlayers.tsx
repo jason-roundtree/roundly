@@ -50,7 +50,7 @@ export default function RoundPlayers(): JSX.Element {
 
   return (
     <>
-      <h3 className="decreaseBottomMargin page-title">Round Players</h3>
+      <h3 className="decrease-bottom-margin page-title">Round Players</h3>
       <div className="linkContainerCentered">
         <Link to={`/league/${leagueId}/players`}>
           League Players <FontAwesomeIcon icon={faAnglesRight} />
@@ -59,7 +59,7 @@ export default function RoundPlayers(): JSX.Element {
 
       {/* TODO: if keeping separate lists for round and non-round players, create shared component for lists */}
       {/* TODO: make lists look separated */}
-      <p className="nonInputLabel">Active Round Players</p>
+      <p className="non-input-label">Active Round Players</p>
       <ul className="editable-list--players">
         {roundPlayers.length ? (
           sortArrayOfObjects(roundPlayers, 'name')?.map(
@@ -81,26 +81,30 @@ export default function RoundPlayers(): JSX.Element {
             }
           )
         ) : (
-          <p className="no-active-list-items">No active players</p>
+          <p className="indented-text-small">No active players</p>
         )}
       </ul>
 
-      <p className="nonInputLabel">Inactive Round Players</p>
+      <p className="non-input-label">Inactive Round Players</p>
       <ul className="editable-list--players">
-        {getInactiveRoundPlayers().map((player) => {
-          return (
-            <li key={player.id}>
-              <span>{player.name}</span>
-              <span className="list-edit-buttons non-round-player">
-                <button
-                  onClick={() => handleAddPlayerToRound(player.id, roundId)}
-                >
-                  Activate
-                </button>
-              </span>
-            </li>
-          )
-        })}
+        {roundPlayers.length < leaguePlayers.length ? (
+          getInactiveRoundPlayers().map((player) => {
+            return (
+              <li key={player.id}>
+                <span>{player.name}</span>
+                <span className="list-edit-buttons non-round-player">
+                  <button
+                    onClick={() => handleAddPlayerToRound(player.id, roundId)}
+                  >
+                    Activate
+                  </button>
+                </span>
+              </li>
+            )
+          })
+        ) : (
+          <p className="indented-text-small">All players are active</p>
+        )}
       </ul>
     </>
   )

@@ -3,7 +3,7 @@ import React from 'react'
 export default function PlayerRoundScorecard() {
   return (
     <div className="tableContainer">
-      <p className="nonInputLabel">Scorecard</p>
+      <p className="non-input-label">Scorecard</p>
       <table className="scorecardTable">
         <thead>
           <tr>

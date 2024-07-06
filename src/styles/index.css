@@ -68,7 +68,7 @@ fieldset {
 fieldset label {
   font-weight: normal;
 }
-.nonInputLabel {
+.non-input-label {
   margin-top: var(--label-margin-top);
   font-weight: bold;
 }
@@ -126,7 +126,7 @@ a:hover {
   text-align: center;
 }
 
-.decreaseBottomMargin {
+.decrease-bottom-margin {
   margin-bottom: 0.2em;
 }
 
@@ -194,6 +194,9 @@ input::-webkit-calendar-picker-indicator:hover {
 
 .input-error {
   color: rgb(252, 104, 104);
+}
+.success-msg {
+  color: var(--primary-color);
 }
 
 /* TODO: move some of the players and point specific css to the corresponding folder as css modules */
@@ -273,7 +276,7 @@ input::-webkit-calendar-picker-indicator:hover {
   }
 }
 
-.no-active-list-items {
+.indented-text-small {
   margin-left: 0.5em;
 }
 

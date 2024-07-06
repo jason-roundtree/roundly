@@ -1,16 +1,15 @@
 import { useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { validateSimpleInput } from '../shared/utils'
 
-export default function AddPlayer({
-  refreshState,
-}: {
-  refreshState(): void
-}): JSX.Element {
+export default function AddPlayer(): JSX.Element {
   const [newPlayerName, setNewPlayerName] = useState<string>('')
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false)
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null)
@@ -41,8 +40,9 @@ export default function AddPlayer({
         )
         // const resJson = await res.json()
 
-        refreshState()
         setNewPlayerName('')
+        setShowSuccessMsg(true)
+        setTimeout(() => setShowSuccessMsg(false), 3000)
         inputRef.current && inputRef.current.focus()
       } catch (err) {
         console.log('add player to league error: ', err)
@@ -52,12 +52,23 @@ export default function AddPlayer({
 
   return (
     <>
-      <h3 className="secondary-page-title">Add New Player to League</h3>
+      <h3 className="decrease-bottom-margin page-title">
+        Add New Player to League
+      </h3>
+
+      <div className="linkContainerCentered">
+        <Link to={`/league/${leagueId}/players`}>
+          League Players <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
+
       <BasicInput
         type="text"
         name="playerName"
         label="Player Name"
         onChange={({ target }) => {
+          setInputValidationError(null)
+          setShowSuccessMsg(false)
           setNewPlayerName(target.value)
         }}
         value={newPlayerName}
@@ -69,6 +80,9 @@ export default function AddPlayer({
           errorField={inputValidationError}
           errorMsgCode="MISSNG_VALUE"
         />
+        {showSuccessMsg && (
+          <p className="success-msg">Player Successfully Added</p>
+        )}
       </div>
     </>
   )

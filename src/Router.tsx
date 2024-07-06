@@ -16,6 +16,7 @@ import {
   PlayerSelect,
   LeaguePlayers,
   RoundPlayers,
+  AddPlayer,
   // PlayersList
 } from './components/Player'
 import {
@@ -70,9 +71,11 @@ export default function Router() {
         path="league/:leagueId/new-point"
         element={<AddPointSetting pointContext="league" />}
       />
+      <Route path="league/:leagueId/new-player" element={<AddPlayer />} />
       <Route path="league/:leagueId/rounds" element={<Rounds />} />
       <Route path="league/:leagueId/create-round" element={<CreateRound />} />
       <Route path="league/:leagueId/standings" element={<LeagueStandings />} />
+
       <Route
         path="league/:leagueId/rounds/:roundId"
         element={<RoundDetailsContainer />}

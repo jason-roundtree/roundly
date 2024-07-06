@@ -6,7 +6,7 @@ import './index.css'
 export default function PlayerRoundPointsEarnedTable() {
   return (
     <div className="tableContainer">
-      <p className="nonInputLabel">Points Earned</p>
+      <p className="non-input-label">Points Earned</p>
       <table className="pointsEarnedTable">
         <thead>
           <tr>

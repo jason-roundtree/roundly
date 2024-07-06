@@ -17,6 +17,9 @@ export default function RoundPointSettings(): JSX.Element {
   const [leaguePointSettings, setLeaguePointSettings] = useState<
     PointSetting[]
   >([])
+  const [inactivePointSettings, setInactivePointSettings] = useState<
+    PointSetting[]
+  >([])
 
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
@@ -29,6 +32,7 @@ export default function RoundPointSettings(): JSX.Element {
 
   useEffect(() => {
     getLeaguePointSettings()
+    getInactiveRoundPointSettings()
   }, [roundPointSettings])
 
   async function getLeaguePointSettings() {
@@ -58,7 +62,7 @@ export default function RoundPointSettings(): JSX.Element {
         })
       }
     )
-    return nonRoundPointSettings
+    setInactivePointSettings(nonRoundPointSettings)
   }
 
   return (
@@ -76,7 +80,7 @@ export default function RoundPointSettings(): JSX.Element {
         League Point Settings
       </Link> */}
 
-      <p className="nonInputLabel">Active Round Points</p>
+      <p className="non-input-label">Active Round Points</p>
       <ul className="editable-list--points">
         {roundPointSettings.length ? (
           sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
@@ -91,29 +95,33 @@ export default function RoundPointSettings(): JSX.Element {
             )
           })
         ) : (
-          <p className="no-active-list-items">No active points</p>
+          <p className="indented-text-small">No active points</p>
         )}
       </ul>
 
-      <p className="nonInputLabel">Inactive Round Points</p>
+      <p className="non-input-label">Inactive Round Points</p>
       {/* TODO: add edit button to inactive points? If not then probably change this className */}
       <ul className="editable-list--points">
-        {getInactiveRoundPointSettings().map((pointSetting) => {
-          return (
-            <li key={pointSetting.id}>
-              <span className="list-point-name">{pointSetting.name}</span>
-              <span className="list-point-value">{pointSetting.value}</span>
-              <span className="list-edit-buttons non-round-point-setting">
-                <button onClick={() => addPointSettingToRound(pointSetting.id)}>
-                  Activate
-                </button>
-              </span>
-            </li>
-          )
-        })}
+        {inactivePointSettings.length ? (
+          inactivePointSettings.map((pointSetting) => {
+            return (
+              <li key={pointSetting.id}>
+                <span className="list-point-name">{pointSetting.name}</span>
+                <span className="list-point-value">{pointSetting.value}</span>
+                <span className="list-edit-buttons non-round-point-setting">
+                  <button
+                    onClick={() => addPointSettingToRound(pointSetting.id)}
+                  >
+                    Activate
+                  </button>
+                </span>
+              </li>
+            )
+          })
+        ) : (
+          <p className="indented-text-small">All points are active</p>
+        )}
       </ul>
-
-      {/* <AddPointSetting refreshState={refreshRoundState} pointContext="round" /> */}
     </>
   )
 }
