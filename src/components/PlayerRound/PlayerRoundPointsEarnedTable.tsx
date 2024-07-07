@@ -1,9 +1,9 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 import PlayerRoundPointsEarnedTableRow from './PlayerRoundPointsEarnedTableRow'
 import './index.css'
 
-export default function PlayerRoundPointsEarnedTable() {
+export default function PlayerRoundPointsEarnedTable({ pointsEarned }) {
   return (
     <div className="tableContainer">
       <p className="non-input-label">Points Earned</p>
@@ -16,35 +16,17 @@ export default function PlayerRoundPointsEarnedTable() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Birdie</td>
-            <td>5</td>
-            <td>2</td>
-          </tr>
-
-          <tr>
-            <td>Bogey</td>
-            <td>-2</td>
-            <td>4</td>
-          </tr>
-
-          <tr>
-            <td>Swear</td>
-            <td>-5</td>
-            <td>7</td>
-          </tr>
-
-          <tr>
-            <td>Over Double Bogey</td>
-            <td>-10</td>
-            <td>7</td>
-          </tr>
-
-          <tr>
-            <td>Up and down from bunker</td>
-            <td>10</td>
-            <td>9</td>
-          </tr>
+          {pointsEarned.map(({ id, playerId, point_setting }) => {
+            const { name, value } = point_setting
+            return (
+              <PlayerRoundPointsEarnedTableRow
+                id={id}
+                name={name}
+                value={value}
+                playerId={playerId}
+              />
+            )
+          })}
         </tbody>
       </table>
     </div>

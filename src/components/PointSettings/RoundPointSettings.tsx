@@ -29,11 +29,21 @@ export default function RoundPointSettings(): JSX.Element {
   const { pointSettings: roundPointSettings, refreshRoundState } =
     useContext(RoundContext)
   console.log('roundPointSettings: ', roundPointSettings)
+  console.log('leaguePointSettings: ', leaguePointSettings)
+  console.log('inactivePointSettings: ', inactivePointSettings)
+
+  useEffect(() => {
+    // TODO: why is this necessary when going back in browser after new point entry?
+    refreshRoundState()
+  }, [])
 
   useEffect(() => {
     getLeaguePointSettings()
-    getInactiveRoundPointSettings()
   }, [roundPointSettings])
+
+  useEffect(() => {
+    getInactiveRoundPointSettings()
+  }, [leaguePointSettings])
 
   async function getLeaguePointSettings() {
     const leaguePointSettings = await fetchLeaguePointSettings(leagueId)

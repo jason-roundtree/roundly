@@ -13,7 +13,10 @@ export {
   removeRoundPointSetting,
 } from './point-setting'
 export { createRoundPlayerPointEarned } from './player-point-earned'
-export { getRoundPlayerPointsEarnedTotal } from './player-points-earned'
+export {
+  getRoundPlayerPointsEarned,
+  getRoundPlayerPointsEarnedTotal,
+} from './player-points-earned'
 export { createOrFindPlayerHole, updatePlayerHoleScore } from './player-hole'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'

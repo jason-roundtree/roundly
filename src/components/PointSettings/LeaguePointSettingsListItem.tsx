@@ -63,9 +63,9 @@ export default function LeaguePointSettingsListItem({
   }
 
   function handleInputChange({
-    target: { name: tName, value: tValue },
+    target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setUpdatedPointSetting({ ...updatedPointSetting, [tName]: tValue })
+    setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
   }
 
   function handleRadioInputChange(e) {

@@ -36,6 +36,7 @@ export default function AddPointSetting({
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null)
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams()
 
@@ -68,8 +69,9 @@ export default function AddPointSetting({
           console.log('roundPointJson JSON', roundPointJson)
         }
 
-        // refreshState()
         setNewPointSetting(defaultNewPointSettingState)
+        setShowSuccessMsg(true)
+        setTimeout(() => setShowSuccessMsg(false), 3000)
         inputRef.current && inputRef.current.focus()
       } catch (err) {
         console.log('create point setting error: ', err)
@@ -77,15 +79,19 @@ export default function AddPointSetting({
     }
   }
 
-  // TODO: move basic handleInputChange to shared hook
   function handleInputChange({
-    target: { name: tName, value: tValue },
+    target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    setShowSuccessMsg(false)
+    if (name === 'name') {
+      setInputValidationError(null)
+    }
     console.log('newPointSetting', newPointSetting)
-    setNewPointSetting({ ...newPointSetting, [tName]: tValue })
+    setNewPointSetting({ ...newPointSetting, [name]: value })
   }
 
   function handleRadioInputChange({ target: { name, value } }) {
+    setShowSuccessMsg(false)
     switch (name) {
       case 'isLeaguePoint-radios':
         setNewPointSetting({
@@ -116,13 +122,36 @@ export default function AddPointSetting({
   return (
     <form>
       <h3 className="decrease-bottom-margin page-title">
-        Add New Point to {pointContextCapitalized(pointContext)}
+        Create New {pointContextCapitalized(pointContext)} Point
       </h3>
       <div className="linkContainerCentered">
         <Link to={`/league/${leagueId}/point-settings`}>
           League Point Settings <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>
+
+      {pointContext === 'round' && (
+        <fieldset className={styles.roundPointRadios}>
+          <legend>One-off or League Point Setting</legend>
+          <Radio
+            id="round-only"
+            value="round-only"
+            name="isLeaguePoint-radios"
+            label="One-off point setting for this round"
+            onChange={handleRadioInputChange}
+            checked={!newPointSetting.isLeagueSetting}
+          />
+
+          <Radio
+            id="league-setting"
+            value="league-setting"
+            name="isLeaguePoint-radios"
+            label="Add to default point settings for league"
+            onChange={handleRadioInputChange}
+            checked={newPointSetting.isLeagueSetting}
+          />
+        </fieldset>
+      )}
 
       <BasicInput
         type="text"
@@ -158,35 +187,15 @@ export default function AddPointSetting({
         value={newPointSetting.maxFrequencyPerScope ?? ''}
       />
 
-      {pointContext === 'round' && (
-        <fieldset className={styles.roundPointRadios}>
-          <legend>One-off or League Point Setting</legend>
-          <Radio
-            id="round-only"
-            value="round-only"
-            name="isLeaguePoint-radios"
-            label="One-off point setting for this round"
-            onChange={handleRadioInputChange}
-            checked={!newPointSetting.isLeagueSetting}
-          />
-
-          <Radio
-            id="league-setting"
-            value="league-setting"
-            name="isLeaguePoint-radios"
-            label="Add to default point settings for league"
-            onChange={handleRadioInputChange}
-            checked={newPointSetting.isLeagueSetting}
-          />
-        </fieldset>
-      )}
-
       <div className="form-submit">
         <button onClick={handleCreatePointSetting}>Add Point</button>
         <SimpleInputValidationError
           errorField={inputValidationError}
           errorMsgCode="MISSNG_VALUE"
         />
+        {showSuccessMsg && (
+          <p className="success-msg">Point Successfully Added</p>
+        )}
       </div>
     </form>
   )

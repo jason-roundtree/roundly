@@ -110,9 +110,9 @@ export default function CreateRound() {
   }
 
   function handleInputChange({
-    target: { name: tName, value: tValue },
+    target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setRoundState({ ...roundState, [tName]: tValue })
+    setRoundState({ ...roundState, [name]: value })
   }
 
   return (

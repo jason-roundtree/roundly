@@ -6,6 +6,7 @@ export default function validateSimpleInput(
   let fieldsAreValid = false
   if (!inputState) {
     setErrorFn(inputLabel)
+    // setTimeout(() => setErrorFn(null), 3000)
   } else {
     setErrorFn(null)
     fieldsAreValid = true

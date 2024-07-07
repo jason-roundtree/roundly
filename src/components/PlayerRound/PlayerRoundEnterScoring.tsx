@@ -39,11 +39,8 @@ export default function PlayerRoundEnterScoring() {
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
-  console.log('player', player)
-  console.log('hole', hole)
-  console.log('holeScore', holeScore)
-  console.log('pointEarned', pointEarned)
-  console.log('pointSettings', pointSettings)
+  // console.log('player', player)
+
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
   const frequencyIsActive =
     typeof peMaxFrequencyPerScope === 'number'
