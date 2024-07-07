@@ -16,7 +16,7 @@ export default function PlayerRoundPointsEarnedTableRow({
   playerId,
 }: PlayerRoundPointsEarnedRow): JSX.Element {
   return (
-    <tr key={id} id={id}>
+    <tr id={id}>
       <td>{name}</td>
       <td>{value}</td>
       <td>{hole ?? ''}</td>
