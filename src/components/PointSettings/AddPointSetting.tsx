@@ -78,6 +78,11 @@ export default function AddPointSetting({
       }
     }
   }
+  function handlePointValueInputChange({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>): void {
+    setNewPointSetting({ ...newPointSetting, value: +target.value })
+  }
 
   function handleInputChange({
     target: { name, value },
@@ -86,7 +91,6 @@ export default function AddPointSetting({
     if (name === 'name') {
       setInputValidationError(null)
     }
-    console.log('newPointSetting', newPointSetting)
     setNewPointSetting({ ...newPointSetting, [name]: value })
   }
 
@@ -167,7 +171,7 @@ export default function AddPointSetting({
         label="Point Value"
         name="value"
         value={newPointSetting.value}
-        onChange={handleInputChange}
+        onChange={handlePointValueInputChange}
         onFocus={selectAllInputText}
       />
 
