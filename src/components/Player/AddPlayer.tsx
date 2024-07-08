@@ -80,7 +80,8 @@ export default function AddPlayer(): JSX.Element {
           errorField={inputValidationError}
           errorMsgCode="MISSNG_VALUE"
         />
-        {showSuccessMsg && (
+        {/* TODO: when changing to toasts, allow both success and error to show? */}
+        {showSuccessMsg && !inputValidationError && (
           <p className="success-msg">Player Successfully Added</p>
         )}
       </div>

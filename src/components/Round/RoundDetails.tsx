@@ -46,7 +46,8 @@ export default function RoundDetails() {
         {pointSettings?.map((ps) => {
           return (
             <li key={ps.id}>
-              <span>{ps.name}</span> / <span>{ps.value}</span>
+              <span>{ps.name}</span>&nbsp;&nbsp;&nbsp;
+              <span>{ps.value}</span>
             </li>
           )
         })}

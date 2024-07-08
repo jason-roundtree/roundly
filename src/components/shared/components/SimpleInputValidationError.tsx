@@ -4,6 +4,8 @@ type ErrorField = string | null
 
 export type ErrorMsgCodes =
   | 'MISSNG_VALUE'
+  | 'ONE_INPUT_REQUIRED'
+  | 'HOLE_REQUIRED'
   | 'INVALID_EMAIL'
   | 'INVALID_PASSWORD'
 
@@ -13,9 +15,11 @@ function generateErrorMessage(
 ) {
   switch (errorMsgCode) {
     case 'MISSNG_VALUE':
-      return `${errorField} cannot be empty`
-    // case '':
-    //   return `${errorField}`
+      return `${errorField} is required`
+    case 'ONE_INPUT_REQUIRED':
+      return `At least one of the following inputs are required: ${errorField}`
+    case 'HOLE_REQUIRED':
+      return `Hole is required when ${errorField} is present`
   }
 }
 

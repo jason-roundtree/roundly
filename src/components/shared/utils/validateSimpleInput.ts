@@ -1,5 +1,5 @@
 export default function validateSimpleInput(
-  inputState: string | number,
+  inputState: string | number | null,
   inputLabel: string,
   setErrorFn: (label: string | null) => void
 ): boolean {

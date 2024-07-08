@@ -55,6 +55,23 @@ export default function LeagueHome() {
   return (
     <>
       <h1>{name} - League Home</h1>
+
+      <p className={styles.editPageLinks}>
+        <Link to={`/league/${leagueId}/rounds`}>
+          ROUNDS <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </p>
+      <ul>
+        {rounds.map(({ id, name, location, date }) => {
+          const dateFormatted = new Date(date).toLocaleDateString()
+          return (
+            <li key={id}>
+              {name} &nbsp;&nbsp;-&nbsp;&nbsp; {dateFormatted}
+            </li>
+          )
+        })}
+      </ul>
+
       <p className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/players`}>
           PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
@@ -75,23 +92,7 @@ export default function LeagueHome() {
         {pointSettings.map(({ id, name, value }) => {
           return (
             <li key={id}>
-              {name} &nbsp;&nbsp;-&nbsp;&nbsp; {value}
-            </li>
-          )
-        })}
-      </ul>
-
-      <p className={styles.editPageLinks}>
-        <Link to={`/league/${leagueId}/rounds`}>
-          ROUNDS <FontAwesomeIcon icon={faAnglesRight} />
-        </Link>
-      </p>
-      <ul>
-        {rounds.map(({ id, name, location, date }) => {
-          const dateFormatted = new Date(date).toLocaleDateString()
-          return (
-            <li key={id}>
-              {name} &nbsp;&nbsp;-&nbsp;&nbsp; {dateFormatted}
+              {name}&nbsp;&nbsp;&nbsp;{value}
             </li>
           )
         })}

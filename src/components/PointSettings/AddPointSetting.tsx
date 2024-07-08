@@ -197,7 +197,7 @@ export default function AddPointSetting({
           errorField={inputValidationError}
           errorMsgCode="MISSNG_VALUE"
         />
-        {showSuccessMsg && (
+        {showSuccessMsg && !inputValidationError && (
           <p className="success-msg">Point Successfully Added</p>
         )}
       </div>

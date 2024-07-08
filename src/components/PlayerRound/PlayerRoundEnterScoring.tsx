@@ -11,8 +11,9 @@ import {
   createOrFindPlayerHole,
   updatePlayerHoleScore,
 } from '../../data'
+import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
+import { validateAtLeastOneSimpleInput } from '../shared/utils'
 
-// TODO: setup additional default that includes maxFrequencyPerScope so you don't need to add it each time you want to set state
 interface NameAndId {
   id: string
   name: string
@@ -39,6 +40,13 @@ export default function PlayerRoundEnterScoring() {
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
+  // TODO: cleaner way to handle input validation state?
+  const [oneInputRequiredErrorField, setOneInputRequiredErrorField] = useState<
+    string | null
+  >(null)
+  const [holeRequiredErrorField, setHoleRequiredErrorField] = useState<
+    string | null
+  >(null)
   // console.log('player', player)
 
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
@@ -73,12 +81,62 @@ export default function PlayerRoundEnterScoring() {
     })
   }
 
+  function handleUpdatePointEarned(e) {
+    setOneInputRequiredErrorField(null)
+    const pointName = e.target.value
+    const pointSetting = pointSettings.find(
+      (point) => point.name === pointName
+    ) as PointSetting
+    if (pointSetting) {
+      setPointEarned({
+        id: pointSetting.id,
+        name: pointName,
+        maxFrequencyPerScope: pointSetting.maxFrequencyPerScope ?? 1,
+        value: pointSetting.value,
+      })
+    } else {
+      setPointEarned(defaultPointEarnedState)
+    }
+  }
+
+  function handleUpdateHoleScore(e) {
+    setOneInputRequiredErrorField(null)
+    const inputValue = e.target.value
+    if (inputValue === '0') {
+      setHoleScore(null)
+    } else {
+      setHoleScore(+inputValue)
+    }
+  }
+
+  function handleUpdateHole(e) {
+    const holeValue = e.target.value
+    if (holeValue !== '') {
+      setHoleRequiredErrorField(null)
+    }
+    setHole(e.target.value)
+  }
+
   async function handleFormSubmit(e): Promise<void> {
     e.preventDefault()
     const playerId = player.id
     let playerHoleId = null
+    if (
+      !validateAtLeastOneSimpleInput(
+        [pointEarned.name, holeScore],
+        'Point Earned, Hole Score',
+        setOneInputRequiredErrorField
+      )
+    ) {
+      return
+    }
 
-    // TODO: add validation to check for hole number if hole score exists
+    // TODO: add validation to check for hole number if hole score exists (also same if point scope is hole?)
+    if (holeScore && !hole) {
+      setHoleRequiredErrorField('Hole Score')
+      return
+    }
+
     if (hole) {
       const holeData = {
         playerId: playerId,
@@ -130,6 +188,8 @@ export default function PlayerRoundEnterScoring() {
     setHoleScore(null)
     setPointEarnedFrequency(1)
     setPointEarned(defaultPointEarnedState)
+    setOneInputRequiredErrorField(null)
+    setHoleRequiredErrorField(null)
   }
 
   return (
@@ -160,22 +220,7 @@ export default function PlayerRoundEnterScoring() {
         label="Point Earned"
         // name="roundPlayerAddPointEarnedAndOrScore"
         value={`${pointEarned.name}`}
-        onChange={(e) => {
-          const pointName = e.target.value
-          const pointSetting = pointSettings.find(
-            (point) => point.name === pointName
-          ) as PointSetting
-          if (pointSetting) {
-            setPointEarned({
-              id: pointSetting.id,
-              name: pointName,
-              maxFrequencyPerScope: pointSetting.maxFrequencyPerScope ?? 1,
-              value: pointSetting.value,
-            })
-          } else {
-            setPointEarned(defaultPointEarnedState)
-          }
-        }}
+        onChange={handleUpdatePointEarned}
         // const index = e.target.selectedIndex;
         // const el = e.target.childNodes[index]
         // const option =  el.getAttribute('id');
@@ -194,11 +239,7 @@ export default function PlayerRoundEnterScoring() {
       />
 
       <label htmlFor="hole-select">Hole</label>
-      <select
-        id="hole-select"
-        value={hole}
-        onChange={(e) => setHole(e.target.value)}
-      >
+      <select id="hole-select" value={hole} onChange={handleUpdateHole}>
         {selectableHoles()}
       </select>
 
@@ -208,14 +249,7 @@ export default function PlayerRoundEnterScoring() {
         name="hole-score"
         label="Hole Score"
         value={holeScore ?? ''}
-        onChange={(e) => {
-          const inputValue = e.target.value
-          if (inputValue === '0') {
-            setHoleScore(null)
-          } else {
-            setHoleScore(+inputValue)
-          }
-        }}
+        onChange={handleUpdateHoleScore}
       />
 
       <div className="form-action-buttons-container">
@@ -224,6 +258,14 @@ export default function PlayerRoundEnterScoring() {
           Clear Form
         </button>
       </div>
+      <SimpleInputValidationError
+        errorField={oneInputRequiredErrorField}
+        errorMsgCode="ONE_INPUT_REQUIRED"
+      />
+      <SimpleInputValidationError
+        errorField={holeRequiredErrorField}
+        errorMsgCode="HOLE_REQUIRED"
+      />
     </form>
   )
 }
