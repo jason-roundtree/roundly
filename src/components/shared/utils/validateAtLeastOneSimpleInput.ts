@@ -14,6 +14,5 @@ export default function validateAtLeastOneSimpleInput(
     setErrorFn(inputLabel)
     // setTimeout(() => setErrorFn(null), 3000)
   }
-  console.log('fieldsAreValid', fieldsAreValid)
   return fieldsAreValid
 }

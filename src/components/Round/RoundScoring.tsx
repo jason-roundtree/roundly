@@ -33,9 +33,7 @@ export default function RoundScoring() {
     const playersWithPointTotals = await Promise.all(
       players.map(async (p) => {
         const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
-        console.log('res', res)
-        // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
-        if (res.ok) {
+        if (res.status === 200) {
           const { total_points } = await res.json()
           console.log('totalPoints: ', total_points)
           return {

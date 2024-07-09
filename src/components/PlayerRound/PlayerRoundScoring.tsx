@@ -70,7 +70,7 @@ export default function PlayerRoundPointsEarned() {
         </div>
       </div>
 
-      <PlayerRoundPointsEarnedTable pointsEarned={roundPointsEarned} />
+      <PlayerRoundPointsEarnedTable roundPointsEarned={roundPointsEarned} />
       <PlayerRoundScorecard />
     </>
   )

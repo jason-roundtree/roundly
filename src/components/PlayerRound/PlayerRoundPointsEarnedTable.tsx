@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react'
 import PlayerRoundPointsEarnedTableRow from './PlayerRoundPointsEarnedTableRow'
 import './index.css'
 
-export default function PlayerRoundPointsEarnedTable({ pointsEarned }) {
+export default function PlayerRoundPointsEarnedTable({ roundPointsEarned }) {
+  if (!roundPointsEarned.length) {
+    return null
+  }
   return (
     <div className="tableContainer">
       <p className="non-input-label">Points Earned</p>
@@ -16,20 +19,22 @@ export default function PlayerRoundPointsEarnedTable({ pointsEarned }) {
           </tr>
         </thead>
         <tbody>
-          {pointsEarned.map(({ id, playerId, point_setting, player_hole }) => {
-            const { name, value } = point_setting
-            const { hole } = player_hole
-            return (
-              <PlayerRoundPointsEarnedTableRow
-                id={id}
-                key={id}
-                name={name}
-                value={value}
-                hole={hole}
-                playerId={playerId}
-              />
-            )
-          })}
+          {roundPointsEarned.map(
+            ({ id, playerId, point_setting, player_hole }) => {
+              const { name, value } = point_setting
+              const { hole } = player_hole || {}
+              return (
+                <PlayerRoundPointsEarnedTableRow
+                  id={id}
+                  key={id}
+                  name={name}
+                  value={value}
+                  hole={hole}
+                  playerId={playerId}
+                />
+              )
+            }
+          )}
         </tbody>
       </table>
     </div>
