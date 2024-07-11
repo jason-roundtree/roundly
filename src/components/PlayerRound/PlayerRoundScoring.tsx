@@ -47,7 +47,8 @@ export default function PlayerRoundPointsEarned() {
 
   return (
     <>
-      <h3 className="page-title">Player Round Scoring - {playerName}</h3>
+      <h3 className="page-title">Player Round Scoring </h3>
+      <h3 className="page-title">{playerName}</h3>
 
       <div className="centered-button">
         <Link

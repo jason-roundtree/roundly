@@ -6,6 +6,7 @@ import styles from './RoundScoring.module.css'
 import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'
 import { getRoundPlayerPointsEarnedTotal } from '../../data'
+import { sortArrayOfObjects } from '../shared/utils'
 
 type RoundScoringSortBy = 'a-z' | 'z-a' | 'high-low' | 'low-high'
 interface PlayersWithPointTotals {
@@ -143,8 +144,8 @@ export default function RoundScoring() {
           <ul
             className={`${styles.playerScoringList} editable-list--player-scoring`}
           >
-            {/* <ul className="editable-list--player-scoring"> */}
-            {playersWithPoints.map((player) => {
+            {/* TODO: default sort high to low score */}
+            {sortArrayOfObjects(playersWithPoints, 'name')?.map((player) => {
               console.log('player render map', player)
               return (
                 <li key={player.id}>
@@ -168,7 +169,9 @@ export default function RoundScoring() {
         </>
       ) : (
         <>
-          <p>No players have been activated for this round</p>
+          <p className="centered-text">
+            No players have been activated for this round
+          </p>
           <div className="centered-button">
             <Link to={`/league/${leagueId}/rounds/${roundId}/players`}>
               <button className="centered-button">Activate Players</button>

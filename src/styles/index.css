@@ -348,3 +348,7 @@ th {
 .player-scoring-form [name='point-earned-frequency'] {
   width: 5em;
 }
+
+.centered-text {
+  text-align: center;
+}

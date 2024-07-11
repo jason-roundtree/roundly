@@ -1,6 +1,6 @@
 import React from 'react'
 
-type ErrorField = string | null
+type ErrorField = string | undefined
 
 export type ErrorMsgCodes =
   | 'MISSNG_VALUE'
@@ -27,13 +27,15 @@ function generateErrorMessage(
 }
 
 export default function SimpleInputValidationError({
-  errorField,
+  showErrorMsg,
   errorMsgCode,
+  errorField,
 }: {
-  errorField: ErrorField
+  showErrorMsg: boolean
   errorMsgCode: ErrorMsgCodes
+  errorField?: ErrorField
 }): JSX.Element | null {
-  if (typeof errorField !== 'string') {
+  if (!showErrorMsg) {
     return null
   }
   return (

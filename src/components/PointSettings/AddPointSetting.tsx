@@ -6,12 +6,17 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 import BasicInput from '../shared/components/BasicInput'
 import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { PointSetting } from '../../types'
-import { pointContextCapitalized, validateSimpleInput } from '../shared/utils'
+import {
+  pointContextCapitalized,
+  validateSimpleInput,
+  validateSimpleStringInput,
+} from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import RoundPointScopeRadios from './RoundPointScopeRadios'
 import { no_scope_key } from './RoundPointScopeRadios'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
@@ -33,49 +38,50 @@ export default function AddPointSetting({
   const [newPointSetting, setNewPointSetting] = useState(
     defaultNewPointSettingState
   )
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  console.log('newPointSetting', newPointSetting)
+  const [showNameValidationError, setShowNameValidationError] = useState(false)
+  const [showMaxFrequencyError, setShowMaxFrequencyError] = useState(false)
   const [showSuccessMsg, setShowSuccessMsg] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams()
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
-    if (
-      !validateSimpleInput(
-        newPointSetting.name,
-        'Point Name',
-        setInputValidationError
-      )
-    ) {
+    const maxFrequency = newPointSetting.maxFrequencyPerScope
+    const pointName = newPointSetting.name
+    // TODO: move this to function and also run it on blur
+    if (pointName && maxFrequency && maxFrequency < 1) {
+      setShowMaxFrequencyError(true)
       return
-    } else {
-      try {
-        const newPointSettingCopy = { ...newPointSetting }
-        if (pointContext === 'league') {
-          newPointSettingCopy.isLeagueSetting = true
-        }
+    }
+    if (!validateSimpleStringInput(pointName, setShowNameValidationError)) {
+      return
+    }
 
-        const leaguePointJson = await createLeaguePointSetting(
-          leagueId,
-          newPointSettingCopy
-        )
-        const { id: pointId } = leaguePointJson
-
-        // TODO: should i just use roundId param instead?
-        if (pointContext === 'round') {
-          const roundPointJson = await createRoundPointSetting(pointId, roundId)
-          console.log('roundPointJson JSON', roundPointJson)
-        }
-
-        setNewPointSetting(defaultNewPointSettingState)
-        setShowSuccessMsg(true)
-        setTimeout(() => setShowSuccessMsg(false), 3000)
-        inputRef.current && inputRef.current.focus()
-      } catch (err) {
-        console.log('create point setting error: ', err)
+    try {
+      const newPointSettingCopy = { ...newPointSetting }
+      if (pointContext === 'league') {
+        newPointSettingCopy.isLeagueSetting = true
       }
+
+      const leaguePointJson = await createLeaguePointSetting(
+        leagueId,
+        newPointSettingCopy
+      )
+      const { id: pointId } = leaguePointJson
+
+      // TODO: should i just use roundId param instead?
+      if (pointContext === 'round') {
+        const roundPointJson = await createRoundPointSetting(pointId, roundId)
+        console.log('roundPointJson JSON', roundPointJson)
+      }
+
+      setNewPointSetting(defaultNewPointSettingState)
+      setShowSuccessMsg(true)
+      setTimeout(() => setShowSuccessMsg(false), 3000)
+      inputRef.current && inputRef.current.focus()
+    } catch (err) {
+      console.log('create point setting error: ', err)
     }
   }
   function handlePointValueInputChange({
@@ -89,7 +95,10 @@ export default function AddPointSetting({
   }: React.ChangeEvent<HTMLInputElement>): void {
     setShowSuccessMsg(false)
     if (name === 'name') {
-      setInputValidationError(null)
+      setShowNameValidationError(false)
+    }
+    if (name === 'maxFrequencyPerScope' && +value > 0) {
+      setShowMaxFrequencyError(false)
     }
     setNewPointSetting({ ...newPointSetting, [name]: value })
   }
@@ -113,6 +122,7 @@ export default function AddPointSetting({
             ? 1
             : newPointSetting.maxFrequencyPerScope,
         })
+        setShowMaxFrequencyError(false)
         break
       default:
         console.log('no matching radio')
@@ -193,11 +203,16 @@ export default function AddPointSetting({
 
       <div className="form-submit">
         <button onClick={handleCreatePointSetting}>Add Point</button>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
+        <ValidationErrorMessage
+          showErrorMsg={showNameValidationError}
           errorMsgCode="MISSNG_VALUE"
+          errorField="Point Name"
         />
-        {showSuccessMsg && !inputValidationError && (
+        <ValidationErrorMessage
+          showErrorMsg={showMaxFrequencyError}
+          errorMsgCode="MINIMUM_FREQUENCY_OF_ONE"
+        />
+        {showSuccessMsg && !showNameValidationError && (
           <p className="success-msg">Point Successfully Added</p>
         )}
       </div>
