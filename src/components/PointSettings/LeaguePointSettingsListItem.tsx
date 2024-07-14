@@ -7,9 +7,9 @@ import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModa
 import { EditablePointSettingListItem, RoundPointScopeRadios } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import { validateSimpleInput } from '../shared/utils'
 import { no_scope_key } from './RoundPointScopeRadios'
+import { validateStringInput } from '../shared/utils'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -36,35 +36,34 @@ export default function LeaguePointSettingsListItem({
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value, scope } = pointSetting
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  const [showValidationError, setShowValidationError] = useState(false)
 
   function handleEditingPoint() {
     setUpdatedPointSetting(pointSetting)
     setIsBeingEdited(true)
   }
 
-  async function handleUpdatePointSetting(): Promise<void> {
+  async function handleUpdatePointSetting(e): Promise<void> {
+    e.preventDefault()
     if (
-      !validateSimpleInput(
-        updatedPointSetting.name,
-        'Point Name',
-        setInputValidationError
-      )
+      !validateStringInput(updatedPointSetting.name, setShowValidationError)
     ) {
       return
-    } else {
-      await updatePointSetting(id, updatedPointSetting)
-      refreshState()
-      setIsBeingEdited(false)
-      setUpdatedPointSetting(defaultState)
     }
+    console.log('updatedPointSetting.name', updatedPointSetting.name)
+    await updatePointSetting(id, updatedPointSetting)
+    refreshState()
+    setIsBeingEdited(false)
+    setUpdatedPointSetting(defaultState)
+    setShowValidationError(false)
   }
 
   function handleInputChange({
     target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    if (name === 'name') {
+      setShowValidationError(false)
+    }
     setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
   }
 
@@ -80,20 +79,26 @@ export default function LeaguePointSettingsListItem({
     })
   }
 
+  function handleCloseModal() {
+    setIsBeingEdited(false)
+    setShowValidationError(false)
+  }
+
   function EditPointSettingModalButtons(): JSX.Element {
     return (
-      <>
+      <form>
         <div id="modal-edit-buttons">
           <button onClick={handleUpdatePointSetting}>Save</button>
           <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
             Delete
           </button>
         </div>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
+        <ValidationErrorMessage
+          showErrorMsg={showValidationError}
+          errorField="Point Name"
           errorMsgCode="MISSNG_VALUE"
         />
-      </>
+      </form>
     )
   }
 
@@ -103,7 +108,7 @@ export default function LeaguePointSettingsListItem({
         // TODO: move edit point and player modals to non-modal components
         <Modal
           title="Edit Point Setting"
-          closeModal={() => setIsBeingEdited(false)}
+          closeModal={handleCloseModal}
           renderButtons={() => <EditPointSettingModalButtons />}
         >
           <BasicInput

@@ -1,17 +1,16 @@
 export default function validateAtLeastOneSimpleInput(
   inputState: Array<string | number | null>,
-  inputLabel: string,
-  setErrorFn: (label: string | null) => void
+  setErrorFn: (boolean) => void
 ): boolean {
   let fieldsAreValid = false
   for (const i of inputState) {
     if (i) {
       fieldsAreValid = true
-      setErrorFn(null)
+      setErrorFn(false)
     }
   }
   if (!fieldsAreValid) {
-    setErrorFn(inputLabel)
+    setErrorFn(true)
     // setTimeout(() => setErrorFn(null), 3000)
   }
   return fieldsAreValid

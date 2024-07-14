@@ -15,9 +15,9 @@ import {
   fetchLeaguePointSettings,
   createRoundPlayer,
 } from '../../data'
-import { validateSimpleInput } from '../shared/utils'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import styles from './CreateRound.module.css'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import { validateStringInput } from '../shared/utils'
 
 interface RoundState {
   name: string
@@ -37,11 +37,8 @@ export default function CreateRound() {
   const [selectedPointSettings, setSelectedPointSettings] = useState<string[]>(
     []
   )
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  const [showValidationError, setShowValidationError] = useState(false)
   const navigate = useNavigate()
-
   const { leagueId } = useParams()
 
   async function createRoundPointSettings(roundId) {
@@ -96,13 +93,7 @@ export default function CreateRound() {
 
   async function handleSaveRound(e) {
     e.preventDefault()
-    if (
-      !validateSimpleInput(
-        roundState.name,
-        'Round Name',
-        setInputValidationError
-      )
-    ) {
+    if (!validateStringInput(roundState.name, setShowValidationError)) {
       return
     }
     await createRound()
@@ -112,6 +103,9 @@ export default function CreateRound() {
   function handleInputChange({
     target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    if (name === 'name') {
+      setShowValidationError(false)
+    }
     setRoundState({ ...roundState, [name]: value })
   }
 
@@ -197,8 +191,9 @@ export default function CreateRound() {
         {/* TODO: add validation to ensure league name has been added */}
         <div className="form-submit">
           <button onClick={handleSaveRound}>Create Round</button>
-          <SimpleInputValidationError
-            errorField={inputValidationError}
+          <ValidationErrorMessage
+            showErrorMsg={showValidationError}
+            errorField="Round Name"
             errorMsgCode="MISSNG_VALUE"
           />
         </div>

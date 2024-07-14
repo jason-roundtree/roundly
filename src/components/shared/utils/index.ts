@@ -1,7 +1,6 @@
 export { default as removeObjectItemFromList } from './removeObjectItemFromList'
 export { default as updateObjectItemInList } from './updateObjectItemInList'
 export { default as sortArrayOfObjects } from './sortArrayOfObjects'
-export { default as validateSimpleInput } from './validateSimpleInput'
 export { default as validateAtLeastOneSimpleInput } from './validateAtLeastOneSimpleInput'
-export { default as validateSimpleStringInput } from './validateSimpleStringInput'
+export { default as validateStringInput } from './validateStringInput'
 export { default as pointContextCapitalized } from './pointContextCapitalized'

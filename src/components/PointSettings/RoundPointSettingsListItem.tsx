@@ -6,10 +6,10 @@ import BasicInput from '../shared/components/BasicInput'
 import { EditablePointSettingListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import Checkbox from '../shared/components/Checkbox'
-import { validateSimpleInput } from '../shared/utils'
 import { no_scope_key } from './RoundPointScopeRadios'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import { validateStringInput } from '../shared/utils'
 
 // TODO: add same defaultState typing for LeaguePlayers?
 // TODO: add other PointSetting fields from Types
@@ -34,9 +34,7 @@ export default function RoundPointSettingsListItem({
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
   const { id, name, value, isLeagueSetting, scope } = pointSetting
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  const [showValidationError, setShowValidationError] = useState(false)
 
   function handleEditingPoint() {
     setUpdatedPointSetting(pointSetting)
@@ -45,19 +43,15 @@ export default function RoundPointSettingsListItem({
 
   async function handleUpdatePointSetting(): Promise<void> {
     if (
-      !validateSimpleInput(
-        updatedPointSetting.name,
-        'Point Name',
-        setInputValidationError
-      )
+      !validateStringInput(updatedPointSetting.name, setShowValidationError)
     ) {
       return
-    } else {
-      await updatePointSetting(id, updatedPointSetting)
-      refreshState()
-      setIsBeingEdited(false)
-      setUpdatedPointSetting(defaultState)
     }
+    await updatePointSetting(id, updatedPointSetting)
+    refreshState()
+    setIsBeingEdited(false)
+    setUpdatedPointSetting(defaultState)
+    setShowValidationError(false)
   }
 
   function handleInputChange({
@@ -97,20 +91,27 @@ export default function RoundPointSettingsListItem({
             {deactivatePointButtonText()}
           </button>
         </div>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
+        <ValidationErrorMessage
+          showErrorMsg={showValidationError}
+          errorField="Point Name"
           errorMsgCode="MISSNG_VALUE"
         />
       </>
     )
   }
+
+  function handleCloseModal() {
+    setIsBeingEdited(false)
+    setShowValidationError(false)
+  }
+
   return (
     <>
       {isBeingEdited && (
         // TODO: implement shared component for edit and non-edit inputs? Also with PlayerListItem
         <Modal
           title={modalTitle()}
-          closeModal={() => setIsBeingEdited(false)}
+          closeModal={handleCloseModal}
           renderButtons={() => <EditPointSettingModalButtons />}
         >
           <BasicInput

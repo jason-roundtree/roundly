@@ -4,8 +4,8 @@ import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { updatePlayer, deletePlayerFromLeague } from '../../data'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import { validateSimpleInput } from '../shared/utils'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import { validateStringInput } from '../shared/utils'
 interface EditablePlayer {
   name: string
 }
@@ -17,9 +17,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   const [updatedPlayer, setUpdatedPlayer] = useState(defaultState)
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  const [showValidationError, setShowValidationError] = useState(false)
   const { id: playerId, name } = player
 
   function handleEditingState(name) {
@@ -28,20 +26,13 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
   }
 
   async function handleUpdatePlayer() {
-    if (
-      !validateSimpleInput(
-        updatedPlayer.name,
-        'Player Name',
-        setInputValidationError
-      )
-    ) {
+    if (!validateStringInput(updatedPlayer.name, setShowValidationError)) {
       return
-    } else {
-      await updatePlayer(playerId, updatedPlayer)
-      refreshPlayerState()
-      setUpdatedPlayer(defaultState)
-      setIsBeingEdited(false)
     }
+    await updatePlayer(playerId, updatedPlayer)
+    refreshPlayerState()
+    setUpdatedPlayer(defaultState)
+    setIsBeingEdited(false)
   }
 
   async function handleDeletePlayer() {
@@ -64,8 +55,9 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
             Delete
           </button>
         </div>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
+        <ValidationErrorMessage
+          showErrorMsg={showValidationError}
+          errorField="Player Name"
           errorMsgCode="MISSNG_VALUE"
         />
       </>

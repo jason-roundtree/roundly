@@ -1,22 +1,18 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { PointSetting } from '../../types'
-import {
-  pointContextCapitalized,
-  validateSimpleInput,
-  validateSimpleStringInput,
-} from '../shared/utils'
+import { pointContextCapitalized, validateStringInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import RoundPointScopeRadios from './RoundPointScopeRadios'
 import { no_scope_key } from './RoundPointScopeRadios'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import { RoundContext } from '../Round/RoundDetailsContainer'
 
 type NewPointSetting = Omit<PointSetting, 'id'>
 
@@ -44,6 +40,7 @@ export default function AddPointSetting({
   const [showSuccessMsg, setShowSuccessMsg] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams()
+  const { refreshRoundState } = useContext(RoundContext)
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
@@ -54,7 +51,7 @@ export default function AddPointSetting({
       setShowMaxFrequencyError(true)
       return
     }
-    if (!validateSimpleStringInput(pointName, setShowNameValidationError)) {
+    if (!validateStringInput(pointName, setShowNameValidationError)) {
       return
     }
 
@@ -74,6 +71,7 @@ export default function AddPointSetting({
       if (pointContext === 'round') {
         const roundPointJson = await createRoundPointSetting(pointId, roundId)
         console.log('roundPointJson JSON', roundPointJson)
+        refreshRoundState()
       }
 
       setNewPointSetting(defaultNewPointSettingState)

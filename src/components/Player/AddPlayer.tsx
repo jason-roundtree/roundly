@@ -4,49 +4,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
-import { validateSimpleInput } from '../shared/utils'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import { validateStringInput } from '../shared/utils'
 
 export default function AddPlayer(): JSX.Element {
   const [newPlayerName, setNewPlayerName] = useState<string>('')
   const [showSuccessMsg, setShowSuccessMsg] = useState(false)
-  const [inputValidationError, setInputValidationError] = useState<
-    string | null
-  >(null)
+  const [showValidationError, setShowValidationError] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId } = useParams()
 
   async function handleCreateLeaguePlayer(): Promise<void> {
-    if (
-      !validateSimpleInput(
-        newPlayerName,
-        'Player Name',
-        setInputValidationError
-      )
-    ) {
+    if (!validateStringInput(newPlayerName, setShowValidationError)) {
       return
-    } else {
-      const newPlayer = {
-        name: newPlayerName,
-      }
-      try {
-        const res = await fetch(
-          `http://localhost:3001/api/player/${leagueId}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newPlayer),
-          }
-        )
-        // const resJson = await res.json()
+    }
+    const newPlayer = {
+      name: newPlayerName,
+    }
+    try {
+      const res = await fetch(`http://localhost:3001/api/player/${leagueId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPlayer),
+      })
+      // const resJson = await res.json()
 
-        setNewPlayerName('')
-        setShowSuccessMsg(true)
-        setTimeout(() => setShowSuccessMsg(false), 3000)
-        inputRef.current && inputRef.current.focus()
-      } catch (err) {
-        console.log('add player to league error: ', err)
-      }
+      setNewPlayerName('')
+      setShowSuccessMsg(true)
+      setTimeout(() => setShowSuccessMsg(false), 3000)
+      inputRef.current && inputRef.current.focus()
+    } catch (err) {
+      console.log('add player to league error: ', err)
     }
   }
 
@@ -67,7 +55,7 @@ export default function AddPlayer(): JSX.Element {
         name="playerName"
         label="Player Name"
         onChange={({ target }) => {
-          setInputValidationError(null)
+          setShowValidationError(false)
           setShowSuccessMsg(false)
           setNewPlayerName(target.value)
         }}
@@ -76,12 +64,13 @@ export default function AddPlayer(): JSX.Element {
 
       <div className="form-submit">
         <button onClick={handleCreateLeaguePlayer}>Add Player</button>
-        <SimpleInputValidationError
-          errorField={inputValidationError}
+        <ValidationErrorMessage
+          showErrorMsg={showValidationError}
           errorMsgCode="MISSNG_VALUE"
+          errorField="Player Name"
         />
         {/* TODO: when changing to toasts, allow both success and error to show? */}
-        {showSuccessMsg && !inputValidationError && (
+        {showSuccessMsg && !showValidationError && (
           <p className="success-msg">Player Successfully Added</p>
         )}
       </div>

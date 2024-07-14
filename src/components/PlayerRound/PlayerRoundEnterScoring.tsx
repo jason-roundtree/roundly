@@ -11,8 +11,8 @@ import {
   createOrFindPlayerHole,
   updatePlayerHoleScore,
 } from '../../data'
-import SimpleInputValidationError from '../shared/components/SimpleInputValidationError'
 import { validateAtLeastOneSimpleInput } from '../shared/utils'
+import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 
 interface NameAndId {
   id: string
@@ -40,13 +40,10 @@ export default function PlayerRoundEnterScoring() {
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
-  // TODO: cleaner way to handle input validation state?
-  const [oneInputRequiredErrorField, setOneInputRequiredErrorField] = useState<
-    string | null
-  >(null)
-  const [holeRequiredErrorField, setHoleRequiredErrorField] = useState<
-    string | null
-  >(null)
+  const [showOneInputRequiredErrorField, setShowOneInputRequiredErrorField] =
+    useState(false)
+  const [showHoleRequiredErrorField, setShowHoleRequiredErrorField] =
+    useState(false)
   // console.log('player', player)
 
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
@@ -82,7 +79,7 @@ export default function PlayerRoundEnterScoring() {
   }
 
   function handleUpdatePointEarned(e) {
-    setOneInputRequiredErrorField(null)
+    setShowOneInputRequiredErrorField(false)
     const pointName = e.target.value
     const pointSetting = pointSettings.find(
       (point) => point.name === pointName
@@ -100,7 +97,7 @@ export default function PlayerRoundEnterScoring() {
   }
 
   function handleUpdateHoleScore(e) {
-    setOneInputRequiredErrorField(null)
+    setShowOneInputRequiredErrorField(false)
     const inputValue = e.target.value
     if (inputValue === '0') {
       setHoleScore(null)
@@ -108,11 +105,10 @@ export default function PlayerRoundEnterScoring() {
       setHoleScore(+inputValue)
     }
   }
-
   function handleUpdateHole(e) {
     const holeValue = e.target.value
     if (holeValue !== '') {
-      setHoleRequiredErrorField(null)
+      setShowHoleRequiredErrorField(false)
     }
     setHole(e.target.value)
   }
@@ -124,8 +120,7 @@ export default function PlayerRoundEnterScoring() {
     if (
       !validateAtLeastOneSimpleInput(
         [pointEarned.name, holeScore],
-        'Point Earned, Hole Score',
-        setOneInputRequiredErrorField
+        setShowOneInputRequiredErrorField
       )
     ) {
       return
@@ -133,7 +128,7 @@ export default function PlayerRoundEnterScoring() {
 
     // TODO: add validation to check for hole number if hole score exists (also same if point scope is hole?)
     if (holeScore && !hole) {
-      setHoleRequiredErrorField('Hole Score')
+      setShowHoleRequiredErrorField(true)
       return
     }
 
@@ -188,8 +183,8 @@ export default function PlayerRoundEnterScoring() {
     setHoleScore(null)
     setPointEarnedFrequency(1)
     setPointEarned(defaultPointEarnedState)
-    setOneInputRequiredErrorField(null)
-    setHoleRequiredErrorField(null)
+    setShowOneInputRequiredErrorField(false)
+    setShowHoleRequiredErrorField(false)
   }
 
   return (
@@ -258,12 +253,14 @@ export default function PlayerRoundEnterScoring() {
           Clear Form
         </button>
       </div>
-      <SimpleInputValidationError
-        errorField={oneInputRequiredErrorField}
+      <ValidationErrorMessage
+        showErrorMsg={showOneInputRequiredErrorField}
+        errorField="Point Earned, Hole Score"
         errorMsgCode="ONE_INPUT_REQUIRED"
       />
-      <SimpleInputValidationError
-        errorField={holeRequiredErrorField}
+      <ValidationErrorMessage
+        showErrorMsg={showHoleRequiredErrorField}
+        errorField="Hole Score"
         errorMsgCode="HOLE_REQUIRED"
       />
     </form>

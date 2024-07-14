@@ -1,5 +1,5 @@
 // TODO: change this to accept the conditional as the first argument instead of only checking truthy string?
-export default function validateSimpleStringInput(
+export default function validateStringInput(
   inputState: string | null,
   setShowErrorFn: (boolean) => void
 ): boolean {
