@@ -151,11 +151,11 @@ export default function PlayerRoundEnterScoring() {
         const [playerHole, created] = await playerHoleRes.json()
         playerHoleId = playerHole.id
         if (!created) {
-          const updatePlayerHoleRes = await updatePlayerHoleScore(
+          const updatePlayerHoleScoreRes = await updatePlayerHoleScore(
             playerHoleId,
             holeScore
           )
-          if (updatePlayerHoleRes.ok) {
+          if (updatePlayerHoleScoreRes.ok) {
             setShowScoreUpdateSuccess(true)
             setTimeout(() => setShowScoreUpdateSuccess(false), 3000)
           }
