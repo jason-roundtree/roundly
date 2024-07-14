@@ -44,6 +44,11 @@ export default function PlayerRoundEnterScoring() {
     useState(false)
   const [showHoleRequiredErrorField, setShowHoleRequiredErrorField] =
     useState(false)
+  const [showPointEarnedCreationSuccess, setShowPointEarnedCreationSuccess] =
+    useState(false)
+  const [showScoreCreationSuccess, setShowScoreCreationSuccess] =
+    useState(false)
+  const [showScoreUpdateSuccess, setShowScoreUpdateSuccess] = useState(false)
   // console.log('player', player)
 
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
@@ -141,9 +146,9 @@ export default function PlayerRoundEnterScoring() {
       }
       const playerHoleRes = await createOrFindPlayerHole(holeData)
       if (playerHoleRes.ok) {
+        setShowScoreCreationSuccess(true)
+        setTimeout(() => setShowScoreCreationSuccess(false), 3000)
         const [playerHole, created] = await playerHoleRes.json()
-        console.log('playerHole', playerHole)
-        console.log('created', created)
         playerHoleId = playerHole.id
         if (!created) {
           const updatePlayerHoleRes = await updatePlayerHoleScore(
@@ -151,7 +156,8 @@ export default function PlayerRoundEnterScoring() {
             holeScore
           )
           if (updatePlayerHoleRes.ok) {
-            // TODO: do anything here?
+            setShowScoreUpdateSuccess(true)
+            setTimeout(() => setShowScoreUpdateSuccess(false), 3000)
           }
         }
       }
@@ -170,7 +176,8 @@ export default function PlayerRoundEnterScoring() {
       const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
       console.log('pointEarnedRes: ', pointEarnedRes)
       if (pointEarnedRes.ok) {
-        // TODO: do anything here?
+        setShowPointEarnedCreationSuccess(true)
+        setTimeout(() => setShowPointEarnedCreationSuccess(false), 3000)
       }
     }
 
@@ -263,6 +270,15 @@ export default function PlayerRoundEnterScoring() {
         errorField="Hole Score"
         errorMsgCode="HOLE_REQUIRED"
       />
+      {showPointEarnedCreationSuccess && (
+        <p className="success-msg">Successfully added point earned</p>
+      )}
+      {showScoreCreationSuccess && (
+        <p className="success-msg">Successfully added hole score</p>
+      )}
+      {showScoreUpdateSuccess && (
+        <p className="success-msg">Successfully updated hole score</p>
+      )}
     </form>
   )
 }
