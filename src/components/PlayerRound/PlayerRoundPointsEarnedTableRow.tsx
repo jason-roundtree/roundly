@@ -5,6 +5,7 @@ interface PlayerRoundPointsEarnedRow {
   name: string
   value: number
   hole?: number
+  frequency?: number
   playerId: string
 }
 
@@ -13,12 +14,14 @@ export default function PlayerRoundPointsEarnedTableRow({
   name,
   value,
   hole,
+  frequency,
   playerId,
 }: PlayerRoundPointsEarnedRow): JSX.Element {
   return (
     <tr id={id}>
       <td>{name}</td>
       <td>{value}</td>
+      <td>{frequency}</td>
       <td>{hole ?? ''}</td>
     </tr>
   )

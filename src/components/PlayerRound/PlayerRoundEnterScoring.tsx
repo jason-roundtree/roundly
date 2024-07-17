@@ -56,7 +56,7 @@ export default function PlayerRoundEnterScoring() {
     typeof peMaxFrequencyPerScope === 'number'
       ? peMaxFrequencyPerScope > 1
       : peMaxFrequencyPerScope === null
-
+  console.log('peMaxFrequencyPerScope', peMaxFrequencyPerScope)
   useEffect(() => {
     const initialPlayerName = searchParams.get('playerName') || players[0]?.name
     const initialPlayerId = searchParams.get('playerId') || players[0]?.id
@@ -83,6 +83,20 @@ export default function PlayerRoundEnterScoring() {
     })
   }
 
+  // function validateMaxFrequency(value: number) {
+  // }
+
+  function validateInputFrequencyAgainstPointSetting() {
+    if (
+      peMaxFrequencyPerScope &&
+      pointEarnedFrequency > peMaxFrequencyPerScope
+    ) {
+      // TODO:
+      // - show error message
+      // - reset input to max?
+    }
+  }
+
   function handleUpdatePointEarned(e) {
     setShowOneInputRequiredErrorField(false)
     const pointName = e.target.value
@@ -101,7 +115,7 @@ export default function PlayerRoundEnterScoring() {
     }
   }
 
-  function handleUpdateHoleScore(e) {
+  function handleUpdateHoleScoreState(e) {
     setShowOneInputRequiredErrorField(false)
     const inputValue = e.target.value
     if (inputValue === '0') {
@@ -110,6 +124,7 @@ export default function PlayerRoundEnterScoring() {
       setHoleScore(+inputValue)
     }
   }
+
   function handleUpdateHole(e) {
     const holeValue = e.target.value
     if (holeValue !== '') {
@@ -118,10 +133,24 @@ export default function PlayerRoundEnterScoring() {
     setHole(e.target.value)
   }
 
+  async function handleUpdateHoleScore(
+    playerHoleId: string,
+    messageCallback: (boolean) => void
+  ): Promise<void> {
+    const updatePlayerHoleScoreRes = await updatePlayerHoleScore(
+      playerHoleId,
+      holeScore
+    )
+    if (updatePlayerHoleScoreRes.ok) {
+      messageCallback(true)
+      setTimeout(() => messageCallback(false), 3000)
+    }
+  }
+
   async function handleFormSubmit(e): Promise<void> {
     e.preventDefault()
     const playerId = player.id
-    let playerHoleId = null
+    let playerHoleId: string | null = null
     if (
       !validateAtLeastOneSimpleInput(
         [pointEarned.name, holeScore],
@@ -146,18 +175,29 @@ export default function PlayerRoundEnterScoring() {
       }
       const playerHoleRes = await createOrFindPlayerHole(holeData)
       if (playerHoleRes.ok) {
-        setShowScoreCreationSuccess(true)
-        setTimeout(() => setShowScoreCreationSuccess(false), 3000)
         const [playerHole, created] = await playerHoleRes.json()
-        playerHoleId = playerHole.id
+        console.log('#$#$#$# playerHole', playerHole)
+        playerHoleId = playerHole.id as string
+
         if (!created) {
-          const updatePlayerHoleScoreRes = await updatePlayerHoleScore(
-            playerHoleId,
-            holeScore
-          )
-          if (updatePlayerHoleScoreRes.ok) {
-            setShowScoreUpdateSuccess(true)
-            setTimeout(() => setShowScoreUpdateSuccess(false), 3000)
+          const { score: previousScore } = playerHole
+          console.log('previousScore', previousScore)
+          if (holeScore) {
+            // updating score
+            if (previousScore && previousScore !== holeScore) {
+              // TODO: implement alert/modal to get user's confirmation
+              console.warn('are you sure you want to update the score?????')
+              handleUpdateHoleScore(playerHoleId, setShowScoreUpdateSuccess)
+            }
+            // first time score entry after player hole was initially created
+            if (!previousScore) {
+              handleUpdateHoleScore(playerHoleId, setShowScoreCreationSuccess)
+            }
+          }
+        } else {
+          if (holeScore) {
+            setShowScoreCreationSuccess(true)
+            setTimeout(() => setShowScoreCreationSuccess(false), 3000)
           }
         }
       }
@@ -231,12 +271,19 @@ export default function PlayerRoundEnterScoring() {
       <BasicInput
         type="number"
         min="1"
-        name="point-earned-frequency"
-        label="Point Earned Frequency"
+        max={
+          frequencyIsActive && peMaxFrequencyPerScope
+            ? peMaxFrequencyPerScope.toString()
+            : null
+        }
+        name="point-earned-quantity"
+        label="Quantity"
         value={pointEarnedFrequency}
         onChange={(e) => {
-          setPointEarnedFrequency(+e.target.value)
+          const value = +e.target.value
+          setPointEarnedFrequency(value)
         }}
+        onBlur={validateInputFrequencyAgainstPointSetting}
         disabled={!frequencyIsActive}
       />
 
@@ -251,7 +298,7 @@ export default function PlayerRoundEnterScoring() {
         name="hole-score"
         label="Hole Score"
         value={holeScore ?? ''}
-        onChange={handleUpdateHoleScore}
+        onChange={handleUpdateHoleScoreState}
       />
 
       <div className="form-action-buttons-container">

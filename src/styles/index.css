@@ -345,7 +345,7 @@ th {
 
 .player-scoring-form [name='hole-score'],
 .player-scoring-form [id='hole-select'],
-.player-scoring-form [name='point-earned-frequency'] {
+.player-scoring-form [name='point-earned-quantity'] {
   width: 5em;
 }
 
