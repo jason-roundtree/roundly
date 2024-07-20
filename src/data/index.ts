@@ -12,7 +12,10 @@ export {
   createRoundPointSetting,
   removeRoundPointSetting,
 } from './point-setting'
-export { createRoundPlayerPointEarned } from './player-point-earned'
+export {
+  createRoundPlayerPointEarned,
+  deletePlayerPointEarned,
+} from './player-point-earned'
 export {
   getRoundPlayerPointsEarned,
   getRoundPlayerPointsEarnedTotal,

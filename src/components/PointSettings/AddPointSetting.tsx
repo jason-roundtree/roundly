@@ -136,7 +136,7 @@ export default function AddPointSetting({
       <h3 className="decrease-bottom-margin page-title">
         Create New {pointContextCapitalized(pointContext)} Point
       </h3>
-      <div className="linkContainerCentered">
+      <div className="taCenter">
         <Link to={`/league/${leagueId}/point-settings`}>
           League Point Settings <FontAwesomeIcon icon={faAnglesRight} />
         </Link>

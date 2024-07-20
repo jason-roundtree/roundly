@@ -122,7 +122,7 @@ a:hover {
   text-transform: uppercase;
 }
 
-.linkContainerCentered {
+.taCenter {
   text-align: center;
 }
 
@@ -351,4 +351,9 @@ th {
 
 .centered-text {
   text-align: center;
+}
+
+.tableDataAction:hover {
+  cursor: pointer;
+  color: var(--primary-color);
 }

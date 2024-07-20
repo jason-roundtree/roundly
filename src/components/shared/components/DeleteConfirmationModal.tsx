@@ -4,7 +4,7 @@ import Modal from './Modal'
 
 interface DeleteConfirmationModalProps {
   modalTitle: string
-  confirmationText: string
+  confirmationText: string | JSX.Element
   buttonText: string
   toggleModalActive(): void
   onConfirmDelete(): void
@@ -20,13 +20,20 @@ export default function DeleteConfirmationModal({
   function ConfirmDeletionButton(): JSX.Element {
     return <button onClick={onConfirmDelete}>{buttonText}</button>
   }
+
+  const confirmationElement =
+    typeof confirmationText === 'string' ? (
+      <p>{confirmationText}</p>
+    ) : (
+      confirmationText
+    )
   return (
     <Modal
       title={modalTitle}
       closeModal={toggleModalActive}
       renderButtons={() => <ConfirmDeletionButton />}
     >
-      <p>{confirmationText}</p>
+      {confirmationElement}
       {/* <button onClick={onConfirmDelete}>{buttonText}</button> */}
     </Modal>
   )

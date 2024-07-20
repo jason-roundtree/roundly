@@ -26,7 +26,7 @@ export default function PlayerRoundPointsEarned() {
 
   async function getAndSetRoundTotalPoints() {
     const res = await getRoundPlayerPointsEarnedTotal(playerId, roundId)
-    console.log('res', res)
+    console.log('getAndSetRoundTotalPoints res', res)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
     if (res.status === 200) {
       const { total_points } = await res.json()
@@ -71,7 +71,10 @@ export default function PlayerRoundPointsEarned() {
         </div>
       </div>
 
-      <PlayerRoundPointsEarnedTable roundPointsEarned={roundPointsEarned} />
+      <PlayerRoundPointsEarnedTable
+        roundPointsEarned={roundPointsEarned}
+        getAndSetRoundPointsEarned={getAndSetRoundPointsEarned}
+      />
       <PlayerRoundScorecard />
     </>
   )

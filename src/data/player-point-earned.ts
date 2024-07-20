@@ -46,18 +46,18 @@ export async function createRoundPlayerPointEarned({
 //   }
 // }
 
-// export async function deletePlayerPointEarnedFromRound(
-//   playerId,
-//   roundId
-// ): Promise<void> {
-//   try {
-//     const res = await fetch(`http://localhost:3001/api/player-round`, {
-//       method: 'DELETE',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ playerId, roundId }),
-//     })
-//     console.log('delete player from round res: ', res.json())
-//   } catch (err) {
-//     console.log('delete player from round error: ', err)
-//   }
-// }
+export async function deletePlayerPointEarned(pointEarnedId): Promise<any> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/player-point-earned/${pointEarnedId}`,
+      {
+        method: 'DELETE',
+      }
+    )
+    const resJson = await res.json()
+    console.log('deletePlayerPointEarned res: ', resJson)
+    return res
+  } catch (err) {
+    console.log('deletePlayerPointEarned error: ', err)
+  }
+}

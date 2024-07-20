@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import PlayerRoundPointsEarnedTableRow from './PlayerRoundPointsEarnedTableRow'
 import './index.css'
 
-export default function PlayerRoundPointsEarnedTable({ roundPointsEarned }) {
+export default function PlayerRoundPointsEarnedTable({
+  roundPointsEarned,
+  getAndSetRoundPointsEarned,
+}) {
+  console.log('roundPointsEarned', roundPointsEarned)
   if (!roundPointsEarned.length) {
     return null
   }
@@ -17,6 +21,8 @@ export default function PlayerRoundPointsEarnedTable({ roundPointsEarned }) {
             <th>Value</th>
             <th>Quantity</th>
             <th>Hole</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +40,7 @@ export default function PlayerRoundPointsEarnedTable({ roundPointsEarned }) {
                   hole={hole}
                   frequency={frequency}
                   playerId={playerId}
+                  getAndSetRoundPointsEarned={getAndSetRoundPointsEarned}
                 />
               )
             }

@@ -21,12 +21,13 @@ import {
 } from './components/Player'
 import {
   PlayerRoundDetails,
-  PlayerRoundScoring,
-  PlayerRoundEnterScoring,
   PlayerRounds,
   PlayerRoundSummary,
   PlayerRoundScorecard,
   PlayerHole,
+  PlayerRoundScoring,
+  PlayerRoundEnterScoring,
+  EditPlayerScoring,
 } from './components/PlayerRound'
 import {
   CreateRound,
@@ -83,6 +84,7 @@ export default function Router() {
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
         <Route path="player-scoring" element={<PlayerRoundScoring />} />
+        <Route path="edit-player-scoring" element={<EditPlayerScoring />} />
         <Route
           path="new-point"
           element={<AddPointSetting pointContext="round" />}
