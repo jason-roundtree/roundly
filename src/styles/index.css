@@ -309,6 +309,7 @@ input::-webkit-calendar-picker-indicator:hover {
 
 .tableContainer {
   overflow-x: auto;
+  margin-bottom: 1em;
 }
 
 table {
@@ -322,6 +323,10 @@ table,
 th,
 td {
   border: 1px solid black;
+}
+
+th {
+  background: var(--secondary-color);
 }
 
 td,
@@ -356,4 +361,9 @@ th {
 .tableDataAction:hover {
   cursor: pointer;
   color: var(--primary-color);
+}
+
+.scorecardTable {
+  table-layout: fixed;
+  min-width: 400px;
 }

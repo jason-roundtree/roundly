@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 
-import { PlayerRoundPointsEarnedTable, PlayerRoundScorecard } from '.'
+import {
+  PlayerRoundPointsEarnedTable,
+  PlayerRoundScorecard,
+  ScorecardTable,
+} from '.'
 import './index.css'
 import {
   getRoundPlayerPointsEarned,
@@ -75,7 +79,20 @@ export default function PlayerRoundPointsEarned() {
         roundPointsEarned={roundPointsEarned}
         getAndSetRoundPointsEarned={getAndSetRoundPointsEarned}
       />
-      <PlayerRoundScorecard />
+
+      <p className="non-input-label">Scorecard</p>
+      <ScorecardTable
+        numberOfHoles={9}
+        holeGroup="front-nine"
+        holeGroupScoreTotal={36}
+        holeScores={[4, 5, 7, 8, 9, 2, 6, 8, 4]}
+      />
+      <ScorecardTable
+        numberOfHoles={9}
+        holeGroup="back-nine"
+        holeGroupScoreTotal={4}
+        holeScores={[3, 5, 4, 6, 9, 2, 6, 3, 4]}
+      />
     </>
   )
 }

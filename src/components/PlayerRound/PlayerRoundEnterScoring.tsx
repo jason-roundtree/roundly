@@ -5,7 +5,7 @@ import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import { PointSetting, Player } from '../../types'
-import { sortArrayOfObjects } from '../shared/utils'
+import { getIncrementalHoleNumbers, sortArrayOfObjects } from '../shared/utils'
 import {
   createRoundPlayerPointEarned,
   createOrFindPlayerHole,
@@ -74,7 +74,7 @@ export default function PlayerRoundEnterScoring() {
 
   function selectableHoles(): Array<JSX.Element> {
     /* TODO: make dynamic (and add hole field to round form) */
-    return ['', ...Array.from(Array(18), (_, i) => i + 1)].map((o) => {
+    return ['', ...getIncrementalHoleNumbers(18)].map((o) => {
       return (
         <option value={o} key={o}>
           {o}
