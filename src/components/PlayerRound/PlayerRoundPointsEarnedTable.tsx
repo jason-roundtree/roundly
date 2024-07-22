@@ -5,7 +5,7 @@ import './index.css'
 
 export default function PlayerRoundPointsEarnedTable({
   roundPointsEarned,
-  getAndSetRoundPointsEarned,
+  getPlayerRoundPointsEarned,
 }) {
   console.log('roundPointsEarned', roundPointsEarned)
   if (!roundPointsEarned.length) {
@@ -40,7 +40,7 @@ export default function PlayerRoundPointsEarnedTable({
                   hole={hole}
                   frequency={frequency}
                   playerId={playerId}
-                  getAndSetRoundPointsEarned={getAndSetRoundPointsEarned}
+                  getPlayerRoundPointsEarned={getPlayerRoundPointsEarned}
                 />
               )
             }

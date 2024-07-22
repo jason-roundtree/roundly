@@ -11,7 +11,7 @@ interface PlayerRoundPointsEarnedRow {
   hole?: number
   frequency?: number
   playerId: string
-  getAndSetRoundPointsEarned: () => void
+  getPlayerRoundPointsEarned: () => void
 }
 
 export default function PlayerRoundPointsEarnedTableRow({
@@ -21,7 +21,7 @@ export default function PlayerRoundPointsEarnedTableRow({
   hole,
   frequency,
   playerId,
-  getAndSetRoundPointsEarned,
+  getPlayerRoundPointsEarned,
 }: PlayerRoundPointsEarnedRow): JSX.Element {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const { refreshRoundState } = useContext(RoundContext)
@@ -39,7 +39,7 @@ export default function PlayerRoundPointsEarnedTableRow({
     console.log('handleDeletePointEarned res ', res)
     if (res.ok) {
       setShowDeleteConfirmation(false)
-      getAndSetRoundPointsEarned()
+      getPlayerRoundPointsEarned()
       // refreshRoundState()
     }
   }
@@ -83,6 +83,7 @@ export default function PlayerRoundPointsEarnedTableRow({
             Edit
           </Link>
         </td>
+        {/* TODO: pass and call getPlayerRoundTotalPoints when delete is successful */}
         <td
           onClick={() => setShowDeleteConfirmation(true)}
           className="tableDataAction deletePointEarned"

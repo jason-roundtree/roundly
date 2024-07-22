@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function ScorecardHoleScoreTableRow({ holeScores }) {
-  console.log('holeScores', holeScores)
+  // console.log('holeScores', holeScores)
   return (
     <tr>
       {holeScores.map((score, i) => {

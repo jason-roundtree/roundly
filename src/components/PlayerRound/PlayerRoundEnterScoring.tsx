@@ -49,7 +49,7 @@ export default function PlayerRoundEnterScoring() {
   const [showScoreCreationSuccess, setShowScoreCreationSuccess] =
     useState(false)
   const [showScoreUpdateSuccess, setShowScoreUpdateSuccess] = useState(false)
-  // console.log('player', player)
+  console.log('>>>>>>>>>holeScore', holeScore)
 
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
   const frequencyIsActive =
@@ -196,6 +196,7 @@ export default function PlayerRoundEnterScoring() {
           }
         } else {
           if (holeScore) {
+            // handleUpdateHoleScore(playerHoleId, setShowScoreCreationSuccess)
             setShowScoreCreationSuccess(true)
             setTimeout(() => setShowScoreCreationSuccess(false), 3000)
           }
@@ -203,7 +204,7 @@ export default function PlayerRoundEnterScoring() {
       }
     }
 
-    if (pointEarned) {
+    if (pointEarned.name) {
       const pointEarnedData = {
         playerId: playerId,
         pointSettingId: pointEarned.id,

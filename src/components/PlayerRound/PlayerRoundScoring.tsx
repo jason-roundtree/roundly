@@ -10,11 +10,24 @@ import './index.css'
 import {
   getRoundPlayerPointsEarned,
   getRoundPlayerPointsEarnedTotal,
+  getPlayerHoleScores,
 } from '../../data'
+
+interface PlayerHole {
+  id: string
+  playerId: string
+  roundId: string
+  hole: number
+  score?: number
+}
 
 export default function PlayerRoundPointsEarned() {
   const [totalPoints, setTotalPoints] = useState<number | null>(null)
   const [roundPointsEarned, setRoundPointsEarned] = useState<[]>([])
+  const [roundHoleScores, setRoundHoleScores] = useState<PlayerHole[]>([])
+  const [roundHoleScoresFormatted, setRoundHoleScoresFormatted] = useState<
+    Array<number | undefined>
+  >([])
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
@@ -23,14 +36,22 @@ export default function PlayerRoundPointsEarned() {
   const playerName = searchParams.get('playerName') ?? ''
   const playerId = searchParams.get('playerId') ?? ''
 
+  // TODO: remove once model is updated
+  const holesInRound = 18
+
   useEffect(() => {
-    getAndSetRoundTotalPoints()
-    getAndSetRoundPointsEarned()
+    getPlayerRoundTotalPoints()
+    getPlayerRoundPointsEarned()
+    getPlayerRoundHoleScores()
   }, [playerId, roundId])
 
-  async function getAndSetRoundTotalPoints() {
+  useEffect(() => {
+    mapScoresToState()
+  }, [roundHoleScores])
+
+  async function getPlayerRoundTotalPoints() {
     const res = await getRoundPlayerPointsEarnedTotal(playerId, roundId)
-    console.log('getAndSetRoundTotalPoints res', res)
+    console.log('getPlayerRoundTotalPoints res', res)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
     if (res.status === 200) {
       const { total_points } = await res.json()
@@ -38,15 +59,38 @@ export default function PlayerRoundPointsEarned() {
     }
   }
 
-  async function getAndSetRoundPointsEarned() {
+  async function getPlayerRoundPointsEarned() {
     const res = await getRoundPlayerPointsEarned(playerId, roundId)
-    console.log('res', res)
+    console.log('getPlayerRoundPointsEarned res', res)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
     if (res.status === 200) {
       const pointsEarnedJson = await res.json()
-      console.log('getAndSetRoundPointsEarned json', pointsEarnedJson)
+      console.log('getPlayerRoundPointsEarned json', pointsEarnedJson)
       setRoundPointsEarned(pointsEarnedJson)
     }
+  }
+
+  async function getPlayerRoundHoleScores() {
+    const res = await getPlayerHoleScores(playerId, roundId, true)
+    console.log('getPlayerRoundPointsEarned res', res)
+    if (res.status === 200) {
+      const holeScoresResJson = await res.json()
+      console.log('getPlayerRoundHoleScores json', holeScoresResJson)
+      setRoundHoleScores(holeScoresResJson)
+    }
+  }
+
+  function mapScoresToState() {
+    const scoresFormatted: Array<undefined | number> = Array.from(
+      Array(holesInRound - 1)
+    )
+    console.log('### roundHoleScores ##', roundHoleScores)
+    for (const playerHole of roundHoleScores) {
+      const { score, hole } = playerHole
+      scoresFormatted[hole - 1] = score
+    }
+    console.log('scoresFormatted $$$$', scoresFormatted)
+    setRoundHoleScoresFormatted(scoresFormatted)
   }
 
   return (
@@ -77,21 +121,21 @@ export default function PlayerRoundPointsEarned() {
 
       <PlayerRoundPointsEarnedTable
         roundPointsEarned={roundPointsEarned}
-        getAndSetRoundPointsEarned={getAndSetRoundPointsEarned}
+        getPlayerRoundPointsEarned={getPlayerRoundPointsEarned}
       />
 
       <p className="non-input-label">Scorecard</p>
       <ScorecardTable
-        numberOfHoles={9}
+        numberOfHoles={holesInRound / 2}
         holeGroup="front-nine"
         holeGroupScoreTotal={36}
-        holeScores={[4, 5, 7, 8, 9, 2, 6, 8, 4]}
+        holeScores={roundHoleScoresFormatted.slice(0, 9)}
       />
       <ScorecardTable
-        numberOfHoles={9}
+        numberOfHoles={holesInRound / 2}
         holeGroup="back-nine"
-        holeGroupScoreTotal={4}
-        holeScores={[3, 5, 4, 6, 9, 2, 6, 3, 4]}
+        holeGroupScoreTotal={40}
+        holeScores={roundHoleScoresFormatted.slice(9)}
       />
     </>
   )

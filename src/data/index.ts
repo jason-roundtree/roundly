@@ -20,7 +20,11 @@ export {
   getRoundPlayerPointsEarned,
   getRoundPlayerPointsEarnedTotal,
 } from './player-points-earned'
-export { createOrFindPlayerHole, updatePlayerHoleScore } from './player-hole'
+export {
+  createOrFindPlayerHole,
+  updatePlayerHoleScore,
+  getPlayerHoleScores,
+} from './player-hole'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'
 export { fetchRound, deleteRound } from './round'

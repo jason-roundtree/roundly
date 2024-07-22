@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { ScorecardTableHead, ScorecardHoleScoreTableRow } from '.'
+import { ScorecardTableHeadRow, ScorecardHoleScoreTableRow } from '.'
 
 export interface ScorecardMeta {
   numberOfHoles: number
   holeGroup: 'front-nine' | 'back-nine'
   holeGroupScoreTotal?: number
-  holeScores: number[]
+  holeScores: Array<number | undefined>
 }
 
 export default function ScorecardTable({
@@ -18,7 +18,7 @@ export default function ScorecardTable({
   return (
     <div className="tableContainer">
       <table className="scorecardTable">
-        <ScorecardTableHead
+        <ScorecardTableHeadRow
           numberOfHoles={numberOfHoles}
           holeGroup={holeGroup}
           holeGroupScoreTotal={holeGroupScoreTotal}

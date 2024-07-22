@@ -47,3 +47,20 @@ export async function updatePlayerHoleScore(playerHoleId, score): Promise<any> {
     console.log('updatePlayerHoleScore error: ', err)
   }
 }
+
+export async function getPlayerHoleScores(
+  playerId,
+  roundId,
+  scoreIsNotNull
+): Promise<any> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/player-hole/player/${playerId}/round/${roundId}?scoreIsNotNull=${scoreIsNotNull}`,
+      { method: 'GET' }
+    )
+    console.log('getPlayerHoleScores res', res)
+    return res
+  } catch (err) {
+    console.log('getPlayerHoleScores error: ', err)
+  }
+}
