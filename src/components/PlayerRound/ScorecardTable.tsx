@@ -7,6 +7,7 @@ export interface ScorecardMeta {
   holeGroup: 'front-nine' | 'back-nine'
   holeGroupScoreTotal?: number
   holeScores: Array<number | undefined>
+  handleEditScore?(hole): void
 }
 
 export default function ScorecardTable({
@@ -14,6 +15,7 @@ export default function ScorecardTable({
   holeGroup,
   holeGroupScoreTotal,
   holeScores,
+  handleEditScore,
 }: ScorecardMeta) {
   return (
     <div className="tableContainer">
@@ -24,7 +26,11 @@ export default function ScorecardTable({
           holeGroupScoreTotal={holeGroupScoreTotal}
         />
         <tbody>
-          <ScorecardHoleScoreTableRow holeScores={holeScores} />
+          <ScorecardHoleScoreTableRow
+            holeScores={holeScores}
+            holeGroupScoreTotal={holeGroupScoreTotal}
+            handleEditScore={handleEditScore}
+          />
         </tbody>
       </table>
     </div>

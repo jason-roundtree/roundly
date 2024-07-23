@@ -5,7 +5,7 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { pointContextCapitalized, validateStringInput } from '../shared/utils'
+import { capitalizeFirstLetter, validateStringInput } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
@@ -134,7 +134,7 @@ export default function AddPointSetting({
   return (
     <form>
       <h3 className="decrease-bottom-margin page-title">
-        Create New {pointContextCapitalized(pointContext)} Point
+        Create New {capitalizeFirstLetter(pointContext)} Point
       </h3>
       <div className="taCenter">
         <Link to={`/league/${leagueId}/point-settings`}>

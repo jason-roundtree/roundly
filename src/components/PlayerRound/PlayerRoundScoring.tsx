@@ -11,7 +11,9 @@ import {
   getRoundPlayerPointsEarned,
   getRoundPlayerPointsEarnedTotal,
   getPlayerHoleScores,
+  updatePlayerHoleScore,
 } from '../../data'
+import { getArrayOfNumbersTotal } from '../shared/utils'
 
 interface PlayerHole {
   id: string
@@ -24,10 +26,8 @@ interface PlayerHole {
 export default function PlayerRoundPointsEarned() {
   const [totalPoints, setTotalPoints] = useState<number | null>(null)
   const [roundPointsEarned, setRoundPointsEarned] = useState<[]>([])
-  const [roundHoleScores, setRoundHoleScores] = useState<PlayerHole[]>([])
-  const [roundHoleScoresFormatted, setRoundHoleScoresFormatted] = useState<
-    Array<number | undefined>
-  >([])
+  const [roundHoleData, setRoundHoleData] = useState<PlayerHole[]>([])
+  const [roundHoleScores, setRoundHoleScores] = useState<Array<number>>([])
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
@@ -35,23 +35,25 @@ export default function PlayerRoundPointsEarned() {
   const [searchParams] = useSearchParams()
   const playerName = searchParams.get('playerName') ?? ''
   const playerId = searchParams.get('playerId') ?? ''
-
+  const frontNineScores = roundHoleScores.slice(0, 9)
+  const frontNineTotal = getArrayOfNumbersTotal(frontNineScores)
+  const backNineScores = roundHoleScores.slice(9)
+  const backNineTotal = getArrayOfNumbersTotal(backNineScores)
   // TODO: remove once model is updated
   const holesInRound = 18
 
   useEffect(() => {
     getPlayerRoundTotalPoints()
     getPlayerRoundPointsEarned()
-    getPlayerRoundHoleScores()
+    getPlayerRoundHoleData()
   }, [playerId, roundId])
 
   useEffect(() => {
     mapScoresToState()
-  }, [roundHoleScores])
+  }, [roundHoleData])
 
   async function getPlayerRoundTotalPoints() {
     const res = await getRoundPlayerPointsEarnedTotal(playerId, roundId)
-    console.log('getPlayerRoundTotalPoints res', res)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
     if (res.status === 200) {
       const { total_points } = await res.json()
@@ -61,36 +63,34 @@ export default function PlayerRoundPointsEarned() {
 
   async function getPlayerRoundPointsEarned() {
     const res = await getRoundPlayerPointsEarned(playerId, roundId)
-    console.log('getPlayerRoundPointsEarned res', res)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
     if (res.status === 200) {
-      const pointsEarnedJson = await res.json()
-      console.log('getPlayerRoundPointsEarned json', pointsEarnedJson)
-      setRoundPointsEarned(pointsEarnedJson)
+      const pointsEarned = await res.json()
+      setRoundPointsEarned(pointsEarned)
     }
   }
 
-  async function getPlayerRoundHoleScores() {
+  async function getPlayerRoundHoleData() {
     const res = await getPlayerHoleScores(playerId, roundId, true)
-    console.log('getPlayerRoundPointsEarned res', res)
     if (res.status === 200) {
-      const holeScoresResJson = await res.json()
-      console.log('getPlayerRoundHoleScores json', holeScoresResJson)
-      setRoundHoleScores(holeScoresResJson)
+      const holeScores = await res.json()
+      console.log('getPlayerRoundHoleData json', holeScores)
+      setRoundHoleData(holeScores)
     }
   }
 
   function mapScoresToState() {
-    const scoresFormatted: Array<undefined | number> = Array.from(
-      Array(holesInRound - 1)
-    )
-    console.log('### roundHoleScores ##', roundHoleScores)
-    for (const playerHole of roundHoleScores) {
-      const { score, hole } = playerHole
-      scoresFormatted[hole - 1] = score
+    const scores: Array<number> = Array.from(Array(holesInRound - 1), (_) => 0)
+    for (const playerHole of roundHoleData) {
+      const { score, hole } = playerHole as { score: number; hole: number }
+      scores[hole - 1] = score
     }
-    console.log('scoresFormatted $$$$', scoresFormatted)
-    setRoundHoleScoresFormatted(scoresFormatted)
+    setRoundHoleScores(scores)
+  }
+
+  async function handleEditScore(hole) {
+    console.log('handleEditScore')
+    // const res = await updatePlayerHoleScore(19, null, roundId, +hole)
   }
 
   return (
@@ -115,7 +115,7 @@ export default function PlayerRoundPointsEarned() {
         </div>
         <div id="totalScore">
           <p className="cardLabel">Total Score</p>
-          <p className="cardTotal">71</p>
+          <p className="cardTotal">{frontNineTotal + backNineTotal}</p>
         </div>
       </div>
 
@@ -128,14 +128,16 @@ export default function PlayerRoundPointsEarned() {
       <ScorecardTable
         numberOfHoles={holesInRound / 2}
         holeGroup="front-nine"
-        holeGroupScoreTotal={36}
-        holeScores={roundHoleScoresFormatted.slice(0, 9)}
+        holeGroupScoreTotal={frontNineTotal}
+        holeScores={frontNineScores}
+        handleEditScore={handleEditScore}
       />
       <ScorecardTable
         numberOfHoles={holesInRound / 2}
         holeGroup="back-nine"
-        holeGroupScoreTotal={40}
-        holeScores={roundHoleScoresFormatted.slice(9)}
+        holeGroupScoreTotal={backNineTotal}
+        holeScores={backNineScores}
+        handleEditScore={handleEditScore}
       />
     </>
   )

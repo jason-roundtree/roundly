@@ -3,8 +3,6 @@ export default function validateStringInput(
   inputState: string | null,
   setShowErrorFn: (boolean) => void
 ): boolean {
-  console.log('inputState', inputState)
-  console.log('setShowErrorFn', setShowErrorFn)
   let fieldIsValid = false
   if (!inputState) {
     setShowErrorFn(true)

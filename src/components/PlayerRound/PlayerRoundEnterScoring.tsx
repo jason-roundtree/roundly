@@ -176,7 +176,6 @@ export default function PlayerRoundEnterScoring() {
       const playerHoleRes = await createOrFindPlayerHole(holeData)
       if (playerHoleRes.ok) {
         const [playerHole, created] = await playerHoleRes.json()
-        console.log('#$#$#$# playerHole', playerHole)
         playerHoleId = playerHole.id as string
 
         if (!created) {
@@ -186,7 +185,12 @@ export default function PlayerRoundEnterScoring() {
             // updating score
             if (previousScore && previousScore !== holeScore) {
               // TODO: implement alert/modal to get user's confirmation
+
               console.warn('are you sure you want to update the score?????')
+              const userResponse = window.confirm(
+                'are you sure you want to update the score?????'
+              )
+              if (!userResponse) return
               handleUpdateHoleScore(playerHoleId, setShowScoreUpdateSuccess)
             }
             // first time score entry after player hole was initially created
