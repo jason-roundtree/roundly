@@ -12,8 +12,9 @@ import {
   getRoundPlayerPointsEarnedTotal,
   getPlayerHoleScores,
   updatePlayerHoleScore,
+  createOrFindPlayerHole,
 } from '../../data'
-import { getArrayOfNumbersTotal } from '../shared/utils'
+import { reduceScoresToTotal } from '../shared/utils'
 
 interface PlayerHole {
   id: string
@@ -23,11 +24,19 @@ interface PlayerHole {
   score?: number
 }
 
+export interface PlayerHoleScoreState {
+  id: string | null
+  hole: number
+  score: number | null
+}
+
 export default function PlayerRoundPointsEarned() {
   const [totalPoints, setTotalPoints] = useState<number | null>(null)
   const [roundPointsEarned, setRoundPointsEarned] = useState<[]>([])
   const [roundHoleData, setRoundHoleData] = useState<PlayerHole[]>([])
-  const [roundHoleScores, setRoundHoleScores] = useState<Array<number>>([])
+  const [roundHoleScores, setRoundHoleScores] = useState<
+    PlayerHoleScoreState[]
+  >([])
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
@@ -36,9 +45,9 @@ export default function PlayerRoundPointsEarned() {
   const playerName = searchParams.get('playerName') ?? ''
   const playerId = searchParams.get('playerId') ?? ''
   const frontNineScores = roundHoleScores.slice(0, 9)
-  const frontNineTotal = getArrayOfNumbersTotal(frontNineScores)
+  const frontNineTotal = reduceScoresToTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
-  const backNineTotal = getArrayOfNumbersTotal(backNineScores)
+  const backNineTotal = reduceScoresToTotal(backNineScores)
   // TODO: remove once model is updated
   const holesInRound = 18
 
@@ -80,17 +89,38 @@ export default function PlayerRoundPointsEarned() {
   }
 
   function mapScoresToState() {
-    const scores: Array<number> = Array.from(Array(holesInRound - 1), (_) => 0)
+    const holeScoreData: Array<PlayerHoleScoreState> = Array.from(
+      Array(holesInRound),
+      (_, i) => ({
+        id: null,
+        hole: i + 1,
+        score: null,
+      })
+    )
+
     for (const playerHole of roundHoleData) {
-      const { score, hole } = playerHole as { score: number; hole: number }
-      scores[hole - 1] = score
+      const { score, hole, id } = playerHole as PlayerHoleScoreState
+      const holeToAddScore = holeScoreData[hole - 1]
+      holeScoreData[hole - 1] = { ...holeToAddScore, id, score }
     }
-    setRoundHoleScores(scores)
+    setRoundHoleScores(holeScoreData)
+    console.log('roundHoleScores', roundHoleScores)
   }
 
-  async function handleEditScore(hole) {
-    console.log('handleEditScore')
-    // const res = await updatePlayerHoleScore(19, null, roundId, +hole)
+  async function handleEditScore(playerHoleId, hole, score) {
+    console.log('handleEditScore playerHoleId: ', playerHoleId)
+    if (playerHoleId) {
+      const res = await updatePlayerHoleScore(playerHoleId, 7)
+      console.log('updatePlayerHoleScore res', res)
+    } else {
+      const res = await createOrFindPlayerHole({
+        playerId,
+        roundId,
+        hole,
+        score: 5,
+      })
+      console.log('createOrFindPlayerHole res', res)
+    }
   }
 
   return (

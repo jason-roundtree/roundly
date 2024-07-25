@@ -5,4 +5,4 @@ export { default as validateAtLeastOneSimpleInput } from './validateAtLeastOneSi
 export { default as validateStringInput } from './validateStringInput'
 export { default as capitalizeFirstLetter } from './capitalizeFirstLetter'
 export { default as getIncrementalHoleNumbers } from './getIncrementalHoleNumbers'
-export { default as getArrayOfNumbersTotal } from './getArrayOfNumbersTotal'
+export { default as reduceScoresToTotal } from './reduceScoresToTotal'

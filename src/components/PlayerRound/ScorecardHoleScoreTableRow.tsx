@@ -7,14 +7,19 @@ export default function ScorecardHoleScoreTableRow({
 }) {
   return (
     <tr>
-      {holeScores.map((score, i) => {
+      {holeScores.map((hs) => {
+        const { id, score, hole } = hs || {}
         return (
-          <td key={i} onClick={() => handleEditScore(i + 1)}>
+          <td
+            id={id}
+            key={hole}
+            onClick={() => handleEditScore(id, hole, score)}
+          >
             {score ? score : ''}
           </td>
         )
       })}
-      {holeGroupScoreTotal && <td key="total">{holeGroupScoreTotal}</td>}
+      {holeGroupScoreTotal ? <td key="total">{holeGroupScoreTotal}</td> : ''}
     </tr>
   )
 }

@@ -1,13 +1,13 @@
 import React from 'react'
 
 import { ScorecardTableHeadRow, ScorecardHoleScoreTableRow } from '.'
-
+import { PlayerHoleScoreState } from './PlayerRoundScoring'
 export interface ScorecardMeta {
   numberOfHoles: number
   holeGroup: 'front-nine' | 'back-nine'
   holeGroupScoreTotal?: number
-  holeScores: Array<number | undefined>
-  handleEditScore?(hole): void
+  holeScores: Array<PlayerHoleScoreState>
+  handleEditScore?(playerHoleId, hole, score): void
 }
 
 export default function ScorecardTable({
