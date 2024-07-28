@@ -14,7 +14,9 @@ import {
   updatePlayerHoleScore,
   createOrFindPlayerHole,
 } from '../../data'
-import { reduceScoresToTotal } from '../shared/utils'
+import { reduceScoresToTotal, selectAllInputText } from '../shared/utils'
+import Modal from '../shared/components/Modal'
+import BasicInput from '../shared/components/BasicInput'
 
 interface PlayerHole {
   id: string
@@ -25,9 +27,15 @@ interface PlayerHole {
 }
 
 export interface PlayerHoleScoreState {
-  id: string | null
-  hole: number
+  playerHoleId: string | null
   score: number | null
+  hole: number
+}
+
+const defaultScoreBeingEditedState = {
+  playerHoleId: null,
+  score: null,
+  hole: null,
 }
 
 export default function PlayerRoundPointsEarned() {
@@ -37,6 +45,11 @@ export default function PlayerRoundPointsEarned() {
   const [roundHoleScores, setRoundHoleScores] = useState<
     PlayerHoleScoreState[]
   >([])
+  const [showModal, setShowModal] = useState(false)
+  const [scoreBeingEdited, setScoreBeingEdited] = useState<
+    Omit<PlayerHoleScoreState, 'hole'> & { hole: number | null }
+  >(defaultScoreBeingEditedState)
+
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
@@ -48,6 +61,7 @@ export default function PlayerRoundPointsEarned() {
   const frontNineTotal = reduceScoresToTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
   const backNineTotal = reduceScoresToTotal(backNineScores)
+  const { playerHoleId, hole, score } = scoreBeingEdited || {}
   // TODO: remove once model is updated
   const holesInRound = 18
 
@@ -92,35 +106,80 @@ export default function PlayerRoundPointsEarned() {
     const holeScoreData: Array<PlayerHoleScoreState> = Array.from(
       Array(holesInRound),
       (_, i) => ({
-        id: null,
+        playerHoleId: null,
         hole: i + 1,
         score: null,
       })
     )
-
     for (const playerHole of roundHoleData) {
-      const { score, hole, id } = playerHole as PlayerHoleScoreState
+      const { score, hole, id: playerHoleId } = playerHole
       const holeToAddScore = holeScoreData[hole - 1]
-      holeScoreData[hole - 1] = { ...holeToAddScore, id, score }
+      holeScoreData[hole - 1] = {
+        ...holeToAddScore,
+        playerHoleId,
+        score,
+      } as PlayerHoleScoreState
     }
     setRoundHoleScores(holeScoreData)
     console.log('roundHoleScores', roundHoleScores)
   }
 
-  async function handleEditScore(playerHoleId, hole, score) {
+  function handleInputChange(e) {
+    setScoreBeingEdited({ ...scoreBeingEdited, score: e.target.value })
+  }
+
+  function handleEditScore({
+    playerHoleId,
+    hole,
+    score,
+  }: PlayerHoleScoreState) {
     console.log('handleEditScore playerHoleId: ', playerHoleId)
+    setScoreBeingEdited({ playerHoleId, hole, score })
+    setShowModal(true)
+  }
+
+  async function updateHoleScore(): Promise<void> {
+    let res
     if (playerHoleId) {
-      const res = await updatePlayerHoleScore(playerHoleId, 7)
-      console.log('updatePlayerHoleScore res', res)
+      res = await updatePlayerHoleScore(playerHoleId, score)
+      if (res.ok) {
+        handleCloseModal()
+      }
     } else {
-      const res = await createOrFindPlayerHole({
+      res = await createOrFindPlayerHole({
         playerId,
         roundId,
         hole,
-        score: 5,
+        score,
       })
       console.log('createOrFindPlayerHole res', res)
     }
+    if (res.ok) {
+      handleCloseModal()
+      getPlayerRoundHoleData()
+    }
+  }
+
+  async function deleteHoleScore() {
+    const res = await updatePlayerHoleScore(playerHoleId, null)
+    if (res.ok) {
+      handleCloseModal()
+      getPlayerRoundHoleData()
+    }
+  }
+
+  function handleCloseModal() {
+    setShowModal(false)
+    setScoreBeingEdited(defaultScoreBeingEditedState)
+  }
+
+  function EditHoleScoreButtons(): JSX.Element {
+    return (
+      <>
+        <button onClick={updateHoleScore}>Update</button>
+        <button onClick={deleteHoleScore}>Delete</button>
+      </>
+    )
   }
 
   return (
@@ -169,6 +228,23 @@ export default function PlayerRoundPointsEarned() {
         holeScores={backNineScores}
         handleEditScore={handleEditScore}
       />
+
+      {showModal && (
+        <Modal
+          title={`Edit Hole ${scoreBeingEdited.hole} Score`}
+          closeModal={handleCloseModal}
+          renderButtons={() => <EditHoleScoreButtons />}
+        >
+          <BasicInput
+            type="number"
+            label="Hole Score"
+            name="score"
+            value={scoreBeingEdited.score ?? ''}
+            onChange={handleInputChange}
+            onFocus={selectAllInputText}
+          />
+        </Modal>
+      )}
     </>
   )
 }

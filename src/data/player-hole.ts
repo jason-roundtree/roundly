@@ -1,7 +1,7 @@
 interface PlayerHole {
   playerId: string
   roundId: string
-  hole: number
+  hole: number | null
   score: number | null
 }
 

@@ -8,12 +8,12 @@ export default function ScorecardHoleScoreTableRow({
   return (
     <tr>
       {holeScores.map((hs) => {
-        const { id, score, hole } = hs || {}
+        const { playerHoleId, score, hole } = hs || {}
         return (
           <td
-            id={id}
+            id={playerHoleId}
             key={hole}
-            onClick={() => handleEditScore(id, hole, score)}
+            onClick={() => handleEditScore({ playerHoleId, hole, score })}
           >
             {score ? score : ''}
           </td>

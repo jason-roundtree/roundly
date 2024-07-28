@@ -11,7 +11,7 @@ import {
 import RoundPointSettingsListItem from './RoundPointSettingsListItem'
 import { PointSetting } from '../../types'
 import AddPointSetting from './AddPointSetting'
-import { sortArrayOfObjects } from '../shared/utils'
+import { selectAllInputText, sortArrayOfObjects } from '../shared/utils'
 
 export default function RoundPointSettings(): JSX.Element {
   const [leaguePointSettings, setLeaguePointSettings] = useState<
@@ -60,9 +60,9 @@ export default function RoundPointSettings(): JSX.Element {
     refreshRoundState()
   }
 
-  function selectAllInputText(e): void {
-    e.target.select()
-  }
+  // function selectAllInputText(e): void {
+  //   e.target.select()
+  // }
 
   function getInactiveRoundPointSettings() {
     const nonRoundPointSettings = leaguePointSettings?.filter(

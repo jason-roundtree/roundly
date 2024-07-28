@@ -5,7 +5,11 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import { capitalizeFirstLetter, validateStringInput } from '../shared/utils'
+import {
+  capitalizeFirstLetter,
+  selectAllInputText,
+  validateStringInput,
+} from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
@@ -127,9 +131,9 @@ export default function AddPointSetting({
     }
   }
 
-  function selectAllInputText(e): void {
-    e.target.select()
-  }
+  // function selectAllInputText(e): void {
+  //   e.target.select()
+  // }
 
   return (
     <form>

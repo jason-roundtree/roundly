@@ -6,6 +6,7 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 import { AddPointSetting, LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
+import { selectAllInputText } from '../shared/utils'
 
 export default function LeaguePointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
@@ -26,9 +27,9 @@ export default function LeaguePointSettings(): JSX.Element {
     refreshPointSettingsState()
   }
 
-  function selectAllInputText(e): void {
-    e.target.select()
-  }
+  // function selectAllInputText(e): void {
+  //   e.target.select()
+  // }
 
   return (
     <>
