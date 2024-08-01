@@ -3,7 +3,7 @@ import React from 'react'
 import Modal from './Modal'
 
 interface DeleteConfirmationModalProps {
-  modalTitle: string
+  modalTitle?: string
   confirmationText: string | JSX.Element
   buttonText: string
   toggleModalActive(): void
@@ -29,7 +29,7 @@ export default function DeleteConfirmationModal({
     )
   return (
     <Modal
-      title={modalTitle}
+      title={modalTitle ? modalTitle : ''}
       closeModal={toggleModalActive}
       renderButtons={() => <ConfirmDeletionButton />}
     >

@@ -1,3 +1,5 @@
+import { sortCompareAscending, sortCompareDescending } from './sortCompares'
+
 // type ArrOfObjects = {
 //   [key: string ]: string | number
 // }
@@ -5,11 +7,14 @@
 export default function sortArrayOfObjects(
   arr,
   property: string,
-  order = 'ASC'
-): any[] {
-  return arr.sort((a, b) => {
-    const itemA = a[property].toUpperCase()
-    const itemB = b[property].toUpperCase()
+  order: 'ASC' | 'DESC' = 'ASC'
+): Array<any> {
+  // const arrCopy = JSON.parse(JSON.stringify(arr))
+  return arr.toSorted((a, b) => {
+    const aIsString = typeof a[property] === 'string'
+    const bIsString = typeof b[property] === 'string'
+    const itemA = aIsString ? a[property].toUpperCase() : a[property]
+    const itemB = bIsString ? b[property].toUpperCase() : b[property]
     if (order === 'ASC') {
       return sortCompareAscending(itemA, itemB)
     }
@@ -17,24 +22,4 @@ export default function sortArrayOfObjects(
       return sortCompareDescending(itemA, itemB)
     }
   })
-}
-
-function sortCompareAscending(itemA, itemB) {
-  if (itemA < itemB) {
-    return -1
-  }
-  if (itemA > itemB) {
-    return 1
-  }
-  return 0
-}
-
-function sortCompareDescending(itemA, itemB) {
-  if (itemB < itemA) {
-    return -1
-  }
-  if (itemB > itemA) {
-    return 1
-  }
-  return 0
 }

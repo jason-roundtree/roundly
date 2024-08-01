@@ -4,6 +4,9 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { deletePlayerPointEarned } from '../../data'
+
+import styles from './PlayerRoundPointsEarnedTableRow.module.css'
+
 interface PlayerRoundPointsEarnedRow {
   id: string
   name: string
@@ -47,12 +50,24 @@ export default function PlayerRoundPointsEarnedTableRow({
   function getdeleteConfirmationText(): JSX.Element {
     return (
       <>
-        <p>Are you sure you want to delete this point?</p>
-        <div className="taCenter">
-          <p>Type: {name}</p>
-          <p>Value: {value}</p>
-          <p>Quantity: {frequency}</p>
-          <p>Hole: {hole ?? ''}</p>
+        {/* <p>Are you sure you want to delete this point?</p> */}
+        <div className={`${styles.pointSummary} taCenter`}>
+          <p>
+            <b>Player:</b> {playerName}
+          </p>
+          <p>
+            <b>Point:</b> {name}
+          </p>
+          {/* {hole && <p>Hole: {hole}</p>} */}
+          <p>
+            <b>Hole:</b> {hole ? hole : 'No associated hole'}
+          </p>
+          <p>
+            <b>Value:</b> {value}
+          </p>
+          <p>
+            <b>Quantity:</b> {frequency}
+          </p>
         </div>
       </>
     )
@@ -62,7 +77,8 @@ export default function PlayerRoundPointsEarnedTableRow({
     <>
       {!showDeleteConfirmation ? null : (
         <DeleteConfirmationModal
-          modalTitle="Delete Player Point Earned"
+          // modalTitle="Delete Player Point Earned"
+          modalTitle="Are you sure you want to delete this point?"
           confirmationText={getdeleteConfirmationText()}
           buttonText="Delete"
           toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
@@ -74,7 +90,7 @@ export default function PlayerRoundPointsEarnedTableRow({
         <td>{value}</td>
         <td>{frequency}</td>
         <td>{hole ?? ''}</td>
-        <td>
+        {/* <td>
           <Link
             to={`/league/${leagueId}/rounds/${roundId}/edit-player-point-earned?playerId=${playerId}&playerName=${encodeURIComponent(
               playerName
@@ -82,7 +98,7 @@ export default function PlayerRoundPointsEarnedTableRow({
           >
             Edit
           </Link>
-        </td>
+        </td> */}
         {/* TODO: pass and call getPlayerRoundTotalPoints when delete is successful */}
         <td
           onClick={() => setShowDeleteConfirmation(true)}

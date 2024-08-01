@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, forwardRef } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 
-import {
-  PlayerRoundPointsEarnedTable,
-  PlayerRoundScorecard,
-  ScorecardTable,
-} from '.'
+import { PlayerRoundPointsEarnedTable, ScorecardTable } from '.'
 import './index.css'
 import {
   getRoundPlayerPointsEarned,
@@ -14,9 +10,14 @@ import {
   updatePlayerHoleScore,
   createOrFindPlayerHole,
 } from '../../data'
-import { reduceScoresToTotal, selectAllInputText } from '../shared/utils'
+import {
+  getScoreTotal,
+  getTotalHoleScores,
+  selectAllInputText,
+} from '../shared/utils'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
+import styles from './PlayerRoundScoring.module.css'
 
 interface PlayerHole {
   id: string
@@ -58,12 +59,17 @@ export default function PlayerRoundPointsEarned() {
   const playerName = searchParams.get('playerName') ?? ''
   const playerId = searchParams.get('playerId') ?? ''
   const frontNineScores = roundHoleScores.slice(0, 9)
-  const frontNineTotal = reduceScoresToTotal(frontNineScores)
+  const frontNineTotal = getScoreTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
-  const backNineTotal = reduceScoresToTotal(backNineScores)
+  const backNineTotal = getScoreTotal(backNineScores)
+  const totalScoresEntered = getTotalHoleScores(roundHoleScores)
+  console.log('totalScoresEntered', totalScoresEntered)
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
   // TODO: remove once model is updated
   const holesInRound = 18
+
+  console.log('XXXXX roundHoleScores ', roundHoleScores)
+  console.log('$$$$$ handleEditScore scoreBeingEdited: ', scoreBeingEdited)
 
   useEffect(() => {
     getPlayerRoundTotalPoints()
@@ -121,7 +127,6 @@ export default function PlayerRoundPointsEarned() {
       } as PlayerHoleScoreState
     }
     setRoundHoleScores(holeScoreData)
-    console.log('roundHoleScores', roundHoleScores)
   }
 
   function handleInputChange(e) {
@@ -133,28 +138,41 @@ export default function PlayerRoundPointsEarned() {
     hole,
     score,
   }: PlayerHoleScoreState) {
-    console.log('handleEditScore playerHoleId: ', playerHoleId)
     setScoreBeingEdited({ playerHoleId, hole, score })
     setShowModal(true)
   }
 
+  // TODO: add success message
   async function updateHoleScore(): Promise<void> {
-    let res
+    let updateSuccessful = false
     if (playerHoleId) {
-      res = await updatePlayerHoleScore(playerHoleId, score)
+      const res = await updatePlayerHoleScore(playerHoleId, score)
+      console.log('updatePlayerHoleScore res', res)
       if (res.ok) {
-        handleCloseModal()
+        updateSuccessful = true
       }
     } else {
-      res = await createOrFindPlayerHole({
+      const playerHoleRes = await createOrFindPlayerHole({
         playerId,
         roundId,
         hole,
         score,
       })
-      console.log('createOrFindPlayerHole res', res)
+      console.log('playerHoleRes: ', playerHoleRes)
+      if (playerHoleRes.ok) {
+        updateSuccessful = true
+      }
+      // const [playerHole, created] = await playerHoleRes.json()
+      // if (!created) {
+      //   const playerHoleId = playerHole.id as string
+      //   const res = await updatePlayerHoleScore(playerHoleId, score)
+      //   if (res.ok) {
+      //     updateSuccessful = true
+      //   }
+      // }
     }
-    if (res.ok) {
+    console.log('updateSuccessful: ', updateSuccessful)
+    if (updateSuccessful) {
       handleCloseModal()
       getPlayerRoundHoleData()
     }
@@ -176,8 +194,10 @@ export default function PlayerRoundPointsEarned() {
   function EditHoleScoreButtons(): JSX.Element {
     return (
       <>
-        <button onClick={updateHoleScore}>Update</button>
-        <button onClick={deleteHoleScore}>Delete</button>
+        <button onClick={updateHoleScore}>Save</button>
+        {score && playerHoleId && (
+          <button onClick={deleteHoleScore}>Delete</button>
+        )}
       </>
     )
   }
@@ -203,7 +223,16 @@ export default function PlayerRoundPointsEarned() {
           <p className="cardTotal">{totalPoints || 0}</p>
         </div>
         <div id="totalScore">
-          <p className="cardLabel">Total Score</p>
+          <p className="cardLabel">
+            Total Score{' '}
+            {!!totalScoresEntered && (
+              <span id={styles.scoresEntered}>
+                {/* TODO: move to top of page so it also encompasses points earned? */}
+                (thru {totalScoresEntered}{' '}
+                {totalScoresEntered > 1 ? 'holes' : 'hole'})
+              </span>
+            )}
+          </p>
           <p className="cardTotal">{frontNineTotal + backNineTotal}</p>
         </div>
       </div>

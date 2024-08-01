@@ -22,7 +22,6 @@ export default function PlayerRoundPointsEarnedTable({
             <th>Quantity</th>
             <th>Hole</th>
             <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>

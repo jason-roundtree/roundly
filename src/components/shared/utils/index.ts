@@ -5,5 +5,7 @@ export { default as validateAtLeastOneSimpleInput } from './validateAtLeastOneSi
 export { default as validateStringInput } from './validateStringInput'
 export { default as capitalizeFirstLetter } from './capitalizeFirstLetter'
 export { default as getIncrementalHoleNumbers } from './getIncrementalHoleNumbers'
-export { default as reduceScoresToTotal } from './reduceScoresToTotal'
+export { default as getScoreTotal } from './getScoreTotal'
+export { default as getTotalHoleScores } from './getTotalHoleScores'
 export { default as selectAllInputText } from './selectAllInputText'
+export { sortCompareAscending, sortCompareDescending } from './sortCompares'

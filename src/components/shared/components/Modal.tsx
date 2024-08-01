@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Portal from './Portal'
 import './Modal.css'
 
@@ -16,6 +16,15 @@ export default function Modal({
   closeModal,
   renderButtons,
 }: ModalProps): JSX.Element {
+  // const mounted = useRef(false)
+  // useEffect(() => {
+  //   mounted.current = true
+  //   isMountedCallback && isMountedCallback()
+  //   return () => {
+  //     mounted.current = false
+  //   }
+  // }, [])
+
   return (
     <Portal selector="#portal">
       <div id="modal-container">

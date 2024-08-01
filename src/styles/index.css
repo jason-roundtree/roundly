@@ -367,3 +367,6 @@ th {
   table-layout: fixed;
   min-width: 400px;
 }
+.scorecardTable td {
+  height: 30px;
+}
