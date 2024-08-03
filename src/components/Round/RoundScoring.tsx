@@ -6,7 +6,7 @@ import styles from './RoundScoring.module.css'
 import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'
 import { getRoundPlayerPointsEarnedTotal } from '../../data'
-import { sortArrayOfObjects } from '../shared/utils'
+import { simpleTextSearchMatch, sortArrayOfObjects } from '../shared/utils'
 
 type RoundScoringSortBy = 'a-z' | 'z-a' | 'high-low' | 'low-high'
 interface PlayersWithPointTotals {
@@ -16,7 +16,7 @@ interface PlayersWithPointTotals {
 }
 
 export default function RoundScoring() {
-  const [filterQuery, setFilterQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<RoundScoringSortBy>('high-low')
   const [playersWithPointTotals, setPlayersWithPointTotals] = useState<
     Array<PlayersWithPointTotals>
@@ -30,12 +30,7 @@ export default function RoundScoring() {
     pointSettings,
     handleDeleteRound,
   } = useContext(RoundContext)
-  console.log('playersWithPointTotals ++++', playersWithPointTotals)
-  console.log('sortBy ====', sortBy)
-  console.log(
-    'sortedPlayersWithPointTotals -----',
-    sortedPlayersWithPointTotals
-  )
+  console.log('searchQuery:>> ', searchQuery)
 
   useEffect(() => {
     generatePlayersWithPointTotals()
@@ -51,7 +46,6 @@ export default function RoundScoring() {
         const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
         if (res.status === 200) {
           const { total_points } = await res.json()
-          console.log('totalPoints: ', total_points)
           return {
             ...p,
             total_points: total_points,
@@ -67,19 +61,7 @@ export default function RoundScoring() {
     setPlayersWithPointTotals(playersWithPointTotals)
   }
 
-  function handleInputChange({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>): void {
-    setFilterQuery(value)
-    handlePlayerFilter()
-  }
-
-  function handlePlayerFilter() {
-    console.log('handlePlayerFilter')
-  }
-
-  function handleUpdateSorting(e) {
-    console.log('handleUpdateSorting: ', e.target.id)
+  function handleUpdateSortBy(e) {
     setSortBy(e.target.id)
   }
 
@@ -109,7 +91,6 @@ export default function RoundScoring() {
       default:
         console.log('DEFAULT!!!!')
     }
-    console.log('sortedArray', sortedArray)
     setSortedPlayersWithPointTotals(sortedArray)
   }
 
@@ -130,9 +111,9 @@ export default function RoundScoring() {
           <BasicInput
             type="text"
             name="player-search"
-            label="Filter Players"
-            onChange={handleInputChange}
-            value={filterQuery}
+            label="Search Players"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
           />
 
           <form>
@@ -145,7 +126,7 @@ export default function RoundScoring() {
                 value="high-low"
                 name="sort-round-player-scoring-radio-buttons"
                 label="Score - high to low"
-                onChange={handleUpdateSorting}
+                onChange={handleUpdateSortBy}
                 checked={sortBy === 'high-low'}
                 // hidden
               />
@@ -155,7 +136,7 @@ export default function RoundScoring() {
                 value="low-high"
                 name="sort-round-player-scoring-radio-buttons"
                 label="Score - low to high"
-                onChange={handleUpdateSorting}
+                onChange={handleUpdateSortBy}
                 checked={sortBy === 'low-high'}
                 // hidden
               />
@@ -165,7 +146,7 @@ export default function RoundScoring() {
                 value="A-Z"
                 name="sort-round-player-scoring-radio-buttons"
                 label="Player - A to Z"
-                onChange={handleUpdateSorting}
+                onChange={handleUpdateSortBy}
                 checked={sortBy === 'a-z'}
                 // hidden
               />
@@ -175,7 +156,7 @@ export default function RoundScoring() {
                 value="Z-A"
                 name="sort-round-player-scoring-radio-buttons"
                 label="Player - Z to A"
-                onChange={handleUpdateSorting}
+                onChange={handleUpdateSortBy}
                 checked={sortBy === 'z-a'}
                 // hidden
               />
@@ -186,10 +167,17 @@ export default function RoundScoring() {
             className={`${styles.playerScoringList} editable-list--player-scoring`}
           >
             {sortedPlayersWithPointTotals.map((player) => {
-              console.log('player render map', player)
+              const playerName = player.name
+              const playerMatchesSearch = searchQuery
+                ? simpleTextSearchMatch(searchQuery, playerName)
+                : true
+
               return (
-                <li key={player.id}>
-                  <span>{player.name}</span>
+                <li
+                  key={player.id}
+                  className={!playerMatchesSearch ? 'hidden' : ''}
+                >
+                  <span>{playerName}</span>
                   <span className="list-point-value">
                     {player.total_points}
                   </span>
@@ -197,7 +185,7 @@ export default function RoundScoring() {
                     <Link
                       to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
                         player.id
-                      }&playerName=${encodeURIComponent(player.name)}`}
+                      }&playerName=${encodeURIComponent(playerName)}`}
                     >
                       <button>Edit</button>
                     </Link>

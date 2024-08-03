@@ -370,3 +370,7 @@ th {
 .scorecardTable td {
   height: 30px;
 }
+
+.hidden {
+  display: none !important;
+}

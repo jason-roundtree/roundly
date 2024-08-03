@@ -8,4 +8,5 @@ export { default as getIncrementalHoleNumbers } from './getIncrementalHoleNumber
 export { default as getScoreTotal } from './getScoreTotal'
 export { default as getTotalHoleScores } from './getTotalHoleScores'
 export { default as selectAllInputText } from './selectAllInputText'
+export { default as simpleTextSearchMatch } from './simpleTextSearchMatch'
 export { sortCompareAscending, sortCompareDescending } from './sortCompares'
