@@ -6,6 +6,7 @@ export interface CheckboxProps {
   id: string
   onChange(e): void
   value?: string
+  containerClassName?: string
 }
 
 // TODO: unused (except for interface) and still needs work. Maybe just make CheckboxButton use this and style it differently
@@ -15,9 +16,10 @@ export default function Checkbox({
   id,
   onChange,
   value,
+  containerClassName,
 }: CheckboxProps) {
   return (
-    <div id="checkbox-container">
+    <div id="checkbox-container" className={containerClassName}>
       <input
         id={id}
         type="checkbox"

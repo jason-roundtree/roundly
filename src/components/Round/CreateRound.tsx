@@ -18,6 +18,7 @@ import {
 import styles from './CreateRound.module.css'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import { validateStringInput } from '../shared/utils'
+import Checkbox from '../shared/components/Checkbox'
 
 interface RoundState {
   name: string
@@ -32,6 +33,7 @@ export default function CreateRound() {
     date: '',
   })
   const [players, setPlayers] = useState<Player[]>([])
+  const [allPlayersAreActive, setAllPlayersAreActive] = useState(false)
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [selectedPointSettings, setSelectedPointSettings] = useState<string[]>(
@@ -40,6 +42,24 @@ export default function CreateRound() {
   const [showValidationError, setShowValidationError] = useState(false)
   const navigate = useNavigate()
   const { leagueId } = useParams()
+
+  useEffect(() => {
+    const getPlayers = async () => {
+      // TODO: also set all players active by default?
+      const players = await fetchLeaguePlayers(leagueId)
+      setPlayers(players)
+    }
+
+    const getPointSettings = async () => {
+      const pointSettings = await fetchLeaguePointSettings(leagueId)
+      const pointSettingsIds = pointSettings.map((ps) => ps.id)
+      setPointSettings(pointSettings)
+      setSelectedPointSettings(pointSettingsIds)
+    }
+
+    getPlayers()
+    getPointSettings()
+  }, [leagueId])
 
   async function createRoundPointSettings(roundId) {
     for (const pointId of selectedPointSettings) {
@@ -73,24 +93,6 @@ export default function CreateRound() {
     }
   }
 
-  useEffect(() => {
-    const getPlayers = async () => {
-      // TODO: also set all players active by default?
-      const players = await fetchLeaguePlayers(leagueId)
-      setPlayers(players)
-    }
-
-    const getPointSettings = async () => {
-      const pointSettings = await fetchLeaguePointSettings(leagueId)
-      const pointSettingsIds = pointSettings.map((ps) => ps.id)
-      setPointSettings(pointSettings)
-      setSelectedPointSettings(pointSettingsIds)
-    }
-
-    getPlayers()
-    getPointSettings()
-  }, [leagueId])
-
   async function handleSaveRound(e) {
     e.preventDefault()
     if (!validateStringInput(roundState.name, setShowValidationError)) {
@@ -107,6 +109,21 @@ export default function CreateRound() {
       setShowValidationError(false)
     }
     setRoundState({ ...roundState, [name]: value })
+  }
+
+  function toggleAllPlayersAreActive() {
+    const areActiveUpdated = !allPlayersAreActive
+    setAllPlayersAreActive(areActiveUpdated)
+
+    if (areActiveUpdated) {
+      const activePlayerIds: string[] = []
+      for (const player of players) {
+        activePlayerIds.push(player.id)
+      }
+      setSelectedPlayers(activePlayerIds)
+    } else {
+      setSelectedPlayers([])
+    }
   }
 
   return (
@@ -143,6 +160,15 @@ export default function CreateRound() {
 
         {/* TODO: add select/de-select all */}
         <label>Active Round Players</label>
+
+        <Checkbox
+          checked={allPlayersAreActive}
+          onChange={toggleAllPlayersAreActive}
+          label="Activate all players"
+          id="activate-all-round-players"
+          containerClassName={styles.plainCheckbox}
+        />
+
         <div className={styles.createRoundSelectables}>
           {players.map(({ name, id }) => {
             const isSelected = selectedPlayers.includes(id)
@@ -165,7 +191,7 @@ export default function CreateRound() {
         </div>
 
         <label>Active Round Points</label>
-        <p>You can edit and add one-off points once the round is created</p>
+        <p>You can add and edit points once the round is created</p>
         <div className={styles.createRoundSelectables}>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
