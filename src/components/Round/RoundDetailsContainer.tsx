@@ -22,6 +22,7 @@ const RoundContextDefault = {
   pointSettings: [] as PointSetting[],
   refreshRoundState: () => {},
   handleDeleteRound: () => {},
+  leagueId: '',
 }
 
 type RoundContextDefaultType = typeof RoundContextDefault
@@ -33,7 +34,7 @@ export const RoundContext = createContext(
 export default function RoundDetailsContainer(): JSX.Element {
   const [roundData, setRoundData] = useState(RoundContextDefault)
   const { id, name, location, date, players, pointSettings } = roundData || {}
-  const { roundId, leagueId } = useParams()
+  const { roundId, leagueId } = useParams() as Record<string, string>
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function RoundDetailsContainer(): JSX.Element {
         pointSettings,
         refreshRoundState,
         handleDeleteRound,
+        leagueId,
       }}
     >
       <Link to={`/league/${leagueId}`} className="leagueHomeLink">

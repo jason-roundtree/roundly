@@ -4,3 +4,9 @@
 .goToSection {
   font-size: 0.8em;
 }
+.editPointEarnedStaticData {
+  margin-top: 0.5em;
+}
+.editPointEarnedStaticData span {
+  font-weight: normal;
+}

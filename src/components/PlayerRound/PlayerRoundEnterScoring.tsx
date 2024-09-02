@@ -1,26 +1,28 @@
 import { useState, useEffect, useContext } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import { RoundContext } from '../Round/RoundDetailsContainer'
-import { PointSetting, Player } from '../../types'
+import { PointSetting, Player, NumberOrNull } from '../../types'
 import { getIncrementalHoleNumbers, sortArrayOfObjects } from '../shared/utils'
 import {
   createRoundPlayerPointEarned,
   createOrFindPlayerHole,
-  updatePlayerHoleScore,
+  updatePlayerHole,
 } from '../../data'
 import { validateAtLeastOneSimpleInput } from '../shared/utils'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
+import styles from './PlayerRoundEnterScoring.module.css'
 
 interface NameAndId {
   id: string
   name: string
 }
-type NumberOrNull = number | null
 interface MaxFreqAndValue {
-  maxFrequencyPerScope: NumberOrNull
+  maxFrequencyPerScope: number
   value: NumberOrNull
 }
 const defaultPlayerState: NameAndId = { id: '', name: '' }
@@ -31,32 +33,43 @@ const defaultPointEarnedState: MaxFreqAndValue & NameAndId = {
   value: null,
 }
 
+// TODO: change number of holes to persist on context
+export function selectableHoles(numberOfHoles = 18): Array<JSX.Element> {
+  /* TODO: make dynamic (and add holes field to round form) */
+  return ['', ...getIncrementalHoleNumbers(numberOfHoles)].map((o) => {
+    return (
+      <option value={o} key={o}>
+        {o}
+      </option>
+    )
+  })
+}
+
 // TODO: add checks for existing hole score and point earned frequency
 export default function PlayerRoundEnterScoring() {
   const [searchParams] = useSearchParams()
-  const { id: roundId, players, pointSettings } = useContext(RoundContext)
+  const {
+    id: roundId,
+    players,
+    pointSettings,
+    leagueId,
+  } = useContext(RoundContext)
   const [player, setPlayer] = useState(defaultPlayerState)
   const [pointEarned, setPointEarned] = useState(defaultPointEarnedState)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
-  const [showOneInputRequiredErrorField, setShowOneInputRequiredErrorField] =
+  const [showOneInputRequiredError, setShowOneInputRequiredError] =
     useState(false)
-  const [showHoleRequiredErrorField, setShowHoleRequiredErrorField] =
-    useState(false)
+  const [showHoleRequiredError, setShowHoleRequiredError] = useState(false)
   const [showPointEarnedCreationSuccess, setShowPointEarnedCreationSuccess] =
     useState(false)
   const [showScoreCreationSuccess, setShowScoreCreationSuccess] =
     useState(false)
   const [showScoreUpdateSuccess, setShowScoreUpdateSuccess] = useState(false)
-  console.log('>>>>>>>>>holeScore', holeScore)
-
   const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
-  const frequencyIsActive =
-    typeof peMaxFrequencyPerScope === 'number'
-      ? peMaxFrequencyPerScope > 1
-      : peMaxFrequencyPerScope === null
-  console.log('peMaxFrequencyPerScope', peMaxFrequencyPerScope)
+  const frequencyIsActive = peMaxFrequencyPerScope > 1
+
   useEffect(() => {
     const initialPlayerName = searchParams.get('playerName') || players[0]?.name
     const initialPlayerId = searchParams.get('playerId') || players[0]?.id
@@ -70,17 +83,6 @@ export default function PlayerRoundEnterScoring() {
       value: name,
       id,
     }))
-  }
-
-  function selectableHoles(): Array<JSX.Element> {
-    /* TODO: make dynamic (and add hole field to round form) */
-    return ['', ...getIncrementalHoleNumbers(18)].map((o) => {
-      return (
-        <option value={o} key={o}>
-          {o}
-        </option>
-      )
-    })
   }
 
   // function validateMaxFrequency(value: number) {
@@ -98,7 +100,7 @@ export default function PlayerRoundEnterScoring() {
   }
 
   function handleUpdatePointEarned(e) {
-    setShowOneInputRequiredErrorField(false)
+    setShowOneInputRequiredError(false)
     const pointName = e.target.value
     const pointSetting = pointSettings.find(
       (point) => point.name === pointName
@@ -116,7 +118,7 @@ export default function PlayerRoundEnterScoring() {
   }
 
   function handleUpdateHoleScoreState(e) {
-    setShowOneInputRequiredErrorField(false)
+    setShowOneInputRequiredError(false)
     const inputValue = e.target.value
     if (inputValue === '0') {
       setHoleScore(null)
@@ -128,7 +130,7 @@ export default function PlayerRoundEnterScoring() {
   function handleUpdateHole(e) {
     const holeValue = e.target.value
     if (holeValue !== '') {
-      setShowHoleRequiredErrorField(false)
+      setShowHoleRequiredError(false)
     }
     setHole(e.target.value)
   }
@@ -137,11 +139,10 @@ export default function PlayerRoundEnterScoring() {
     playerHoleId: string,
     messageCallback: (boolean) => void
   ): Promise<void> {
-    const updatePlayerHoleScoreRes = await updatePlayerHoleScore(
-      playerHoleId,
-      holeScore
-    )
-    if (updatePlayerHoleScoreRes.ok) {
+    const updatePlayerHoleRes = await updatePlayerHole(playerHoleId, {
+      score: holeScore,
+    })
+    if (updatePlayerHoleRes.ok) {
       messageCallback(true)
       setTimeout(() => messageCallback(false), 3000)
     }
@@ -154,7 +155,7 @@ export default function PlayerRoundEnterScoring() {
     if (
       !validateAtLeastOneSimpleInput(
         [pointEarned.name, holeScore],
-        setShowOneInputRequiredErrorField
+        setShowOneInputRequiredError
       )
     ) {
       return
@@ -162,7 +163,7 @@ export default function PlayerRoundEnterScoring() {
 
     // TODO: add validation to check for hole number if hole score exists (also same if point scope is hole?)
     if (holeScore && !hole) {
-      setShowHoleRequiredErrorField(true)
+      setShowHoleRequiredError(true)
       return
     }
 
@@ -235,13 +236,18 @@ export default function PlayerRoundEnterScoring() {
     setHoleScore(null)
     setPointEarnedFrequency(1)
     setPointEarned(defaultPointEarnedState)
-    setShowOneInputRequiredErrorField(false)
-    setShowHoleRequiredErrorField(false)
+    setShowOneInputRequiredError(false)
+    setShowHoleRequiredError(false)
   }
 
   return (
     <form className="player-scoring-form">
       <h3 className="page-title">Add Player Point / Score</h3>
+      {/* <div className="taCenter">
+        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+          Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div> */}
 
       <Select
         options={getSelectableOptions(sortArrayOfObjects(players, 'name'))}
@@ -285,8 +291,7 @@ export default function PlayerRoundEnterScoring() {
         label="Quantity"
         value={pointEarnedFrequency}
         onChange={(e) => {
-          const value = +e.target.value
-          setPointEarnedFrequency(value)
+          setPointEarnedFrequency(+e.target.value)
         }}
         onBlur={validateInputFrequencyAgainstPointSetting}
         disabled={!frequencyIsActive}
@@ -302,7 +307,7 @@ export default function PlayerRoundEnterScoring() {
         min="0"
         name="hole-score"
         label="Hole Score"
-        value={holeScore ?? ''}
+        value={holeScore ? holeScore : ''}
         onChange={handleUpdateHoleScoreState}
       />
 
@@ -313,12 +318,12 @@ export default function PlayerRoundEnterScoring() {
         </button>
       </div>
       <ValidationErrorMessage
-        showErrorMsg={showOneInputRequiredErrorField}
+        showErrorMsg={showOneInputRequiredError}
         errorField="Point Earned, Hole Score"
         errorMsgCode="ONE_INPUT_REQUIRED"
       />
       <ValidationErrorMessage
-        showErrorMsg={showHoleRequiredErrorField}
+        showErrorMsg={showHoleRequiredError}
         errorField="Hole Score"
         errorMsgCode="HOLE_REQUIRED"
       />
@@ -331,6 +336,12 @@ export default function PlayerRoundEnterScoring() {
       {showScoreUpdateSuccess && (
         <p className="success-msg">Successfully updated hole score</p>
       )}
+
+      <div className={styles.roundScoringLink}>
+        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+          Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
     </form>
   )
 }

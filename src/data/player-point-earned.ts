@@ -1,4 +1,4 @@
-export interface PointEarned {
+export interface PointEarnedAPI {
   playerId: string
   pointSettingId: string
   roundId?: string
@@ -12,17 +12,17 @@ export async function createRoundPlayerPointEarned({
   roundId,
   playerHoleId,
   frequency,
-}: PointEarned): Promise<any> {
+}: PointEarnedAPI): Promise<any> {
   try {
     const res = await fetch('http://localhost:3001/api/player-point-earned', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        playerId: playerId,
-        pointSettingId: pointSettingId,
-        roundId: roundId,
-        playerHoleId: playerHoleId,
-        frequency: frequency,
+        playerId,
+        pointSettingId,
+        roundId,
+        playerHoleId,
+        frequency,
       }),
     })
     console.log('createRoundPlayerPointEarned res', res)
@@ -32,19 +32,26 @@ export async function createRoundPlayerPointEarned({
   }
 }
 
-// export async function updatePlayerPointEarned(playerId, updatedPlayer) {
-//   try {
-//     const res = await fetch(`http://localhost:3001/api/player/${playerId}`, {
-//       method: 'PUT',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(updatedPlayer),
-//     })
-//     // const resJson = await res.json()
-//     // console.log('resJson', resJson)
-//   } catch (err) {
-//     console.log('update player error: ', err)
-//   }
-// }
+// Currently only updates point quantity or hole association
+export async function updatePlayerPointEarned(
+  pointEarnedId,
+  updatedPointEarned
+): Promise<any> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/player-point-earned/${pointEarnedId}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPointEarned),
+      }
+    )
+    console.log('data updatePlayerPointEarned', res)
+    return res
+  } catch (err) {
+    console.log('updatePlayerPointEarned error: ', err)
+  }
+}
 
 export async function deletePlayerPointEarned(pointEarnedId): Promise<any> {
   try {

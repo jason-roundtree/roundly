@@ -15,6 +15,7 @@ export {
 export {
   createRoundPlayerPointEarned,
   deletePlayerPointEarned,
+  updatePlayerPointEarned,
 } from './player-point-earned'
 export {
   getRoundPlayerPointsEarned,
@@ -22,8 +23,9 @@ export {
 } from './player-points-earned'
 export {
   createOrFindPlayerHole,
-  updatePlayerHoleScore,
+  updatePlayerHole,
   getPlayerHoleScores,
+  getPlayerHole,
 } from './player-hole'
 export { fetchLeaguePointSettings } from './point-settings'
 export { fetchBasicLeagueData } from './league'

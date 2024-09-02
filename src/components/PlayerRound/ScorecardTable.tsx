@@ -8,7 +8,11 @@ export interface ScorecardMeta {
   holeGroup: 'front-nine' | 'back-nine'
   holeGroupScoreTotal?: number
   holeScores: Array<PlayerHoleScoreState>
-  handleEditScore?({ playerHoleId, hole, score }: PlayerHoleScoreState): void
+  handleOpenEditScoreModal?({
+    playerHoleId,
+    hole,
+    score,
+  }: PlayerHoleScoreState): void
 }
 
 export default function ScorecardTable({
@@ -16,7 +20,7 @@ export default function ScorecardTable({
   holeGroup,
   holeGroupScoreTotal,
   holeScores,
-  handleEditScore,
+  handleOpenEditScoreModal,
 }: ScorecardMeta) {
   return (
     <div className="tableContainer">
@@ -30,7 +34,7 @@ export default function ScorecardTable({
           <ScorecardHoleScoreTableRow
             holeScores={holeScores}
             holeGroupScoreTotal={holeGroupScoreTotal}
-            handleEditScore={handleEditScore}
+            handleOpenEditScoreModal={handleOpenEditScoreModal}
           />
         </tbody>
       </table>

@@ -348,9 +348,9 @@ th {
   margin-right: 15px;
 }
 
-.player-scoring-form [name='hole-score'],
-.player-scoring-form [id='hole-select'],
-.player-scoring-form [name='point-earned-quantity'] {
+[name='hole-score'],
+[id='hole-select'],
+[name='point-earned-quantity'] {
   width: 5em;
 }
 

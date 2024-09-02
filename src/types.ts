@@ -57,6 +57,7 @@ export interface PointSetting {
   maxFrequencyPerScope: number | null
   isLeagueSetting?: boolean
 }
+export type PointScopes = PointSetting['scope']
 
 export const POINT_SCOPE_DESCRIPTION =
   'Allows you to restrict where the point can be earned'
@@ -104,3 +105,5 @@ export interface ListObject {
   id: string
   [key: string]: any
 }
+
+export type NumberOrNull = number | null

@@ -4,17 +4,25 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { deletePlayerPointEarned } from '../../data'
+import { PointBeingEdited } from './PlayerRoundScoring'
+import { PointSetting } from '../../types'
 
 import styles from './PlayerRoundPointsEarnedTableRow.module.css'
 
-interface PlayerRoundPointsEarnedRow {
+interface PlayerRoundPointsEarnedTableRow {
   id: string
   name: string
   value: number
   hole?: number
-  frequency?: number
-  playerId: string
+  frequency: number
+  scope: PointSetting['scope']
+  maxFrequencyPerScope: number
+  playerId?: string
+  playerName: string
+  playerHoleId: string
+  pointSettingId: string
   getPlayerRoundPointsEarned: () => void
+  handleEditPointEarnedModal: (e: any, pointData: PointBeingEdited) => void
 }
 
 export default function PlayerRoundPointsEarnedTableRow({
@@ -23,17 +31,22 @@ export default function PlayerRoundPointsEarnedTableRow({
   value,
   hole,
   frequency,
+  scope,
+  maxFrequencyPerScope,
   playerId,
+  playerName,
+  playerHoleId,
+  pointSettingId,
   getPlayerRoundPointsEarned,
-}: PlayerRoundPointsEarnedRow): JSX.Element {
+  handleEditPointEarnedModal,
+}: PlayerRoundPointsEarnedTableRow): JSX.Element {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const { refreshRoundState } = useContext(RoundContext)
-  const params = useParams()
+  // const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
-  const leagueId = params.leagueId as string
-  const roundId = params.roundId as string
-  const [searchParams] = useSearchParams()
-  const playerName = searchParams.get('playerName') ?? ''
+  // const leagueId = params.leagueId as string
+  // const roundId = params.roundId as string
+  // const [searchParams] = useSearchParams()
+  // const playerName = searchParams.get('playerName') ?? ''
   // TODO: should i use prop or param here?
   // const playerId = searchParams.get('playerId') ?? ''
 
@@ -43,7 +56,6 @@ export default function PlayerRoundPointsEarnedTableRow({
     if (res.ok) {
       setShowDeleteConfirmation(false)
       getPlayerRoundPointsEarned()
-      // refreshRoundState()
     }
   }
 
@@ -85,7 +97,25 @@ export default function PlayerRoundPointsEarnedTableRow({
           onConfirmDelete={handleDeletePointEarned}
         />
       )}
-      <tr id={id}>
+      <tr
+        id={id}
+        onClick={(e) =>
+          handleEditPointEarnedModal(e, {
+            pointEarnedId: id,
+            pointName: name,
+            pointSettingId,
+            scope,
+            // playerHoleId,
+            playerName,
+            value,
+            originalHole: hole ?? '',
+            hole: hole ?? '',
+            originalFrequency: frequency,
+            frequency,
+            maxFrequencyPerScope,
+          })
+        }
+      >
         <td>{name}</td>
         <td>{value}</td>
         <td>{frequency}</td>

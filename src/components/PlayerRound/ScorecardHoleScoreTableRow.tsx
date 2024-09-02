@@ -3,7 +3,7 @@ import React from 'react'
 export default function ScorecardHoleScoreTableRow({
   holeScores,
   holeGroupScoreTotal,
-  handleEditScore,
+  handleOpenEditScoreModal,
 }) {
   return (
     <tr>
@@ -13,7 +13,9 @@ export default function ScorecardHoleScoreTableRow({
           <td
             id={playerHoleId}
             key={hole}
-            onClick={() => handleEditScore({ playerHoleId, hole, score })}
+            onClick={() =>
+              handleOpenEditScoreModal({ playerHoleId, hole, score })
+            }
           >
             {score ? score : ''}
           </td>

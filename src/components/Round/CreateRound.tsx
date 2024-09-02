@@ -32,13 +32,13 @@ export default function CreateRound() {
     location: '',
     date: '',
   })
-  const [players, setPlayers] = useState<Player[]>([])
-  const [allPlayersAreActive, setAllPlayersAreActive] = useState(false)
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [selectedPointSettings, setSelectedPointSettings] = useState<string[]>(
     []
   )
+  const [players, setPlayers] = useState<Player[]>([])
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
+  const [allPlayersAreSelected, setAllPlayersAreSelected] = useState(false)
   const [showValidationError, setShowValidationError] = useState(false)
   const navigate = useNavigate()
   const { leagueId } = useParams()
@@ -60,6 +60,10 @@ export default function CreateRound() {
     getPlayers()
     getPointSettings()
   }, [leagueId])
+
+  useEffect(() => {
+    selectedPlayers.length < players.length && setAllPlayersAreSelected(false)
+  }, [selectedPlayers])
 
   async function createRoundPointSettings(roundId) {
     for (const pointId of selectedPointSettings) {
@@ -111,9 +115,9 @@ export default function CreateRound() {
     setRoundState({ ...roundState, [name]: value })
   }
 
-  function toggleAllPlayersAreActive() {
-    const areActiveUpdated = !allPlayersAreActive
-    setAllPlayersAreActive(areActiveUpdated)
+  function toggleAllPlayersAreSelected() {
+    const areActiveUpdated = !allPlayersAreSelected
+    setAllPlayersAreSelected(areActiveUpdated)
 
     if (areActiveUpdated) {
       const activePlayerIds: string[] = []
@@ -162,8 +166,8 @@ export default function CreateRound() {
         <label>Active Round Players</label>
 
         <Checkbox
-          checked={allPlayersAreActive}
-          onChange={toggleAllPlayersAreActive}
+          checked={allPlayersAreSelected}
+          onChange={toggleAllPlayersAreSelected}
           label="Activate all players"
           id="activate-all-round-players"
           containerClassName={styles.plainCheckbox}
