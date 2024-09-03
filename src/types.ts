@@ -54,6 +54,7 @@ export interface PointSetting {
   value: number
   scope: (typeof POINT_SCOPE_SETTINGS)[number]['key']
   // TODO: better to use null over string like 'unlimited'??
+  // TODO: is this always 1 now (ie and therefore should be changed to typeof number only?)
   maxFrequencyPerScope: number | null
   isLeagueSetting?: boolean
 }

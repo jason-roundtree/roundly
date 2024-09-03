@@ -6,31 +6,45 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import { RoundContext } from '../Round/RoundDetailsContainer'
-import { PointSetting, Player, NumberOrNull } from '../../types'
-import { getIncrementalHoleNumbers, sortArrayOfObjects } from '../shared/utils'
+import { PointSetting, Player, PointScopes } from '../../types'
+import {
+  getIncrementalHoleNumbers,
+  quantityInputScopeManager,
+  sortArrayOfObjects,
+} from '../shared/utils'
 import {
   createRoundPlayerPointEarned,
   createOrFindPlayerHole,
   updatePlayerHole,
+  getRoundPlayerPointsEarnedByPlayer,
 } from '../../data'
 import { validateAtLeastOneSimpleInput } from '../shared/utils'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import styles from './PlayerRoundEnterScoring.module.css'
 
-interface NameAndId {
+// TODO: DRYify some of this with PlayerRoundScoring
+// TODO: DRYify some of this with PlayerRoundScoring
+// TODO: DRYify some of this with PlayerRoundScoring
+
+interface PlayerState {
   id: string
   name: string
 }
-interface MaxFreqAndValue {
+interface PointEarnedState {
+  id: string
+  name: string
   maxFrequencyPerScope: number
-  value: NumberOrNull
+  value: string | number
+  // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
+  scope: PointScopes | (string & {})
 }
-const defaultPlayerState: NameAndId = { id: '', name: '' }
-const defaultPointEarnedState: MaxFreqAndValue & NameAndId = {
+const defaultSelectedPlayerState: PlayerState = { id: '', name: '' }
+const defaultSelectedPointEarnedState: PointEarnedState = {
   id: '',
   name: '',
   maxFrequencyPerScope: 1,
-  value: null,
+  value: '',
+  scope: '',
 }
 
 // TODO: change number of holes to persist on context
@@ -54,9 +68,13 @@ export default function PlayerRoundEnterScoring() {
     pointSettings,
     leagueId,
   } = useContext(RoundContext)
-  const [player, setPlayer] = useState(defaultPlayerState)
-  const [pointEarned, setPointEarned] = useState(defaultPointEarnedState)
+  const [player, setPlayer] = useState(defaultSelectedPlayerState)
+  const [selectedPointEarned, setSelectedPointEarned] = useState(
+    defaultSelectedPointEarnedState
+  )
+  console.log('selectedPointEarned ><<><><', selectedPointEarned)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
+  const [roundPointsEarned, setRoundPointsEarned] = useState<any[]>([])
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
   const [showOneInputRequiredError, setShowOneInputRequiredError] =
@@ -67,14 +85,19 @@ export default function PlayerRoundEnterScoring() {
   const [showScoreCreationSuccess, setShowScoreCreationSuccess] =
     useState(false)
   const [showScoreUpdateSuccess, setShowScoreUpdateSuccess] = useState(false)
-  const peMaxFrequencyPerScope = pointEarned.maxFrequencyPerScope
-  const frequencyIsActive = peMaxFrequencyPerScope > 1
+  // TODO: move this to be managed by state and useEffect?
+  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
+    quantityInputScopeManager(selectedPointEarned)
 
   useEffect(() => {
     const initialPlayerName = searchParams.get('playerName') || players[0]?.name
     const initialPlayerId = searchParams.get('playerId') || players[0]?.id
     setPlayer({ id: initialPlayerId, name: initialPlayerName })
   }, [searchParams, players])
+
+  useEffect(() => {
+    getPlayerRoundPointsEarned()
+  }, [player])
 
   function getSelectableOptions(
     arr: Array<any>
@@ -85,14 +108,26 @@ export default function PlayerRoundEnterScoring() {
     }))
   }
 
+  // TODO: DRYify with same function in PlayerRoundScoring
+  async function getPlayerRoundPointsEarned() {
+    const res = await getRoundPlayerPointsEarnedByPlayer(player.id, roundId)
+    console.log('getRoundPlayerPointsEarned res: ', res)
+    if (res.status === 200) {
+      const roundPointsEarned = await res.json()
+      console.log('roundPointsEarned----: ', roundPointsEarned)
+      setRoundPointsEarned(roundPointsEarned)
+    }
+    // TODO: also send back array or message to confirm result is actually empty instead of relying on 204 status?
+    else if (res.status === 204) {
+      setRoundPointsEarned([])
+    }
+  }
+
   // function validateMaxFrequency(value: number) {
   // }
 
   function validateInputFrequencyAgainstPointSetting() {
-    if (
-      peMaxFrequencyPerScope &&
-      pointEarnedFrequency > peMaxFrequencyPerScope
-    ) {
+    if (maxFrequency && pointEarnedFrequency > maxFrequency) {
       // TODO:
       // - show error message
       // - reset input to max?
@@ -106,14 +141,15 @@ export default function PlayerRoundEnterScoring() {
       (point) => point.name === pointName
     ) as PointSetting
     if (pointSetting) {
-      setPointEarned({
+      setSelectedPointEarned({
         id: pointSetting.id,
         name: pointName,
         maxFrequencyPerScope: pointSetting.maxFrequencyPerScope ?? 1,
         value: pointSetting.value,
+        scope: pointSetting.scope,
       })
     } else {
-      setPointEarned(defaultPointEarnedState)
+      setSelectedPointEarned(defaultSelectedPointEarnedState)
     }
   }
 
@@ -154,7 +190,7 @@ export default function PlayerRoundEnterScoring() {
     let playerHoleId: string | null = null
     if (
       !validateAtLeastOneSimpleInput(
-        [pointEarned.name, holeScore],
+        [selectedPointEarned.name, holeScore],
         setShowOneInputRequiredError
       )
     ) {
@@ -209,17 +245,19 @@ export default function PlayerRoundEnterScoring() {
       }
     }
 
-    if (pointEarned.name) {
-      const pointEarnedData = {
+    if (selectedPointEarned.name) {
+      const selectedPointEarnedData = {
         playerId: playerId,
-        pointSettingId: pointEarned.id,
+        pointSettingId: selectedPointEarned.id,
         roundId: roundId,
         frequency: pointEarnedFrequency,
       }
       if (playerHoleId) {
-        pointEarnedData['playerHoleId'] = playerHoleId
+        selectedPointEarnedData['playerHoleId'] = playerHoleId
       }
-      const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
+      const pointEarnedRes = await createRoundPlayerPointEarned(
+        selectedPointEarnedData
+      )
       console.log('pointEarnedRes: ', pointEarnedRes)
       if (pointEarnedRes.ok) {
         setShowPointEarnedCreationSuccess(true)
@@ -235,10 +273,16 @@ export default function PlayerRoundEnterScoring() {
     setHole('')
     setHoleScore(null)
     setPointEarnedFrequency(1)
-    setPointEarned(defaultPointEarnedState)
+    setSelectedPointEarned(defaultSelectedPointEarnedState)
     setShowOneInputRequiredError(false)
     setShowHoleRequiredError(false)
   }
+
+  // function getQuantityInputLabel(): string {
+  //   return selectedPointEarned.name
+  //     ? `Quantity (max of ${selectedPointEarned.maxFrequencyPerScope} per ${selectedPointEarned.scope})`
+  //     : 'Quantity'
+  // }
 
   return (
     <form className="player-scoring-form">
@@ -272,7 +316,7 @@ export default function PlayerRoundEnterScoring() {
         id="point-type-select"
         label="Point Earned"
         // name="roundPlayerAddPointEarnedAndOrScore"
-        value={`${pointEarned.name}`}
+        value={`${selectedPointEarned.name}`}
         onChange={handleUpdatePointEarned}
         // const index = e.target.selectedIndex;
         // const el = e.target.childNodes[index]
@@ -282,13 +326,9 @@ export default function PlayerRoundEnterScoring() {
       <BasicInput
         type="number"
         min="1"
-        max={
-          frequencyIsActive && peMaxFrequencyPerScope
-            ? peMaxFrequencyPerScope.toString()
-            : null
-        }
+        max={frequencyIsActive && maxFrequency ? maxFrequency.toString() : null}
         name="point-earned-quantity"
-        label="Quantity"
+        label={quantityInputLabel}
         value={pointEarnedFrequency}
         onChange={(e) => {
           setPointEarnedFrequency(+e.target.value)

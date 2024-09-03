@@ -4,7 +4,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { PlayerRoundPointsEarnedTable, ScorecardTable } from '.'
 import './index.css'
 import {
-  getRoundPlayerPointsEarned,
+  getRoundPlayerPointsEarnedByPlayer,
   getRoundPlayerPointsEarnedTotal,
   getPlayerHoleScores,
   getPlayerHole,
@@ -13,8 +13,11 @@ import {
   updatePlayerPointEarned,
 } from '../../data'
 import {
+  getPPEQuantityInHole,
+  getPPEQuantityInRound,
   getScoreTotal,
   getTotalHoleScores,
+  quantityInputScopeManager,
   selectAllInputText,
 } from '../shared/utils'
 import Modal from '../shared/components/Modal'
@@ -47,7 +50,7 @@ export interface PointBeingEdited {
   pointName: string
   value: number | string
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
-  scope: PointSetting['scope'] | (string & {})
+  scope: PointScopes | (string & {})
   frequency: number
   originalFrequency: number
   maxFrequencyPerScope: number
@@ -94,7 +97,8 @@ export default function PlayerRoundPointsEarned() {
     useState<PointBeingEdited>(defaultPointEarnedBeingEditedState)
   console.log('%$%$%$%% pointEarnedBeingEdited', pointEarnedBeingEdited)
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
-  const frequencyIsActive = pointEarnedBeingEdited.maxFrequencyPerScope > 1
+  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
+    quantityInputScopeManager(pointEarnedBeingEdited)
 
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
@@ -132,13 +136,12 @@ export default function PlayerRoundPointsEarned() {
   }
 
   async function getPlayerRoundPointsEarned() {
-    const res = await getRoundPlayerPointsEarned(playerId, roundId)
+    const res = await getRoundPlayerPointsEarnedByPlayer(playerId, roundId)
     console.log('getRoundPlayerPointsEarned res: ', res)
-    // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points?
     if (res.status === 200) {
-      const pointsEarned = await res.json()
-      console.log('pointsEarned----: ', pointsEarned)
-      setRoundPointsEarned(pointsEarned)
+      const roundPointsEarned = await res.json()
+      console.log('roundPointsEarned----: ', roundPointsEarned)
+      setRoundPointsEarned(roundPointsEarned)
     }
     // TODO: also send back array or message to confirm result is actually empty instead of relying on 204 status?
     else if (res.status === 204) {
@@ -212,15 +215,7 @@ export default function PlayerRoundPointsEarned() {
         localPlayerHoleId = getPlayerHoleResJson.id
       }
     }
-    // if (!localPlayerHoleId) {
-    //   console.log('hole -----> ', hole)
-    //   for (const rpe of roundPointsEarned) {
-    //     console.log('rpe---> ', rpe)
-    //     if (rpe.player_hole?.hole === hole) {
-    //       localPlayerHoleId = rpe.playerHoleId
-    //     }
-    //   }
-    // }
+
     console.log('localPlayerHoleId', localPlayerHoleId)
     if (localPlayerHoleId) {
       const res = await updatePlayerHole(localPlayerHoleId, { score })
@@ -253,29 +248,6 @@ export default function PlayerRoundPointsEarned() {
       handleCloseModal()
       getPlayerRoundHoleScoreData()
     }
-  }
-
-  function getPPEQuantityInRound(pointSettingId): number {
-    const quantity = roundPointsEarned.filter((rpe) => {
-      return (
-        pointEarnedBeingEdited.pointEarnedId !== rpe.id &&
-        rpe.pointSettingId === pointSettingId
-      )
-    })
-    console.log('getPPEQuantityInRound', quantity.length)
-    return quantity.length
-  }
-
-  function getPPEQuantityInHole(pointSettingId, hole): number {
-    const quantity = roundPointsEarned.filter((rpe) => {
-      return (
-        pointEarnedBeingEdited.pointEarnedId !== rpe.id &&
-        rpe.pointSettingId === pointSettingId &&
-        rpe.player_hole?.hole === hole
-      )
-    })
-    console.log('getPPEQuantityInHole', quantity.length)
-    return quantity.length
   }
 
   // TODO: test this more to make sure it's working correctly
@@ -338,7 +310,11 @@ export default function PlayerRoundPointsEarned() {
     }
 
     if (scope === 'round') {
-      const ppeQuantityInRound = getPPEQuantityInRound(pointSettingId)
+      const ppeQuantityInRound = getPPEQuantityInRound(
+        pointSettingId,
+        roundPointsEarned,
+        pointEarnedBeingEdited
+      )
       if (
         ppeQuantityExceedsMax(
           frequency,
@@ -347,11 +323,17 @@ export default function PlayerRoundPointsEarned() {
           'round'
         )
       ) {
+        // TODO: add validation error message
         console.log('PPE in round would be exceeded!!!')
         return
       }
     } else if (scope === 'hole' && hole) {
-      const ppeQuantityInHole = getPPEQuantityInHole(pointSettingId, hole)
+      const ppeQuantityInHole = getPPEQuantityInHole(
+        pointSettingId,
+        hole,
+        roundPointsEarned,
+        pointEarnedBeingEdited
+      )
       if (
         ppeQuantityExceedsMax(
           frequency,
@@ -360,18 +342,19 @@ export default function PlayerRoundPointsEarned() {
           'round'
         )
       ) {
+        // TODO: add validation error message
         console.log('PPE in hole would be exceeded!!!')
         return
       }
     }
 
-    const updatedholeData = {
-      playerId: playerId,
-      roundId: roundId,
-      hole: hole ? +hole : null,
-    }
-
     if (holeHasChanged) {
+      const updatedholeData = {
+        playerId: playerId,
+        roundId: roundId,
+        hole: hole ? +hole : null,
+      }
+
       const getPlayerHoleRes = await getPlayerHole(updatedholeData)
       console.log('>> getPlayerHoleRes', getPlayerHoleRes)
       const getPlayerHoleResJson = await getPlayerHoleRes.json()
@@ -402,7 +385,15 @@ export default function PlayerRoundPointsEarned() {
     }
 
     if (frequencyHasChanged) {
-      // TODO: update frequency PlayerPointEarned
+      const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
+        pointEarnedId,
+        { frequency }
+      )
+      console.log('updatePlayerPointEarnedRes ', updatePlayerPointEarnedRes)
+      if (updatePlayerPointEarnedRes.ok) {
+        getPlayerRoundPointsEarned()
+        handleCloseModal()
+      }
     }
   }
 
@@ -539,7 +530,7 @@ export default function PlayerRoundPointsEarned() {
                   : '1'
               }
               name="point-earned-quantity"
-              label={`Quantity (max of ${pointEarnedBeingEdited.maxFrequencyPerScope} per ${pointEarnedBeingEdited.scope})`}
+              label={quantityInputLabel}
               value={pointEarnedBeingEdited.frequency ?? ''}
               onChange={(e) => {
                 setPointEarnedBeingEdited({

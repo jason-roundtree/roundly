@@ -9,4 +9,9 @@ export { default as getScoreTotal } from './getScoreTotal'
 export { default as getTotalHoleScores } from './getTotalHoleScores'
 export { default as selectAllInputText } from './selectAllInputText'
 export { default as simpleTextSearchMatch } from './simpleTextSearchMatch'
+export { default as quantityInputScopeManager } from './quantityInputScopeManager'
+export {
+  getPPEQuantityInRound,
+  getPPEQuantityInHole,
+} from './roundPlayerScoring'
 export { sortCompareAscending, sortCompareDescending } from './sortCompares'

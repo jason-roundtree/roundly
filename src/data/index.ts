@@ -18,7 +18,7 @@ export {
   updatePlayerPointEarned,
 } from './player-point-earned'
 export {
-  getRoundPlayerPointsEarned,
+  getRoundPlayerPointsEarnedByPlayer,
   getRoundPlayerPointsEarnedTotal,
 } from './player-points-earned'
 export {

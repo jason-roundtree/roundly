@@ -12,7 +12,7 @@ export async function getRoundPlayerPointsEarnedTotal(
   }
 }
 
-export async function getRoundPlayerPointsEarned(
+export async function getRoundPlayerPointsEarnedByPlayer(
   playerId: string,
   roundId: string
 ): Promise<any> {
