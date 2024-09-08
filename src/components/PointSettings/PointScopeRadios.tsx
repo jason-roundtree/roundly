@@ -2,20 +2,16 @@ import React from 'react'
 
 import Radio from '../shared/components/Radio'
 import { POINT_SCOPE_DESCRIPTION, POINT_SCOPE_SETTINGS } from '../../types'
-import styles from './RoundPointScopeRadios.module.css'
+import styles from './PointScopeRadios.module.css'
 
 export const no_scope_key = POINT_SCOPE_SETTINGS[0].key
 const hole_key = POINT_SCOPE_SETTINGS[1].key
 const round = POINT_SCOPE_SETTINGS[2].key
 
-export default function RoundPointScopeRadios({
-  onChange,
-  selectedScope,
-  name,
-}) {
+export default function PointScopeRadios({ onChange, selectedScope, name }) {
   return (
     <>
-      <fieldset className={styles.roundPointScopeRadios}>
+      <fieldset className={styles.pointScopeRadios}>
         <legend>Point Scope</legend>
         <p>{POINT_SCOPE_DESCRIPTION}</p>
         <Radio

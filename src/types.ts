@@ -54,14 +54,13 @@ export interface PointSetting {
   value: number
   scope: (typeof POINT_SCOPE_SETTINGS)[number]['key']
   // TODO: better to use null over string like 'unlimited'??
-  // TODO: is this always 1 now (ie and therefore should be changed to typeof number only?)
   maxFrequencyPerScope: number | null
-  isLeagueSetting?: boolean
+  isLeagueSetting: boolean
 }
 export type PointScopes = PointSetting['scope']
 
 export const POINT_SCOPE_DESCRIPTION =
-  'Allows you to restrict where the point can be earned'
+  'Allows you to restrict where and how often the point can be earned'
 
 export const POINT_SCOPE_SETTINGS = [
   { key: 'no_scope', label: 'No scope' },

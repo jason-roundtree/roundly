@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { RoundPointScopeRadios } from '.'
+import { PointScopeRadios } from '.'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import { EditablePointSettingListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
 import Checkbox from '../shared/components/Checkbox'
-import { no_scope_key } from './RoundPointScopeRadios'
+import { no_scope_key } from './PointScopeRadios'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import { validateStringInput } from '../shared/utils'
 
@@ -131,12 +131,13 @@ export default function RoundPointSettingsListItem({
             onFocus={selectAllInputText}
           />
 
-          <RoundPointScopeRadios
-            name="roundPointScope-radios-modal"
+          <PointScopeRadios
+            name="pointScope-radios-modal"
             onChange={handleRadioInputChange}
             selectedScope={updatedPointSetting.scope}
           />
-          {/* TODO: make into component or fold into RoundPointScopeRadios since it's currently used in 3 components */}
+
+          {/* TODO: make into component or fold into PointScopeRadios since it's currently used in 3 components */}
           <BasicInput
             disabled={updatedPointSetting.scope === 'no_scope'}
             type="number"

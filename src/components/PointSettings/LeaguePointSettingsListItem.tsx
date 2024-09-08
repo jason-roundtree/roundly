@@ -4,10 +4,10 @@ import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import { EditablePointSettingListItem, RoundPointScopeRadios } from '.'
+import { EditablePointSettingListItem, PointScopeRadios } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, updatePointSetting } from '../../data'
-import { no_scope_key } from './RoundPointScopeRadios'
+import { no_scope_key } from './PointScopeRadios'
 import { validateStringInput } from '../shared/utils'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 
@@ -23,7 +23,7 @@ const defaultState: EditablePointSetting = {
   value: '',
   scope: no_scope_key,
   isLeagueSetting: true,
-  maxFrequencyPerScope: 1,
+  maxFrequencyPerScope: null,
 }
 
 export default function LeaguePointSettingsListItem({
@@ -35,6 +35,7 @@ export default function LeaguePointSettingsListItem({
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
+  const updatedPointSettingScope = updatedPointSetting.scope
   const { id, name, value, scope } = pointSetting
   const [showValidationError, setShowValidationError] = useState(false)
 
@@ -50,7 +51,7 @@ export default function LeaguePointSettingsListItem({
     ) {
       return
     }
-    console.log('updatedPointSetting.name', updatedPointSetting.name)
+
     await updatePointSetting(id, updatedPointSetting)
     refreshState()
     setIsBeingEdited(false)
@@ -127,13 +128,15 @@ export default function LeaguePointSettingsListItem({
             onFocus={selectAllInputText}
           />
 
-          <RoundPointScopeRadios
+          <PointScopeRadios
             name="leaguePointScope-radios-modal"
             onChange={handleRadioInputChange}
-            selectedScope={updatedPointSetting.scope}
+            selectedScope={updatedPointSettingScope}
           />
+
+          {/* {updatedPointSettingScope !== 'no_scope' && ( */}
           <BasicInput
-            disabled={updatedPointSetting.scope === 'no_scope'}
+            // disabled={updatedPointSetting.scope === 'no_scope'}
             type="number"
             min="1"
             // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
@@ -142,6 +145,7 @@ export default function LeaguePointSettingsListItem({
             onChange={handleInputChange}
             value={updatedPointSetting.maxFrequencyPerScope ?? ''}
           />
+          {/* )} */}
 
           {/* <br />
           <button onClick={handleUpdatePointSetting}>Save</button>
