@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,14 +22,14 @@ import { validateAtLeastOneSimpleInput } from '../shared/utils'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import styles from './PlayerRoundEnterScoring.module.css'
 
+// TODO: at some point player data (and probably other round data from context) isn't getting passed in
+// TODO: at some point player data (and probably other round data from context) isn't getting passed in
+// TODO: at some point player data (and probably other round data from context) isn't getting passed in
+
 // TODO: DRYify some of this with PlayerRoundScoring
 // TODO: DRYify some of this with PlayerRoundScoring
 // TODO: DRYify some of this with PlayerRoundScoring
 
-interface PlayerState {
-  id: string
-  name: string
-}
 interface PointEarnedState {
   id: string
   name: string
@@ -38,7 +38,11 @@ interface PointEarnedState {
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
 }
-const defaultSelectedPlayerState: PlayerState = { id: '', name: '' }
+const defaultSelectedPlayerState: {
+  id: string
+  name: string
+} = { id: '', name: '' }
+
 const defaultSelectedPointEarnedState: PointEarnedState = {
   id: '',
   name: '',
@@ -61,18 +65,21 @@ export function selectableHoles(numberOfHoles = 18): Array<JSX.Element> {
 
 // TODO: add checks for existing hole score and point earned frequency
 export default function PlayerRoundEnterScoring() {
-  const [searchParams] = useSearchParams()
   const {
     id: roundId,
     players,
     pointSettings,
     leagueId,
   } = useContext(RoundContext)
+  console.log('players from context', players)
+  console.log('pointSettings from context', pointSettings)
+  const location = useLocation()
+  const playerFromLocation = location.state
   const [player, setPlayer] = useState(defaultSelectedPlayerState)
   const [selectedPointEarned, setSelectedPointEarned] = useState(
     defaultSelectedPointEarnedState
   )
-  console.log('selectedPointEarned ><<><><', selectedPointEarned)
+  // console.log('selectedPointEarned ><<><><', selectedPointEarned)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [roundPointsEarned, setRoundPointsEarned] = useState<any[]>([])
   const [hole, setHole] = useState('')
@@ -90,13 +97,16 @@ export default function PlayerRoundEnterScoring() {
     quantityInputScopeManager(selectedPointEarned)
 
   useEffect(() => {
-    const initialPlayerName = searchParams.get('playerName') || players[0]?.name
-    const initialPlayerId = searchParams.get('playerId') || players[0]?.id
+    const initialPlayerName = playerFromLocation?.playerName || players[0]?.name
+    const initialPlayerId = playerFromLocation?.playerId || players[0]?.id
+    console.log('initialPlayerId -00-0-', initialPlayerId)
     setPlayer({ id: initialPlayerId, name: initialPlayerName })
-  }, [searchParams, players])
+  }, [playerFromLocation, players])
 
   useEffect(() => {
-    getPlayerRoundPointsEarned()
+    if (player.id) {
+      getPlayerRoundPointsEarned()
+    }
   }, [player])
 
   function getSelectableOptions(

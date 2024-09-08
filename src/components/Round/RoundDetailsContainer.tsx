@@ -12,6 +12,7 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 import { Round, Player, PointSetting } from '../../types'
 import { fetchRound, deleteRound } from '../../data'
 import styles from './RoundDetailsContainer.module.css'
+import { sortArrayOfObjects } from '../shared/utils'
 
 const RoundContextDefault = {
   id: '',
@@ -37,6 +38,9 @@ export default function RoundDetailsContainer(): JSX.Element {
   const { roundId, leagueId } = useParams() as Record<string, string>
   const navigate = useNavigate()
 
+  const sortedPlayers = sortArrayOfObjects(players, 'name')
+  const dateFormatted = new Date(date).toLocaleDateString()
+
   useEffect(() => {
     refreshRoundState()
   }, [])
@@ -51,7 +55,6 @@ export default function RoundDetailsContainer(): JSX.Element {
     setRoundData(roundData)
   }
 
-  const dateFormatted = new Date(date).toLocaleDateString()
   return (
     <RoundContext.Provider
       value={{
@@ -59,7 +62,7 @@ export default function RoundDetailsContainer(): JSX.Element {
         name,
         location,
         date: dateFormatted,
-        players,
+        players: sortedPlayers,
         pointSettings,
         refreshRoundState,
         handleDeleteRound,

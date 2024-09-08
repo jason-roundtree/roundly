@@ -83,7 +83,7 @@ export default function Router() {
       >
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
-        <Route path="player-scoring" element={<PlayerRoundScoring />} />
+        <Route path="player-scoring/:player" element={<PlayerRoundScoring />} />
         <Route
           path="edit-player-point-eanred"
           element={<EditPlayerPointEarned />}

@@ -4,6 +4,8 @@ import { sortCompareAscending, sortCompareDescending } from './sortCompares'
 //   [key: string ]: string | number
 // }
 // Record<string, string | number
+// TODO: properly annotate with JSDoc or whatever
+/** sort arr by propery, defaults to ascending */
 export default function sortArrayOfObjects(
   arr,
   property: string,

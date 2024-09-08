@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, forwardRef } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams, useLocation } from 'react-router-dom'
 
 import { PlayerRoundPointsEarnedTable, ScorecardTable } from '.'
 import './index.css'
@@ -100,13 +100,17 @@ export default function PlayerRoundPointsEarned() {
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(pointEarnedBeingEdited)
 
+  const {
+    state: { playerName, playerId },
+  } = useLocation()
+
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string
   const [searchParams] = useSearchParams()
-  const playerName = searchParams.get('playerName') ?? ''
-  const playerId = searchParams.get('playerId') ?? ''
+  // const playerName = searchParams.get('playerName') ?? ''
+  // const playerId = searchParams.get('playerId') ?? ''
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
@@ -434,9 +438,11 @@ export default function PlayerRoundPointsEarned() {
 
       <div className="centered-button">
         <Link
-          to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring?playerId=${playerId}&playerName=${encodeURIComponent(
-            playerName
-          )}`}
+          // to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring?playerId=${playerId}&playerName=${encodeURIComponent(
+          //   playerName
+          // )}`}
+          to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}
+          state={{ playerId, playerName }}
         >
           <button>Enter Point Earned / Score</button>
         </Link>

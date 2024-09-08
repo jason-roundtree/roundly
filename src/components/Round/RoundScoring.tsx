@@ -30,7 +30,6 @@ export default function RoundScoring() {
     pointSettings,
     handleDeleteRound,
   } = useContext(RoundContext)
-  console.log('searchQuery:>> ', searchQuery)
 
   useEffect(() => {
     generatePlayersWithPointTotals()
@@ -183,9 +182,13 @@ export default function RoundScoring() {
                   </span>
                   <span className="list-edit-buttons">
                     <Link
-                      to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
-                        player.id
-                      }&playerName=${encodeURIComponent(playerName)}`}
+                      // to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
+                      //   player.id
+                      // }&playerName=${encodeURIComponent(playerName)}`}
+                      to={`/league/${leagueId}/rounds/${roundId}/player-scoring/${encodeURIComponent(
+                        playerName
+                      )}`}
+                      state={{ playerId: player.id, playerName }}
                     >
                       <button>Edit</button>
                     </Link>
