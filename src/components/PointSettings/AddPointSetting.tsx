@@ -47,26 +47,16 @@ export default function AddPointSetting({
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
-    const maxFrequency = newPointSetting.maxFrequencyPerScope
-    const pointName = newPointSetting.name
-    // TODO: move this to function and also run it on blur
-    if (pointName && maxFrequency && maxFrequency < 1) {
-      setShowMaxFrequencyError(true)
-      return
-    }
-    if (!validateStringInput(pointName, setShowNameValidationError)) {
+    if (
+      !validateStringInput(newPointSetting.name, setShowNameValidationError)
+    ) {
       return
     }
 
     try {
-      const newPointSettingCopy = { ...newPointSetting }
-      // if (pointContext === 'league') {
-      //   newPointSettingCopy.isLeagueSetting = true
-      // }
-
       const leaguePointJson = await createLeaguePointSetting(
         leagueId,
-        newPointSettingCopy
+        newPointSetting
       )
       const { id: pointId } = leaguePointJson
 
@@ -85,6 +75,7 @@ export default function AddPointSetting({
       console.log('create point setting error: ', err)
     }
   }
+
   function handlePointValueInputChange({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void {
@@ -94,9 +85,10 @@ export default function AddPointSetting({
   function handlePointMaxFrequencyInputChange({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void {
+    const valueNum = +target.value
     setNewPointSetting({
       ...newPointSetting,
-      maxFrequencyPerScope: +target.value,
+      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
     })
   }
 
@@ -107,9 +99,6 @@ export default function AddPointSetting({
     setShowSuccessMsg(false)
     if (name === 'name') {
       setShowNameValidationError(false)
-    }
-    if (name === 'maxFrequencyPerScope' && +value > 0) {
-      setShowMaxFrequencyError(false)
     }
     setNewPointSetting({
       ...newPointSetting,
@@ -214,7 +203,7 @@ export default function AddPointSetting({
           label="Max Frequency Per Scope"
           name="maxFrequencyPerScope"
           onChange={handlePointMaxFrequencyInputChange}
-          value={newPointSetting.maxFrequencyPerScope ?? 1}
+          value={newPointSetting.maxFrequencyPerScope ?? ''}
         />
       )}
 

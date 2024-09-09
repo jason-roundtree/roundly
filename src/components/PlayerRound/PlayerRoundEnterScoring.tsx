@@ -33,7 +33,7 @@ import styles from './PlayerRoundEnterScoring.module.css'
 interface PointEarnedState {
   id: string
   name: string
-  maxFrequencyPerScope: number
+  maxFrequencyPerScope: number | null
   value: string | number
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
@@ -46,7 +46,7 @@ const defaultSelectedPlayerState: {
 const defaultSelectedPointEarnedState: PointEarnedState = {
   id: '',
   name: '',
-  maxFrequencyPerScope: 1,
+  maxFrequencyPerScope: null,
   value: '',
   scope: '',
 }
@@ -79,7 +79,7 @@ export default function PlayerRoundEnterScoring() {
   const [selectedPointEarned, setSelectedPointEarned] = useState(
     defaultSelectedPointEarnedState
   )
-  // console.log('selectedPointEarned ><<><><', selectedPointEarned)
+  console.log('selectedPointEarned ><<><><', selectedPointEarned)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [roundPointsEarned, setRoundPointsEarned] = useState<any[]>([])
   const [hole, setHole] = useState('')
@@ -95,7 +95,7 @@ export default function PlayerRoundEnterScoring() {
   // TODO: move this to be managed by state and useEffect?
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(selectedPointEarned)
-
+  console.log('maxFrequency <<<<< ', maxFrequency)
   useEffect(() => {
     const initialPlayerName = playerFromLocation?.playerName || players[0]?.name
     const initialPlayerId = playerFromLocation?.playerId || players[0]?.id
@@ -154,7 +154,7 @@ export default function PlayerRoundEnterScoring() {
       setSelectedPointEarned({
         id: pointSetting.id,
         name: pointName,
-        maxFrequencyPerScope: pointSetting.maxFrequencyPerScope ?? 1,
+        maxFrequencyPerScope: pointSetting.maxFrequencyPerScope,
         value: pointSetting.value,
         scope: pointSetting.scope,
       })
@@ -341,7 +341,8 @@ export default function PlayerRoundEnterScoring() {
         label={quantityInputLabel}
         value={pointEarnedFrequency}
         onChange={(e) => {
-          setPointEarnedFrequency(+e.target.value)
+          const valueNum = +e.target.value
+          setPointEarnedFrequency(valueNum > 0 ? valueNum : 1)
         }}
         onBlur={validateInputFrequencyAgainstPointSetting}
         disabled={!frequencyIsActive}

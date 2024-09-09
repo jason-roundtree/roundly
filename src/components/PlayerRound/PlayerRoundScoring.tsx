@@ -53,7 +53,7 @@ export interface PointBeingEdited {
   scope: PointScopes | (string & {})
   frequency: number
   originalFrequency: number
-  maxFrequencyPerScope: number
+  maxFrequencyPerScope: number | null
 }
 
 // TODO: change null to string here and in type?
@@ -76,7 +76,7 @@ const defaultPointEarnedBeingEditedState: PointBeingEdited = {
   scope: '',
   frequency: 1,
   originalFrequency: 1,
-  maxFrequencyPerScope: 1,
+  maxFrequencyPerScope: null,
 }
 
 export default function PlayerRoundPointsEarned() {
@@ -320,6 +320,7 @@ export default function PlayerRoundPointsEarned() {
         pointEarnedBeingEdited
       )
       if (
+        maxFrequencyPerScope &&
         ppeQuantityExceedsMax(
           frequency,
           ppeQuantityInRound,
@@ -339,6 +340,7 @@ export default function PlayerRoundPointsEarned() {
         pointEarnedBeingEdited
       )
       if (
+        maxFrequencyPerScope &&
         ppeQuantityExceedsMax(
           frequency,
           ppeQuantityInHole,
@@ -531,17 +533,18 @@ export default function PlayerRoundPointsEarned() {
               type="number"
               min="1"
               max={
-                frequencyIsActive
-                  ? pointEarnedBeingEdited.maxFrequencyPerScope.toString()
-                  : '1'
+                frequencyIsActive && maxFrequency
+                  ? maxFrequency.toString()
+                  : null
               }
               name="point-earned-quantity"
               label={quantityInputLabel}
               value={pointEarnedBeingEdited.frequency ?? ''}
               onChange={(e) => {
+                const valueNum = +e.target.value
                 setPointEarnedBeingEdited({
                   ...pointEarnedBeingEdited,
-                  frequency: +e.target.value,
+                  frequency: valueNum > 0 ? valueNum : 1,
                 })
               }}
               // onBlur={validateInputFrequencyAgainstPointSetting}
