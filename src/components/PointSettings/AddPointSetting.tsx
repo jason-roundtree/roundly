@@ -194,9 +194,9 @@ export default function AddPointSetting({
         selectedScope={newPointSetting.scope}
       />
 
-      {newPointSetting.scope !== 'no_scope' && (
+      {newPointSetting.scope !== no_scope_key && (
         <BasicInput
-          // disabled={newPointSetting.scope === 'no_scope'}
+          // disabled={newPointSetting.scope === no_scope_key}
           type="number"
           min="1"
           // TODO: edit "Scope" to be Round or Hole depending on which option is selected?

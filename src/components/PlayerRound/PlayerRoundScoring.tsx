@@ -25,6 +25,7 @@ import BasicInput from '../shared/components/BasicInput'
 import styles from './PlayerRoundScoring.module.css'
 import { NumberOrNull, PointScopes, PointSetting } from '../../types'
 import { selectableHoles } from './PlayerRoundEnterScoring'
+import { no_scope_key } from '../PointSettings/PointScopeRadios'
 
 interface PlayerHole {
   id: string
@@ -266,7 +267,7 @@ export default function PlayerRoundPointsEarned() {
     inputQuantity: number,
     totalQuantityInRound: number,
     maxFrequencyPerScope: number,
-    scope: Omit<PointScopes, 'no_scope'>
+    scope: Omit<PointScopes, typeof no_scope_key>
   ) {
     return inputQuantity + totalQuantityInRound > maxFrequencyPerScope
   }

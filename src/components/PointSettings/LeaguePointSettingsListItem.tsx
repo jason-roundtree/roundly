@@ -68,6 +68,17 @@ export default function LeaguePointSettingsListItem({
     setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
   }
 
+  // TODO: DRYify with other instances of nearly same function (e.g. AddPointSetting)
+  function handlePointMaxFrequencyInputChange({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>): void {
+    const valueNum = +target.value
+    setUpdatedPointSetting({
+      ...updatedPointSetting,
+      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
+    })
+  }
+
   function handleRadioInputChange(e) {
     const updatedScope = e.target.value
     const isNoScope = updatedScope === no_scope_key
@@ -134,18 +145,18 @@ export default function LeaguePointSettingsListItem({
             selectedScope={updatedPointSettingScope}
           />
 
-          {/* {updatedPointSettingScope !== 'no_scope' && ( */}
-          <BasicInput
-            // disabled={updatedPointSetting.scope === 'no_scope'}
-            type="number"
-            min="1"
-            // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-            label="Max Frequency Per Scope"
-            name="maxFrequencyPerScope"
-            onChange={handleInputChange}
-            value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-          />
-          {/* )} */}
+          {updatedPointSettingScope !== no_scope_key && (
+            <BasicInput
+              // disabled={updatedPointSetting.scope === no_scope_key}
+              type="number"
+              min="1"
+              // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
+              label="Max Frequency Per Scope"
+              name="maxFrequencyPerScope"
+              onChange={handlePointMaxFrequencyInputChange}
+              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+            />
+          )}
 
           {/* <br />
           <button onClick={handleUpdatePointSetting}>Save</button>

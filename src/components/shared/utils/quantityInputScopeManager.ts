@@ -1,4 +1,5 @@
 import { PointScopes } from '../../../types'
+import { no_scope_key } from '../../PointSettings/PointScopeRadios'
 
 export default function quantityInputScopeManager(pointSetting: {
   maxFrequencyPerScope: number | null
@@ -9,7 +10,7 @@ export default function quantityInputScopeManager(pointSetting: {
   const maxFrequency = pointSetting.maxFrequencyPerScope
   let frequencyIsActive = false
   let quantityInputLabel = 'Quantity'
-  if (scopeCast === 'no_scope') {
+  if (scopeCast === no_scope_key) {
     frequencyIsActive = true
     quantityInputLabel += ' (no max)'
   } else if (maxFrequency && maxFrequency > 1) {

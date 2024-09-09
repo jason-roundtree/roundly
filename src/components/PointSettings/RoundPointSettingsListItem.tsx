@@ -22,7 +22,7 @@ const defaultState: EditablePointSetting = {
   value: '',
   scope: no_scope_key,
   isLeagueSetting: false,
-  maxFrequencyPerScope: 1,
+  maxFrequencyPerScope: null,
 }
 
 export default function RoundPointSettingsListItem({
@@ -33,6 +33,7 @@ export default function RoundPointSettingsListItem({
 }): JSX.Element {
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [updatedPointSetting, setUpdatedPointSetting] = useState(defaultState)
+  const updatedPointSettingScope = updatedPointSetting.scope
   const { id, name, value, isLeagueSetting, scope } = pointSetting
   const [showValidationError, setShowValidationError] = useState(false)
 
@@ -58,6 +59,17 @@ export default function RoundPointSettingsListItem({
     target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
     setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
+  }
+
+  // TODO: DRYify with other instances of nearly same function (e.g. LeaguePointSettingListItem, AddPointSetting)
+  function handlePointMaxFrequencyInputChange({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>): void {
+    const valueNum = +target.value
+    setUpdatedPointSetting({
+      ...updatedPointSetting,
+      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
+    })
   }
 
   function handleRadioInputChange(e) {
@@ -138,16 +150,18 @@ export default function RoundPointSettingsListItem({
           />
 
           {/* TODO: make into component or fold into PointScopeRadios since it's currently used in 3 components */}
-          <BasicInput
-            disabled={updatedPointSetting.scope === 'no_scope'}
-            type="number"
-            min="1"
-            // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-            label="Max Frequency Per Scope"
-            name="maxFrequencyPerScope"
-            onChange={handleInputChange}
-            value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-          />
+          {updatedPointSettingScope !== no_scope_key && (
+            <BasicInput
+              // disabled={updatedPointSetting.scope === no_scope_key}
+              type="number"
+              min="1"
+              // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
+              label="Max Frequency Per Scope"
+              name="maxFrequencyPerScope"
+              onChange={handlePointMaxFrequencyInputChange}
+              value={updatedPointSetting.maxFrequencyPerScope ?? ''}
+            />
+          )}
 
           {!isLeagueSetting && (
             <Checkbox
