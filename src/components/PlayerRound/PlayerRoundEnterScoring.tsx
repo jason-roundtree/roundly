@@ -166,8 +166,9 @@ export default function PlayerRoundEnterScoring() {
   function handleUpdateHoleScoreState(e) {
     setShowOneInputRequiredError(false)
     const inputValue = e.target.value
-    if (inputValue === '0') {
-      setHoleScore(null)
+    if (inputValue < 1) {
+      // setHoleScore(null)
+      return
     } else {
       setHoleScore(+inputValue)
     }
@@ -355,7 +356,7 @@ export default function PlayerRoundEnterScoring() {
 
       <BasicInput
         type="number"
-        min="0"
+        min="1"
         name="hole-score"
         label="Hole Score"
         value={holeScore ? holeScore : ''}

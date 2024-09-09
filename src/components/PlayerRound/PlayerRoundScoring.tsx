@@ -95,7 +95,8 @@ export default function PlayerRoundPointsEarned() {
     useState(false)
   const [pointEarnedBeingEdited, setPointEarnedBeingEdited] =
     useState<PointBeingEdited>(defaultPointEarnedBeingEditedState)
-  console.log('%$%$%$%% pointEarnedBeingEdited', pointEarnedBeingEdited)
+  console.log('%$%$%$%% scoreBeingEdited', scoreBeingEdited)
+
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(pointEarnedBeingEdited)
@@ -183,8 +184,14 @@ export default function PlayerRoundPointsEarned() {
     setRoundHoleScores(holeScoreData)
   }
 
-  function handleInputChange(e) {
-    setScoreBeingEdited({ ...scoreBeingEdited, score: +e.target.value })
+  function handleUpdateHoleScoreState(e) {
+    const inputValue = e.target.value
+    if (inputValue < 1) {
+      // setScoreBeingEdited({ ...scoreBeingEdited, score: null })
+      return
+    } else {
+      setScoreBeingEdited({ ...scoreBeingEdited, score: +e.target.value })
+    }
   }
 
   function handleOpenEditScoreModal({
@@ -411,12 +418,12 @@ export default function PlayerRoundPointsEarned() {
   }
 
   function EditHoleScoreButtons(): JSX.Element {
+    console.log('453535score', score)
+    console.log('3543534playerHoleId', playerHoleId)
     return (
       <>
         <button onClick={updateHoleScore}>Save</button>
-        {score && playerHoleId && (
-          <button onClick={deleteHoleScore}>Delete</button>
-        )}
+        {playerHoleId && <button onClick={deleteHoleScore}>Delete</button>}
       </>
     )
   }
@@ -503,11 +510,12 @@ export default function PlayerRoundPointsEarned() {
           </h3>
 
           <BasicInput
+            min="1"
             type="number"
             label="Hole Score"
             name="score"
             value={scoreBeingEdited.score ?? ''}
-            onChange={handleInputChange}
+            onChange={handleUpdateHoleScoreState}
             onFocus={selectAllInputText}
           />
         </Modal>
