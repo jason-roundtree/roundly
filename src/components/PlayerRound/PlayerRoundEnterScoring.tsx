@@ -8,6 +8,7 @@ import Select from '../shared/components/Select'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import { PointSetting, Player, PointScopes } from '../../types'
 import {
+  getPlayerPointEarnedQuantity,
   getIncrementalHoleNumbers,
   quantityInputScopeManager,
   sortArrayOfObjects,
@@ -21,6 +22,7 @@ import {
 import { validateAtLeastOneSimpleInput } from '../shared/utils'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import styles from './PlayerRoundEnterScoring.module.css'
+import PlayerRoundEnterPointOrScore from './EnterPointOrScore'
 
 // TODO: at some point player data (and probably other round data from context) isn't getting passed in
 // TODO: at some point player data (and probably other round data from context) isn't getting passed in
@@ -29,6 +31,11 @@ import styles from './PlayerRoundEnterScoring.module.css'
 // TODO: DRYify some of this with PlayerRoundScoring
 // TODO: DRYify some of this with PlayerRoundScoring
 // TODO: DRYify some of this with PlayerRoundScoring
+
+const defaultSelectedPlayerState: {
+  id: string
+  name: string
+} = { id: '', name: '' }
 
 interface PointEarnedState {
   id: string
@@ -38,10 +45,6 @@ interface PointEarnedState {
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
 }
-const defaultSelectedPlayerState: {
-  id: string
-  name: string
-} = { id: '', name: '' }
 
 const defaultSelectedPointEarnedState: PointEarnedState = {
   id: '',
@@ -51,9 +54,7 @@ const defaultSelectedPointEarnedState: PointEarnedState = {
   scope: '',
 }
 
-// TODO: change number of holes to persist on context
 export function selectableHoles(numberOfHoles = 18): Array<JSX.Element> {
-  /* TODO: make dynamic (and add holes field to round form) */
   return ['', ...getIncrementalHoleNumbers(numberOfHoles)].map((o) => {
     return (
       <option value={o} key={o}>
@@ -63,7 +64,6 @@ export function selectableHoles(numberOfHoles = 18): Array<JSX.Element> {
   })
 }
 
-// TODO: add checks for existing hole score and point earned frequency
 export default function PlayerRoundEnterScoring() {
   const {
     id: roundId,
@@ -82,8 +82,12 @@ export default function PlayerRoundEnterScoring() {
   console.log('selectedPointEarned ><<><><', selectedPointEarned)
   const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
   const [roundPointsEarned, setRoundPointsEarned] = useState<any[]>([])
+
+  // TODO: re-implement in EnterPointOrScore
   const [hole, setHole] = useState('')
   const [holeScore, setHoleScore] = useState<number | null>(null)
+
+  // TODO: re-implement in EnterPointOrScore
   const [showOneInputRequiredError, setShowOneInputRequiredError] =
     useState(false)
   const [showHoleRequiredError, setShowHoleRequiredError] = useState(false)
@@ -92,7 +96,7 @@ export default function PlayerRoundEnterScoring() {
   const [showScoreCreationSuccess, setShowScoreCreationSuccess] =
     useState(false)
   const [showScoreUpdateSuccess, setShowScoreUpdateSuccess] = useState(false)
-  // TODO: move this to be managed by state and useEffect?
+
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(selectedPointEarned)
   console.log('maxFrequency <<<<< ', maxFrequency)
@@ -163,6 +167,14 @@ export default function PlayerRoundEnterScoring() {
     }
   }
 
+  function handleUpdateHole(e) {
+    const holeValue = e.target.value
+    if (holeValue !== '') {
+      setShowHoleRequiredError(false)
+    }
+    setHole(e.target.value)
+  }
+
   function handleUpdateHoleScoreState(e) {
     setShowOneInputRequiredError(false)
     const inputValue = e.target.value
@@ -172,14 +184,6 @@ export default function PlayerRoundEnterScoring() {
     } else {
       setHoleScore(+inputValue)
     }
-  }
-
-  function handleUpdateHole(e) {
-    const holeValue = e.target.value
-    if (holeValue !== '') {
-      setShowHoleRequiredError(false)
-    }
-    setHole(e.target.value)
   }
 
   async function handleUpdateHoleScore(
@@ -288,12 +292,6 @@ export default function PlayerRoundEnterScoring() {
     setShowOneInputRequiredError(false)
     setShowHoleRequiredError(false)
   }
-
-  // function getQuantityInputLabel(): string {
-  //   return selectedPointEarned.name
-  //     ? `Quantity (max of ${selectedPointEarned.maxFrequencyPerScope} per ${selectedPointEarned.scope})`
-  //     : 'Quantity'
-  // }
 
   return (
     <form className="player-scoring-form">

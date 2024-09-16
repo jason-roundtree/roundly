@@ -13,8 +13,7 @@ import {
   updatePlayerPointEarned,
 } from '../../data'
 import {
-  getPPEQuantityInHole,
-  getPPEQuantityInRound,
+  getPlayerPointEarnedQuantity,
   getScoreTotal,
   getTotalHoleScores,
   quantityInputScopeManager,
@@ -269,6 +268,9 @@ export default function PlayerRoundPointsEarned() {
     maxFrequencyPerScope: number,
     scope: Omit<PointScopes, typeof no_scope_key>
   ) {
+    console.log('---- inputQuantity', inputQuantity)
+    console.log('totalQuantityInRound', totalQuantityInRound)
+    console.log('maxFrequencyPerScope', maxFrequencyPerScope)
     return inputQuantity + totalQuantityInRound > maxFrequencyPerScope
   }
 
@@ -322,10 +324,11 @@ export default function PlayerRoundPointsEarned() {
     }
 
     if (scope === 'round') {
-      const ppeQuantityInRound = getPPEQuantityInRound(
+      const ppeQuantityInRound = getPlayerPointEarnedQuantity(
         pointSettingId,
         roundPointsEarned,
-        pointEarnedBeingEdited
+        null,
+        pointEarnedId
       )
       if (
         maxFrequencyPerScope &&
@@ -341,11 +344,11 @@ export default function PlayerRoundPointsEarned() {
         return
       }
     } else if (scope === 'hole' && hole) {
-      const ppeQuantityInHole = getPPEQuantityInHole(
+      const ppeQuantityInHole = getPlayerPointEarnedQuantity(
         pointSettingId,
-        hole,
         roundPointsEarned,
-        pointEarnedBeingEdited
+        hole,
+        pointEarnedId
       )
       if (
         maxFrequencyPerScope &&
@@ -353,7 +356,7 @@ export default function PlayerRoundPointsEarned() {
           frequency,
           ppeQuantityInHole,
           maxFrequencyPerScope,
-          'round'
+          'hole'
         )
       ) {
         // TODO: add validation error message

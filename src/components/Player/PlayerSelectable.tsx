@@ -1,5 +1,6 @@
 import CheckboxButton from '../shared/components/CheckboxButton'
 
+// TODO: rename this to differentiate between PlayerSelectInput?
 export default function PlayerSelectable({
   name,
   id,

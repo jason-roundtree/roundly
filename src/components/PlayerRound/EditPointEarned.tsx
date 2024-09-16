@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 // TODO: not currently used
-export default function EditPlayerPointEarned(p) {
+export default function EditPointEarned(p) {
   const params = useParams()
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string

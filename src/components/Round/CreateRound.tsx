@@ -8,7 +8,6 @@ import { Player, PointSetting, Round } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 import PlayerListItemSelectable from '../Player/PlayerSelectable'
 import { PointSelectable } from '../PointSettings'
-import toggleStringItemInList from '../shared/hooks/useToggleStringItemInList'
 import {
   createRoundPointSetting,
   fetchLeaguePlayers,
@@ -17,7 +16,7 @@ import {
 } from '../../data'
 import styles from './CreateRound.module.css'
 import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
-import { validateStringInput } from '../shared/utils'
+import { toggleStringItemInList, validateStringInput } from '../shared/utils'
 import Checkbox from '../shared/components/Checkbox'
 
 interface RoundState {

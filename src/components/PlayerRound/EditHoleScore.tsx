@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function EditPlayerHoleScore() {
+export default function EditHoleScore() {
   return (
     <>
       <div>EditPlayerHoleScore</div>
