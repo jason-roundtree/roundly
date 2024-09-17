@@ -21,6 +21,7 @@ export default function EnterPointOrScore() {
   const [selectedPlayer, setSelectedPlayer] = useState(
     defaultSelectedPlayerState
   )
+  const [selectedHole, setSelectedHole] = useState('')
 
   const location = useLocation()
   const playerFromLocation = location.state
@@ -51,7 +52,10 @@ export default function EnterPointOrScore() {
         setSelectedPlayer={setSelectedPlayer}
       />
 
-      <HoleSelectInput />
+      <HoleSelectInput
+        selectedHole={selectedHole}
+        setSelectedHole={setSelectedHole}
+      />
 
       <EnterPointOrScoreRadios
         showEnterPointForm={showEnterPointForm}
@@ -61,7 +65,10 @@ export default function EnterPointOrScore() {
       {showEnterPointForm ? (
         <EnterPointEarned
           pointSettings={pointSettings}
+          selectedPlayer={selectedPlayer}
           playerPointsEarnedInRound={playerPointsEarnedInRound}
+          selectedHole={selectedHole}
+          roundId={roundId}
         />
       ) : (
         <EnterHoleScore />

@@ -6,10 +6,14 @@ function isMatchingPointSetting(rpePointSettingId, inputPointSettingId) {
 }
 
 function isNotPointEarnedBeingEdited(rpePointSettingId, inputPointSettingId) {
+  console.log('rpePointSettingId', rpePointSettingId)
+  console.log('inputPointSettingId+++++++', inputPointSettingId)
   return rpePointSettingId !== inputPointSettingId
 }
 
 function isMatchingHole(rpeHole, inputHole) {
+  console.log('rpeHole', rpeHole)
+  console.log('inputHole_____', inputHole)
   return rpeHole === inputHole
 }
 
@@ -22,6 +26,12 @@ function getRoundPointsEarnedSansOneBeingEdited(
   })
 }
 
+// interface GetPlayerPointEarnedQuantity {
+//   pointSettingId: string
+//   roundPointsEarned: string
+//   hole?: null | number
+//   rpeBeingEditedId: null | string
+// }
 export function getPlayerPointEarnedQuantity(
   pointSettingId,
   roundPointsEarned,
@@ -37,12 +47,14 @@ export function getPlayerPointEarnedQuantity(
       )
     : roundPointsEarned
 
+  console.log('filteredRoundPointsEarned $#$#$#$#$#', filteredRoundPointsEarned)
   for (const frpe of filteredRoundPointsEarned) {
     console.log('frpe.pointSettingId', frpe.pointSettingId)
     if (!isMatchingPointSetting(frpe.pointSettingId, pointSettingId)) {
       console.log('isMatchingPointSetting is false')
       continue
     }
+    console.log('hole@#@#@', hole)
     if (hole && !isMatchingHole(frpe.player_hole?.hole, hole)) {
       console.log('hole is true and isMatchingHole is false')
       continue

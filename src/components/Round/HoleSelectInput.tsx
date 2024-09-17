@@ -13,9 +13,7 @@ export function selectableHoles(numberOfHoles = 18): Array<JSX.Element> {
   })
 }
 
-export default function HoleSelectInput() {
-  const [selectedHole, setSelectedHole] = useState('')
-
+export default function HoleSelectInput({ selectedHole, setSelectedHole }) {
   function handleUpdateHole(e) {
     const holeValue = e.target.value
     if (holeValue !== '') {

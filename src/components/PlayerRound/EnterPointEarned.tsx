@@ -10,8 +10,12 @@ import {
 } from '../shared/utils'
 import { PointScopes, PointSetting } from '../../types'
 import { no_scope_key } from '../PointSettings/PointScopeRadios'
+import {
+  createOrFindPlayerHole,
+  createRoundPlayerPointEarned,
+} from '../../data'
 
-interface PointEarnedState {
+interface PointSettingEarnedState {
   id: string
   name: string
   maxFrequencyPerScope: number | null
@@ -20,7 +24,7 @@ interface PointEarnedState {
   scope: PointScopes | (string & {})
 }
 
-const defaultSelectedPointEarnedState: PointEarnedState = {
+const defaultSelectedPointEarnedState: PointSettingEarnedState = {
   id: '',
   name: '',
   maxFrequencyPerScope: null,
@@ -32,17 +36,20 @@ const defaultSelectedPointEarnedState: PointEarnedState = {
 export default function EnterPointEarned({
   pointSettings,
   playerPointsEarnedInRound,
+  selectedHole,
+  selectedPlayer,
+  roundId,
 }) {
   const [selectedPointEarned, setSelectedPointEarned] = useState(
     defaultSelectedPointEarnedState
   )
+  const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
+  const playerId = selectedPlayer.id
   const {
     id: pointSettingId,
     scope,
     maxFrequencyPerScope,
   } = selectedPointEarned
-  const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
-
   // TODO: move this to be managed by state and useEffect?
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(selectedPointEarned)
@@ -68,7 +75,12 @@ export default function EnterPointEarned({
     }
   }
 
-  function handleSubmitPointEarned() {
+  function clearState() {
+    setSelectedPointEarned(defaultSelectedPointEarnedState)
+    setPointEarnedFrequency(1)
+  }
+
+  async function handleSubmitPointEarned() {
     console.log('handleSubmitPointEarned')
     // TODO:
     /***
@@ -93,6 +105,10 @@ export default function EnterPointEarned({
      *   }
      * }
      */
+    if (!selectedPointEarned) {
+      console.log('Please select a point setting🥹')
+      // TODO: show validation error
+    }
     // TODO: move this to separate validation function?
     // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
     // if (scope !== no_scope_key) {
@@ -100,7 +116,7 @@ export default function EnterPointEarned({
       const ppeTotal = getPlayerPointEarnedQuantity(
         pointSettingId,
         playerPointsEarnedInRound,
-        null,
+        +selectedHole,
         null
       )
       console.log('ppeTotal', ppeTotal)
@@ -111,9 +127,44 @@ export default function EnterPointEarned({
           maxFrequencyPerScope
         )
       ) {
-        console.log('!!!!** quantity would be exceeded **!!!!')
+        // TODO: show validation error message
+        console.log('!!!!😡 quantity would be exceeded 😡!!!!')
         return
       }
+    }
+
+    const pointEarnedData = {
+      playerId: playerId,
+      pointSettingId: pointSettingId,
+      roundId: roundId,
+      playerHoleId: undefined,
+      frequency: pointEarnedFrequency,
+    }
+    if (selectedHole) {
+      const holeData = {
+        playerId: playerId,
+        hole: +selectedHole,
+        roundId: roundId,
+      }
+      const playerHoleRes = await createOrFindPlayerHole(holeData)
+      if (playerHoleRes.ok) {
+        const [playerHole, created] = await playerHoleRes.json()
+        pointEarnedData.playerHoleId = playerHole.id
+      } else {
+        // TODO: some error message here?
+        return
+      }
+    }
+
+    const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
+    if (pointEarnedRes.ok) {
+      console.log('point successfully created!🎉🥂')
+      // setShowPointEarnedCreationSuccess(true)
+      // setTimeout(() => setShowPointEarnedCreationSuccess(false), 3000)
+      clearState()
+    } else {
+      // TODO: some error message here?
+      return
     }
   }
 
