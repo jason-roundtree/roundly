@@ -26,6 +26,7 @@ import { NumberOrNull, PointScopes, PointSetting } from '../../types'
 import { selectableHoles } from './PlayerRoundEnterScoring'
 import { no_scope_key } from '../PointSettings/PointScopeRadios'
 
+// TODO: somehow combine with PlayerHole interface in types?
 interface PlayerHole {
   id: string
   playerId: string

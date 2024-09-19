@@ -36,6 +36,13 @@ export interface Player {
   //   rounds?: Round[]
 }
 
+export interface PlayerHole {
+  playerId: string
+  roundId: string
+  hole: number | null
+  score?: number | null
+}
+
 export interface Round {
   // TODO: ids in types??
   id: string

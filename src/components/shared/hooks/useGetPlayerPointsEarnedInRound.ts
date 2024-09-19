@@ -6,7 +6,7 @@ import { getRoundPlayerPointsEarnedByPlayer } from '../../../data'
 // TODO: use in PlayerRoundScoring
 export default function useGetPlayerPointsEarnedInRound(playerId, roundId) {
   const [playerRoundPointsEarned, setPlayerRoundPointsEarned] = useState([])
-
+  console.log('useGetPlayerPointsEarnedInRound ', { playerId, roundId })
   useEffect(() => {
     if (playerId) {
       getPlayerRoundPointsEarned()

@@ -71,7 +71,11 @@ export default function EnterPointOrScore() {
           roundId={roundId}
         />
       ) : (
-        <EnterHoleScore />
+        <EnterHoleScore
+          selectedHole={selectedHole}
+          selectedPlayer={selectedPlayer}
+          roundId={roundId}
+        />
       )}
 
       <div>

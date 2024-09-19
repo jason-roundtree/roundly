@@ -1,9 +1,4 @@
-interface PlayerHole {
-  playerId: string
-  roundId: string
-  hole: number | null
-  score?: number | null
-}
+import { PlayerHole } from '../types'
 
 // TODO: somehow make this distinct so it's clear that it gets PlayerHole by hole and not playerHoleId
 export async function getPlayerHole({ playerId, roundId, hole }): Promise<any> {

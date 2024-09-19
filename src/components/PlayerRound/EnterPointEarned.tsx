@@ -107,7 +107,8 @@ export default function EnterPointEarned({
      */
     if (!selectedPointEarned) {
       console.log('Please select a point setting🥹')
-      // TODO: show validation error
+      // TODO: show error message
+      return
     }
     // TODO: move this to separate validation function?
     // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
