@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast, ToastContainer } from 'react-toastify'
 
 import Select from '../shared/components/Select'
 import BasicInput from '../shared/components/BasicInput'
@@ -84,6 +85,9 @@ export default function EnterPointEarned({
     console.log('handleSubmitPointEarned')
     // TODO:
     /***
+     * if PPE is empty {
+     *   show validation error and return
+     * }
      * if PPE max frequency would be exceeded {
      *   show validation error and return
      * } else {
@@ -113,6 +117,7 @@ export default function EnterPointEarned({
     // TODO: move this to separate validation function?
     // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
     // if (scope !== no_scope_key) {
+    // TODO: add something that shows or warns if same point has already been entered for hole??
     if (maxFrequencyPerScope) {
       const ppeTotal = getPlayerPointEarnedQuantity(
         pointSettingId,
@@ -159,7 +164,8 @@ export default function EnterPointEarned({
 
     const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
     if (pointEarnedRes.ok) {
-      console.log('point successfully created!🎉🥂')
+      // console.log('point successfully created!🎉🥂')
+      toast.success('Point successfully created')
       // setShowPointEarnedCreationSuccess(true)
       // setTimeout(() => setShowPointEarnedCreationSuccess(false), 3000)
       clearState()
@@ -202,6 +208,8 @@ export default function EnterPointEarned({
       />
 
       <button onClick={handleSubmitPointEarned}>Add Point Earned</button>
+
+      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }

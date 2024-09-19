@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { toast, ToastContainer } from 'react-toastify'
+
 import BasicInput from '../shared/components/BasicInput'
 import { createOrFindPlayerHole, updatePlayerHole } from '../../data'
 import { PlayerHole } from '../../types'
@@ -76,6 +78,7 @@ export default function EnterHoleScore({
           'scoreSuccesfullyEnteredMessage: ',
           scoreSuccesfullyEnteredMessage
         )
+        toast.success(scoreSuccesfullyEnteredMessage)
         clearState()
       }
     }
@@ -93,6 +96,8 @@ export default function EnterHoleScore({
       />
 
       <button onClick={handleSubmitScore}>Add Hole Score</button>
+
+      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }
