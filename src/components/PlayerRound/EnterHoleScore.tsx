@@ -31,10 +31,12 @@ export default function EnterHoleScore({
 
   async function handleSubmitScore() {
     if (!selectedHole) {
+      // TODO: validation error
       console.log('you must select a hole!🕳️')
       return
     }
     if (!holeScore) {
+      // TODO: validation error
       console.log('you must enter a score!#️⃣')
       return
     }

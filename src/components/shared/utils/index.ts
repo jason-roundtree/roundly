@@ -17,3 +17,7 @@ export {
   ppeQuantityExceedsMax,
 } from './pointEarnedMaxQuantityUtils'
 export { sortCompareAscending, sortCompareDescending } from './sortCompares'
+export {
+  holeOrFrequencyHasChanged,
+  mapScoresToState,
+} from './playerRoundPointAndScoreUtils'

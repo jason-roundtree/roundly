@@ -4,10 +4,10 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { deletePlayerPointEarned } from '../../data'
-import { PointBeingEdited } from './PlayerRoundScoring'
 import { PointSetting } from '../../types'
 
 import styles from './PlayerRoundPointsEarnedTableRow.module.css'
+import { PointBeingEdited } from '../shared/hooks/usePlayerPointBeingEdited'
 
 interface PlayerRoundPointsEarnedTableRow {
   id: string

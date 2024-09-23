@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef, forwardRef } from 'react'
 import { Link, useParams, useSearchParams, useLocation } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 
-import { PlayerRoundPointsEarnedTable, ScorecardTable } from '.'
+import {
+  PlayerRoundPointsAndScoringSummary,
+  PlayerRoundPointsEarnedTable,
+  ScorecardTable,
+} from '.'
 import './index.css'
 import {
-  getRoundPlayerPointsEarnedByPlayer,
-  getRoundPlayerPointsEarnedTotal,
   getPlayerHoleScores,
   getPlayerHole,
   updatePlayerHole,
@@ -16,15 +19,26 @@ import {
   getPlayerPointEarnedQuantity,
   getScoreTotal,
   getTotalHoleScores,
+  holeOrFrequencyHasChanged,
+  mapScoresToState,
+  ppeQuantityExceedsMax,
   quantityInputScopeManager,
   selectAllInputText,
 } from '../shared/utils'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import styles from './PlayerRoundScoring.module.css'
-import { NumberOrNull, PointScopes, PointSetting } from '../../types'
 import { selectableHoles } from './PlayerRoundEnterScoring'
 import { no_scope_key } from '../PointSettings/PointScopeRadios'
+import {
+  useGetPlayerRoundPointsEarned,
+  useGetPlayerRoundPointsEarnedTotal,
+  usePlayerPointBeingEdited,
+} from '../shared/hooks'
+import { PointBeingEdited } from '../shared/hooks/usePlayerPointBeingEdited'
+import styles from './PlayerRoundPointsAndScoring.module.css'
+import usePlayerHoleScoreBeingEdited, {
+  PlayerHoleScoreState,
+} from '../shared/hooks/usePlayerHoleScoreBeingEdited'
 
 // TODO: somehow combine with PlayerHole interface in types?
 interface PlayerHole {
@@ -35,84 +49,41 @@ interface PlayerHole {
   score?: number
 }
 
-export interface PlayerHoleScoreState {
-  playerHoleId: string | ''
-  score: NumberOrNull
-  hole: NumberOrNull
-}
-
-export interface PointBeingEdited {
-  // playerId: string
-  pointSettingId: string
-  pointEarnedId: string
-  playerName: string
-  originalHole?: number | string
-  hole?: number | string
-  pointName: string
-  value: number | string
-  // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
-  scope: PointScopes | (string & {})
-  frequency: number
-  originalFrequency: number
-  maxFrequencyPerScope: number | null
-}
-
-// TODO: change null to string here and in type?
-const defaultScoreBeingEditedState: PlayerHoleScoreState = {
-  playerHoleId: '',
-  score: null,
-  hole: null,
-}
-
-const defaultPointEarnedBeingEditedState: PointBeingEdited = {
-  // playerHoleId: '',
-  // playerId: '',
-  originalHole: '',
-  pointSettingId: '',
-  playerName: '',
-  pointEarnedId: '',
-  hole: '',
-  pointName: '',
-  value: '',
-  scope: '',
-  frequency: 1,
-  originalFrequency: 1,
-  maxFrequencyPerScope: null,
-}
-
-export default function PlayerRoundPointsEarned() {
-  const [totalPoints, setTotalPoints] = useState<number | null>(null)
-  const [roundPointsEarned, setRoundPointsEarned] = useState<any[]>([])
-  const [roundHoleScoreData, setRoundHoleScoreData] = useState<PlayerHole[]>([])
-  console.log('%$%$%$ roundHoleScoreData', roundHoleScoreData)
-  const [roundHoleScores, setRoundHoleScores] = useState<
-    PlayerHoleScoreState[]
-  >([])
-  const [showEditScoreModal, setShowEditScoreModal] = useState(false)
-  const [scoreBeingEdited, setScoreBeingEdited] = useState<
-    Omit<PlayerHoleScoreState, 'hole'> & { hole: number | null }
-  >(defaultScoreBeingEditedState)
-  const [showEditPointEarnedModal, setShowEditPointEarnedModal] =
-    useState(false)
-  const [pointEarnedBeingEdited, setPointEarnedBeingEdited] =
-    useState<PointBeingEdited>(defaultPointEarnedBeingEditedState)
-  console.log('%$%$%$%% scoreBeingEdited', scoreBeingEdited)
-
-  const { playerHoleId, hole, score } = scoreBeingEdited || {}
-  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
-    quantityInputScopeManager(pointEarnedBeingEdited)
-
-  const {
-    state: { playerName, playerId },
-  } = useLocation()
-
+export default function PlayerRoundPointsAndScoring() {
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string
-  const [searchParams] = useSearchParams()
-  // const playerName = searchParams.get('playerName') ?? ''
-  // const playerId = searchParams.get('playerId') ?? ''
+  const {
+    state: { playerName, playerId },
+  } = useLocation()
+
+  const [roundHoleScoreData, setRoundHoleScoreData] = useState<PlayerHole[]>([])
+  const [roundHoleScores, setRoundHoleScores] = useState<
+    PlayerHoleScoreState[]
+  >([])
+
+  const [showEditScoreModal, setShowEditScoreModal] = useState(false)
+  const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
+    usePlayerHoleScoreBeingEdited()
+  const { playerHoleId, hole, score } = scoreBeingEdited || {}
+
+  const [roundPointsEarned, getPlayerRoundPointsEarned] =
+    useGetPlayerRoundPointsEarned(playerId, roundId)
+  const [showEditPointEarnedModal, setShowEditPointEarnedModal] =
+    useState(false)
+  const [
+    pointEarnedBeingEdited,
+    setPointEarnedBeingEdited,
+    defaultPointEarnedBeingEditedState,
+  ] = usePlayerPointBeingEdited()
+
+  const [totalPoints, getPlayerRoundTotalPoints] =
+    useGetPlayerRoundPointsEarnedTotal()
+
+  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
+    quantityInputScopeManager(pointEarnedBeingEdited)
+
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
@@ -129,31 +100,8 @@ export default function PlayerRoundPointsEarned() {
   }, [playerId, roundId])
 
   useEffect(() => {
-    mapScoresToState()
+    setRoundHoleScores(mapScoresToState(holesInRound, roundHoleScoreData))
   }, [roundHoleScoreData])
-
-  async function getPlayerRoundTotalPoints() {
-    const res = await getRoundPlayerPointsEarnedTotal(playerId, roundId)
-    // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
-    if (res.status === 200) {
-      const { total_points } = await res.json()
-      setTotalPoints(total_points)
-    }
-  }
-
-  async function getPlayerRoundPointsEarned() {
-    const res = await getRoundPlayerPointsEarnedByPlayer(playerId, roundId)
-    console.log('getRoundPlayerPointsEarned res: ', res)
-    if (res.status === 200) {
-      const roundPointsEarned = await res.json()
-      console.log('roundPointsEarned----: ', roundPointsEarned)
-      setRoundPointsEarned(roundPointsEarned)
-    }
-    // TODO: also send back array or message to confirm result is actually empty instead of relying on 204 status?
-    else if (res.status === 204) {
-      setRoundPointsEarned([])
-    }
-  }
 
   async function getPlayerRoundHoleScoreData() {
     const res = await getPlayerHoleScores(playerId, roundId, true)
@@ -162,27 +110,6 @@ export default function PlayerRoundPointsEarned() {
       console.log('getPlayerRoundHoleScoreData json', holeScores)
       setRoundHoleScoreData(holeScores)
     }
-  }
-
-  function mapScoresToState() {
-    const holeScoreData: Array<PlayerHoleScoreState> = Array.from(
-      Array(holesInRound),
-      (_, i) => ({
-        playerHoleId: '',
-        hole: i + 1,
-        score: null,
-      })
-    )
-    for (const playerHole of roundHoleScoreData) {
-      const { score, hole, id: playerHoleId } = playerHole
-      const holeToAddScore = holeScoreData[hole - 1]
-      holeScoreData[hole - 1] = {
-        ...holeToAddScore,
-        playerHoleId,
-        score,
-      } as PlayerHoleScoreState
-    }
-    setRoundHoleScores(holeScoreData)
   }
 
   function handleUpdateHoleScoreState(e) {
@@ -213,43 +140,42 @@ export default function PlayerRoundPointsEarned() {
     }
   }
 
-  // TODO: add success message
-  // TODO: clean-up mess of checking both round scores and round PPE to find playerHoleId (e.g. maybe add playerHoleId to scorecard even for holes without score )
+  // TODO: a better way to handle this where I don't need to check both round scores and round PPE to find playerHoleId? (e.g. maybe add playerHoleId to scorecard even for holes without score?)
   async function updateHoleScore(): Promise<void> {
-    let updateSuccessful = false
-    let localPlayerHoleId = playerHoleId
-    console.log('localPlayerHoleId --------> ', localPlayerHoleId)
-    if (!localPlayerHoleId) {
+    let scoreUpdateSuccessful = false
+    let _playerHoleId = playerHoleId
+    if (!playerHoleId) {
+      /** A score doesn't exist for selected hole so check PlayerHole table in case any PlayerPointEarned exist for that hole */
       const getPlayerHoleRes = await getPlayerHole({ playerId, roundId, hole })
-      console.log('updateHoleScore getPlayerHoleRes', getPlayerHoleRes)
       const getPlayerHoleResJson = await getPlayerHoleRes.json()
       if (getPlayerHoleRes.ok) {
-        localPlayerHoleId = getPlayerHoleResJson.id
+        _playerHoleId = getPlayerHoleResJson.id
       }
     }
 
-    console.log('localPlayerHoleId', localPlayerHoleId)
-    if (localPlayerHoleId) {
-      const res = await updatePlayerHole(localPlayerHoleId, { score })
-      console.log('updatePlayerHole score res', res)
+    if (_playerHoleId) {
+      /** PlayerHole exists so add score to it */
+      const res = await updatePlayerHole(_playerHoleId, { score })
       if (res.ok) {
-        updateSuccessful = true
+        scoreUpdateSuccessful = true
       }
     } else {
+      /** No PlayerHole exists for hole so create it and add score */
       const playerHoleRes = await createOrFindPlayerHole({
         playerId,
         roundId,
         hole,
         score,
       })
-      console.log('create playerHole res: ', playerHoleRes)
       if (playerHoleRes.ok) {
-        updateSuccessful = true
+        scoreUpdateSuccessful = true
       }
     }
-    console.log('updateSuccessful: ', updateSuccessful)
-    if (updateSuccessful) {
+
+    if (scoreUpdateSuccessful) {
       handleCloseModal()
+      // TODO: handle logic and different messaging for if score was updated or created
+      toast.success('Score was successfully added')
       getPlayerRoundHoleScoreData()
     }
   }
@@ -258,49 +184,9 @@ export default function PlayerRoundPointsEarned() {
     const res = await updatePlayerHole(playerHoleId, { score: null })
     if (res.ok) {
       handleCloseModal()
+      toast.success('Score was successfully deleted')
       getPlayerRoundHoleScoreData()
     }
-  }
-
-  // TODO: test this more to make sure it's working correctly
-  function ppeQuantityExceedsMax(
-    inputQuantity: number,
-    totalQuantityInRound: number,
-    maxFrequencyPerScope: number,
-    scope: Omit<PointScopes, typeof no_scope_key>
-  ) {
-    console.log('---- inputQuantity', inputQuantity)
-    console.log('totalQuantityInRound', totalQuantityInRound)
-    console.log('maxFrequencyPerScope', maxFrequencyPerScope)
-    return inputQuantity + totalQuantityInRound > maxFrequencyPerScope
-  }
-
-  function editableStateHasChanged(
-    originalFrequency,
-    frequency,
-    originalHole,
-    hole
-  ): {
-    frequencyHasChanged: boolean
-    holeHasChanged: boolean
-    anyValueHasChanged: boolean
-  } {
-    // TODO: simplify if you still don't check specific values
-    const hasChanged = {
-      frequencyHasChanged: false,
-      holeHasChanged: false,
-      anyValueHasChanged: false,
-    }
-    if (originalFrequency !== frequency) {
-      hasChanged.frequencyHasChanged = true
-      hasChanged.anyValueHasChanged = true
-    }
-    if (originalHole !== hole) {
-      hasChanged.holeHasChanged = true
-      hasChanged.anyValueHasChanged = true
-    }
-    console.log('$$$$$ hasChanged ^^^^^', hasChanged)
-    return hasChanged
   }
 
   async function handleUpdatePointEarned(e) {
@@ -317,7 +203,12 @@ export default function PlayerRoundPointsEarned() {
     } = pointEarnedBeingEdited
 
     const { anyValueHasChanged, holeHasChanged, frequencyHasChanged } =
-      editableStateHasChanged(originalFrequency, frequency, originalHole, hole)
+      holeOrFrequencyHasChanged(
+        originalFrequency,
+        frequency,
+        originalHole,
+        hole
+      )
 
     if (!anyValueHasChanged) {
       handleCloseModal()
@@ -336,8 +227,7 @@ export default function PlayerRoundPointsEarned() {
         ppeQuantityExceedsMax(
           frequency,
           ppeQuantityInRound,
-          maxFrequencyPerScope,
-          'round'
+          maxFrequencyPerScope
         )
       ) {
         // TODO: add validation error message
@@ -356,8 +246,7 @@ export default function PlayerRoundPointsEarned() {
         ppeQuantityExceedsMax(
           frequency,
           ppeQuantityInHole,
-          maxFrequencyPerScope,
-          'hole'
+          maxFrequencyPerScope
         )
       ) {
         // TODO: add validation error message
@@ -374,31 +263,30 @@ export default function PlayerRoundPointsEarned() {
       }
 
       const getPlayerHoleRes = await getPlayerHole(updatedholeData)
-      console.log('>> getPlayerHoleRes', getPlayerHoleRes)
       const getPlayerHoleResJson = await getPlayerHoleRes.json()
       let updatedPlayerHoleId = null
       if (getPlayerHoleRes.ok) {
-        // PlayerHole exists, so update PlayerPointEarned to point to it
+        /** PlayerHole exists, so update PlayerPointEarned to point to it */
         updatedPlayerHoleId = getPlayerHoleResJson.id
       } else {
-        // PlayerHole doesn't exists, so create PlayerHole and update PlayerPointEarned to point to it
+        /** PlayerHole doesn't exists, so create PlayerHole and update PlayerPointEarned to point to it */
         const createdPlayerHoleRes = await createOrFindPlayerHole(
           updatedholeData
         )
         // createdPlayerHoleResJson signature: [{PlayerHole}, created]
         const createdPlayerHoleResJson = await createdPlayerHoleRes.json()
-        console.log('createdPlayerHoleResJson +_+_', createdPlayerHoleRes)
         const { id } = createdPlayerHoleResJson[0]
         updatedPlayerHoleId = id
       }
+
       const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
         pointEarnedId,
         { playerHoleId: updatedPlayerHoleId }
       )
-      console.log('>> updatePlayerPointEarnedRes', updatePlayerPointEarnedRes)
       if (updatePlayerPointEarnedRes.ok) {
-        getPlayerRoundPointsEarned()
         handleCloseModal()
+        toast.success('Point earned was successfully updated')
+        getPlayerRoundPointsEarned()
       }
     }
 
@@ -423,8 +311,6 @@ export default function PlayerRoundPointsEarned() {
   }
 
   function EditHoleScoreButtons(): JSX.Element {
-    console.log('453535score', score)
-    console.log('3543534playerHoleId', playerHoleId)
     return (
       <>
         <button onClick={updateHoleScore}>Save</button>
@@ -436,7 +322,7 @@ export default function PlayerRoundPointsEarned() {
   function EditPointEarnedButtons(): JSX.Element {
     return (
       <>
-        {/* TODO: implement save and delete */}
+        {/* TODO: implement delete */}
         <button onClick={handleUpdatePointEarned}>Save</button>
         <button onClick={() => console.log('delete point earned')}>
           Delete
@@ -452,9 +338,6 @@ export default function PlayerRoundPointsEarned() {
 
       <div className="centered-button">
         <Link
-          // to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring?playerId=${playerId}&playerName=${encodeURIComponent(
-          //   playerName
-          // )}`}
           to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}
           state={{ playerId, playerName }}
         >
@@ -462,25 +345,12 @@ export default function PlayerRoundPointsEarned() {
         </Link>
       </div>
 
-      <div id="pointAndScoreSummaryCards">
-        <div id="totalPoints">
-          <p className="cardLabel">Total Points</p>
-          <p className="cardTotal">{totalPoints || 0}</p>
-        </div>
-        <div id="totalScore">
-          <p className="cardLabel">
-            Total Score{' '}
-            {!!totalScoresEntered && (
-              <span id={styles.scoresEntered}>
-                {/* TODO: move to top of page so it also encompasses points earned? */}
-                (thru {totalScoresEntered}{' '}
-                {totalScoresEntered > 1 ? 'holes' : 'hole'})
-              </span>
-            )}
-          </p>
-          <p className="cardTotal">{frontNineTotal + backNineTotal}</p>
-        </div>
-      </div>
+      <PlayerRoundPointsAndScoringSummary
+        totalPoints={totalPoints}
+        totalScoresEntered={totalScoresEntered}
+        frontNineTotal={frontNineTotal}
+        backNineTotal={backNineTotal}
+      />
 
       <PlayerRoundPointsEarnedTable
         roundPointsEarned={roundPointsEarned}
@@ -582,6 +452,8 @@ export default function PlayerRoundPointsEarned() {
           </form>
         </Modal>
       )}
+
+      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }

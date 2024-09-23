@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ScorecardTableHeadRow, ScorecardHoleScoreTableRow } from '.'
-import { PlayerHoleScoreState } from './PlayerRoundScoring'
+import { PlayerHoleScoreState } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
 
 export interface ScorecardMeta {
   numberOfHoles: number

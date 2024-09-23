@@ -5,7 +5,7 @@ import { RoundContext } from '../Round/RoundDetailsContainer'
 import { EnterHoleScore, EnterPointEarned, EnterPointOrScoreRadios } from '.'
 import styles from './EnterPointOrScore.module.css'
 import PlayerSelectInput from '../Player/PlayerSelectInput'
-import { useGetPlayerPointsEarnedInRound } from '../shared/hooks'
+import { useGetPlayerRoundPointsEarned } from '../shared/hooks'
 import { HoleSelectInput } from '../Round'
 
 const defaultSelectedPlayerState: {
@@ -34,7 +34,7 @@ export default function EnterPointOrScore() {
   console.log('players from context', playersFromContext)
   console.log('pointSettings from context', pointSettings)
 
-  const playerPointsEarnedInRound = useGetPlayerPointsEarnedInRound(
+  const [playerPointsEarnedInRound] = useGetPlayerRoundPointsEarned(
     selectedPlayer.id,
     roundId
   )

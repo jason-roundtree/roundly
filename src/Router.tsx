@@ -22,10 +22,10 @@ import {
 import {
   PlayerRoundDetails,
   PlayerRounds,
-  PlayerRoundSummary,
+  PlayerRoundPointsAndScoringSummary,
   PlayerRoundScorecard,
   PlayerHole,
-  PlayerRoundScoring,
+  PlayerRoundPointsAndScoring,
   PlayerRoundEnterScoring,
   EditPointEarned,
   EnterPointOrScore,
@@ -84,7 +84,10 @@ export default function Router() {
       >
         <Route index element={<RoundDetails />} />
         <Route path="scoring" element={<RoundScoring />} />
-        <Route path="player-scoring/:player" element={<PlayerRoundScoring />} />
+        <Route
+          path="player-scoring/:player"
+          element={<PlayerRoundPointsAndScoring />}
+        />
         <Route path="edit-player-point-earned" element={<EditPointEarned />} />
         <Route
           path="new-point"
