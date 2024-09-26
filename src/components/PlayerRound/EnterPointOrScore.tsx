@@ -34,7 +34,7 @@ export default function EnterPointOrScore() {
   console.log('players from context', playersFromContext)
   console.log('pointSettings from context', pointSettings)
 
-  const [playerPointsEarnedInRound] = useGetPlayerRoundPointsEarned(
+  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(
     selectedPlayer.id,
     roundId
   )
@@ -66,7 +66,7 @@ export default function EnterPointOrScore() {
         <EnterPointEarned
           pointSettings={pointSettings}
           selectedPlayer={selectedPlayer}
-          playerPointsEarnedInRound={playerPointsEarnedInRound}
+          roundPointsEarned={roundPointsEarned}
           selectedHole={selectedHole}
           roundId={roundId}
         />

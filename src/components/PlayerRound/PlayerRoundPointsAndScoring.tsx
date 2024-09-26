@@ -14,6 +14,7 @@ import {
   updatePlayerHole,
   createOrFindPlayerHole,
   updatePlayerPointEarned,
+  deletePlayerPointEarned,
 } from '../../data'
 import {
   getPlayerPointEarnedQuantity,
@@ -62,7 +63,6 @@ export default function PlayerRoundPointsAndScoring() {
   const [roundHoleScores, setRoundHoleScores] = useState<
     PlayerHoleScoreState[]
   >([])
-
   const [showEditScoreModal, setShowEditScoreModal] = useState(false)
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
@@ -77,10 +77,8 @@ export default function PlayerRoundPointsAndScoring() {
     setPointEarnedBeingEdited,
     defaultPointEarnedBeingEditedState,
   ] = usePlayerPointBeingEdited()
-
   const [totalPoints, getPlayerRoundTotalPoints] =
-    useGetPlayerRoundPointsEarnedTotal()
-
+    useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(pointEarnedBeingEdited)
 
@@ -107,7 +105,6 @@ export default function PlayerRoundPointsAndScoring() {
     const res = await getPlayerHoleScores(playerId, roundId, true)
     if (res.status === 200) {
       const holeScores = await res.json()
-      console.log('getPlayerRoundHoleScoreData json', holeScores)
       setRoundHoleScoreData(holeScores)
     }
   }
@@ -183,9 +180,20 @@ export default function PlayerRoundPointsAndScoring() {
   async function deleteHoleScore() {
     const res = await updatePlayerHole(playerHoleId, { score: null })
     if (res.ok) {
+      getPlayerRoundHoleScoreData()
       handleCloseModal()
       toast.success('Score was successfully deleted')
-      getPlayerRoundHoleScoreData()
+    }
+  }
+
+  async function deletePointEarned() {
+    const res = await deletePlayerPointEarned(
+      pointEarnedBeingEdited.pointEarnedId
+    )
+    if (res.ok) {
+      getPlayerRoundPointsEarned()
+      handleCloseModal()
+      toast.success('Score was successfully deleted')
     }
   }
 
@@ -215,45 +223,67 @@ export default function PlayerRoundPointsAndScoring() {
       return
     }
 
-    if (scope === 'round') {
-      const ppeQuantityInRound = getPlayerPointEarnedQuantity(
+    // TODO: check this refactoring is working
+    if (maxFrequencyPerScope) {
+      const holeToValidateAgainst = scope === 'hole' ? +hole : null
+      const ppeTotal = getPlayerPointEarnedQuantity(
         pointSettingId,
         roundPointsEarned,
-        null,
-        pointEarnedId
+        holeToValidateAgainst,
+        null
       )
-      if (
-        maxFrequencyPerScope &&
-        ppeQuantityExceedsMax(
-          frequency,
-          ppeQuantityInRound,
-          maxFrequencyPerScope
+      console.log('ppeTotal', ppeTotal)
+      if (ppeQuantityExceedsMax(frequency, ppeTotal, maxFrequencyPerScope)) {
+        // TODO: change this to not auto-remove?
+        toast.error(
+          'Quantity entered would exceed maximum. Please enter a lower quantity.'
         )
-      ) {
-        // TODO: add validation error message
-        console.log('PPE in round would be exceeded!!!')
-        return
-      }
-    } else if (scope === 'hole' && hole) {
-      const ppeQuantityInHole = getPlayerPointEarnedQuantity(
-        pointSettingId,
-        roundPointsEarned,
-        hole,
-        pointEarnedId
-      )
-      if (
-        maxFrequencyPerScope &&
-        ppeQuantityExceedsMax(
-          frequency,
-          ppeQuantityInHole,
-          maxFrequencyPerScope
-        )
-      ) {
-        // TODO: add validation error message
-        console.log('PPE in hole would be exceeded!!!')
         return
       }
     }
+    // if (scope === 'round') {
+    //   const ppeQuantityInRound = getPlayerPointEarnedQuantity(
+    //     pointSettingId,
+    //     roundPointsEarned,
+    //     null,
+    //     pointEarnedId
+    //   )
+    //   if (
+    //     maxFrequencyPerScope &&
+    //     ppeQuantityExceedsMax(
+    //       frequency,
+    //       ppeQuantityInRound,
+    //       maxFrequencyPerScope
+    //     )
+    //   ) {
+    //     // TODO: change this to not auto-remove?
+    //     toast.error(
+    //       'Quantity entered would exceed maximum. Please enter a lower quantity.'
+    //     )
+    //     return
+    //   }
+    // } else if (scope === 'hole' && hole) {
+    //   const ppeQuantityInHole = getPlayerPointEarnedQuantity(
+    //     pointSettingId,
+    //     roundPointsEarned,
+    //     hole,
+    //     pointEarnedId
+    //   )
+    //   if (
+    //     maxFrequencyPerScope &&
+    //     ppeQuantityExceedsMax(
+    //       frequency,
+    //       ppeQuantityInHole,
+    //       maxFrequencyPerScope
+    //     )
+    //   ) {
+    //     // TODO: change this to not auto-remove?
+    //     toast.error(
+    //       'Quantity entered would exceed maximum. Please enter a lower quantity.'
+    //     )
+    //     return
+    //   }
+    // }
 
     if (holeHasChanged) {
       const updatedholeData = {
@@ -284,9 +314,10 @@ export default function PlayerRoundPointsAndScoring() {
         { playerHoleId: updatedPlayerHoleId }
       )
       if (updatePlayerPointEarnedRes.ok) {
-        handleCloseModal()
-        toast.success('Point earned was successfully updated')
         getPlayerRoundPointsEarned()
+        handleCloseModal()
+        // TODO: change message to say hole was updated?
+        toast.success('Point earned was successfully updated')
       }
     }
 
@@ -295,10 +326,11 @@ export default function PlayerRoundPointsAndScoring() {
         pointEarnedId,
         { frequency }
       )
-      console.log('updatePlayerPointEarnedRes ', updatePlayerPointEarnedRes)
       if (updatePlayerPointEarnedRes.ok) {
         getPlayerRoundPointsEarned()
         handleCloseModal()
+        // TODO: change message to say quantity was updated?
+        toast.success('Point earned was successfully updated')
       }
     }
   }
@@ -324,9 +356,7 @@ export default function PlayerRoundPointsAndScoring() {
       <>
         {/* TODO: implement delete */}
         <button onClick={handleUpdatePointEarned}>Save</button>
-        <button onClick={() => console.log('delete point earned')}>
-          Delete
-        </button>
+        <button onClick={deletePointEarned}>Delete</button>
       </>
     )
   }

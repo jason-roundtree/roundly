@@ -36,7 +36,7 @@ const defaultSelectedPointEarnedState: PointSettingEarnedState = {
 // TODO: type
 export default function EnterPointEarned({
   pointSettings,
-  playerPointsEarnedInRound,
+  roundPointsEarned,
   selectedHole,
   selectedPlayer,
   roundId,
@@ -51,6 +51,7 @@ export default function EnterPointEarned({
     scope,
     maxFrequencyPerScope,
   } = selectedPointEarned
+  console.log('selectedPointEarned >> ', selectedPointEarned)
   // TODO: move this to be managed by state and useEffect?
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(selectedPointEarned)
@@ -83,46 +84,21 @@ export default function EnterPointEarned({
 
   async function handleSubmitPointEarned() {
     console.log('handleSubmitPointEarned')
-    // TODO:
-    /***
-     * if PPE is empty {
-     *   show validation error and return
-     * }
-     * if PPE max frequency would be exceeded {
-     *   show validation error and return
-     * } else {
-     *   if hole is selected {
-     *     if PlayerHole exists {
-     *       - get PlayerHole ID,
-     *       - create PlayerPointEarned and attach PlayerHole to it
-     *     } else {
-     *       - create PlayerHole,
-     *       - create PlayerPointEarned and attach PlayerHole to it
-     *     }
-     *   } else {
-     *     create PlayerPointEarned
-     *   }
-     *
-     *   if PlayerPointEarned was successfully created {
-     *     - show confirmation message
-     *     - clear inputs
-     *   }
-     * }
-     */
-    if (!selectedPointEarned) {
-      console.log('Please select a point setting🥹')
-      // TODO: show error message
+
+    // TODO: move all validation to separate validation function? Just move max frequency stuff?
+    if (!selectedPointEarned.name) {
+      toast.error('Please select a point setting')
       return
     }
-    // TODO: move this to separate validation function?
     // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
     // if (scope !== no_scope_key) {
     // TODO: add something that shows or warns if same point has already been entered for hole??
     if (maxFrequencyPerScope) {
+      const holeToValidateAgainst = scope === 'hole' ? +selectedHole : null
       const ppeTotal = getPlayerPointEarnedQuantity(
         pointSettingId,
-        playerPointsEarnedInRound,
-        +selectedHole,
+        roundPointsEarned,
+        holeToValidateAgainst,
         null
       )
       console.log('ppeTotal', ppeTotal)
@@ -133,8 +109,10 @@ export default function EnterPointEarned({
           maxFrequencyPerScope
         )
       ) {
-        // TODO: show validation error message
-        console.log('!!!!😡 quantity would be exceeded 😡!!!!')
+        // TODO: change this to not auto-remove?
+        toast.error(
+          'Quantity entered would exceed maximum. Please enter a lower quantity.'
+        )
         return
       }
     }
@@ -164,10 +142,7 @@ export default function EnterPointEarned({
 
     const pointEarnedRes = await createRoundPlayerPointEarned(pointEarnedData)
     if (pointEarnedRes.ok) {
-      // console.log('point successfully created!🎉🥂')
       toast.success('Point successfully created')
-      // setShowPointEarnedCreationSuccess(true)
-      // setTimeout(() => setShowPointEarnedCreationSuccess(false), 3000)
       clearState()
     } else {
       // TODO: some error message here?

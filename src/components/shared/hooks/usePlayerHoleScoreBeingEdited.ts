@@ -14,6 +14,7 @@ const defaultScoreBeingEditedState: PlayerHoleScoreState = {
   hole: null,
 }
 
+// TODO: type
 export default function usePlayerHoleScoreBeingEdited(): any {
   const [scoreBeingEdited, setScoreBeingEdited] = useState<
     Omit<PlayerHoleScoreState, 'hole'> & { hole: number | null }
