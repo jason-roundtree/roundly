@@ -1,26 +1,29 @@
-export async function updatePlayer(playerId, updatedPlayer) {
+export async function updatePlayer(playerId, updatedPlayer): Promise<any> {
   try {
     const res = await fetch(`http://localhost:3001/api/player/${playerId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedPlayer),
     })
-    // const resJson = await res.json()
-    // console.log('resJson', resJson)
+    console.log('updatePlayer res', res)
+    return res
   } catch (err) {
     console.log('update player error: ', err)
+    return err
   }
 }
 
 // TODO: is deleting the player outright the same as removing from league?
-export async function deletePlayerFromLeague(playerId) {
+export async function deletePlayerFromLeague(playerId): Promise<any> {
   try {
     const res = await fetch(`http://localhost:3001/api/player/${playerId}`, {
       method: 'DELETE',
     })
-    console.log('delete player from league res: ', res.json())
+    console.log('delete player from league res: ', res)
+    return res
   } catch (err) {
     console.log('delete player from league error: ', err)
+    return err
   }
 }
 

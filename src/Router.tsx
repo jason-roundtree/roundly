@@ -17,6 +17,7 @@ import {
   LeaguePlayers,
   RoundPlayers,
   AddPlayer,
+  EditLeaguePlayer,
   // PlayersList
 } from './components/Player'
 import {
@@ -65,6 +66,10 @@ export default function Router() {
       {/* <Route element={<LeagueHomeLayout />}> */}
       <Route path="league/:leagueId" element={<LeagueHome />} />
       <Route path="league/:leagueId/players" element={<LeaguePlayers />} />
+      <Route
+        path="league/:leagueId/edit-player/:playerId"
+        element={<EditLeaguePlayer />}
+      />
       <Route
         path="league/:leagueId/point-settings"
         element={<LeaguePointSettings />}
