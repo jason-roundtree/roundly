@@ -1,7 +1,9 @@
 import React from 'react'
+import ToastPortal from './components/shared/components/ToastPortal'
+import 'react-toastify/dist/ReactToastify.css'
+
 import Router from './Router'
 import { Header, Footer, PageContainer } from './layout'
-import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (
@@ -11,6 +13,7 @@ function App() {
         <Router />
       </PageContainer>
       <Footer />
+      <ToastPortal />
     </div>
   )
 }

@@ -26,7 +26,7 @@ export default function Modal({
   // }, [])
 
   return (
-    <Portal selector="#portal">
+    <Portal selector="#modal-portal">
       <div id="modal-container">
         <div id="modal-content">
           <button

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import BasicInput from '../shared/components/BasicInput'
 import { deletePlayerFromLeague, updatePlayer } from '../../data'
@@ -13,46 +13,40 @@ const defaultState: EditablePlayer = {
   name: '',
 }
 
-export default function EditLeaguePlayer() {
+// TODO: style,
+export default function EditLeaguePlayer(): JSX.Element {
   const location = useLocation()
-  const { name, playerId } = location.state
+  const { name, playerId, navigateBackTo } = location.state
   const [updatedPlayer, setUpdatedPlayer] = useState<EditablePlayer>(
     () => ({ name } || defaultState)
   )
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
-  console.log('playerFromLocation', { name, playerId })
-  console.log('updatedPlayer', updatedPlayer)
-  const { leagueId } = useParams()
 
   //   useEffect(() => {
   //     if (location.state) { setUpdatedPlayer(playerFromLocation.name) }
   //   }, [location.state])
 
   async function handleUpdatePlayer() {
-    // TODO: if name is empty, show error
     if (!updatedPlayer.name) {
       toast.error('Player name is required')
       return
     }
     const updatePlayerRes = await updatePlayer(playerId, updatedPlayer)
-    console.log('updatePlayerRes', updatePlayerRes)
     if (updatePlayerRes.ok) {
       toast.success('Player was successfully updated')
     }
-    setUpdatedPlayer(defaultState)
   }
 
   async function handleDeletePlayer() {
     const deletePlayerRes = await deletePlayerFromLeague(playerId)
-    console.log('deletePlayerRes', deletePlayerRes)
     if (deletePlayerRes.ok) {
       setUpdatedPlayer(defaultState)
       setShowDeleteConfirmation(false)
-      navigate(`/league/${leagueId}/players/`, {
+      toast.success('Player was successfully deleted')
+      navigate(navigateBackTo, {
         replace: true,
       })
-      toast.success('Player was successfully deleted')
     }
   }
 
@@ -89,8 +83,6 @@ export default function EditLeaguePlayer() {
           toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
         />
       )}
-
-      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }
