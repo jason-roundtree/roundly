@@ -93,7 +93,10 @@ export default function Router() {
           path="player-scoring/:player"
           element={<PlayerRoundPointsAndScoring />}
         />
-        <Route path="edit-player-point-earned" element={<EditPointEarned />} />
+        <Route
+          path="player-scoring/:player/edit-point-earned"
+          element={<EditPointEarned />}
+        />
         <Route
           path="new-point"
           element={<AddPointSetting pointContext="round" />}

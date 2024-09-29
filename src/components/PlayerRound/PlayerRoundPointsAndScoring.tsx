@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef, forwardRef } from 'react'
-import { Link, useParams, useSearchParams, useLocation } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { useEffect, useState } from 'react'
+import { Link, useParams, useLocation } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import {
   PlayerRoundPointsAndScoringSummary,
@@ -13,33 +13,23 @@ import {
   getPlayerHole,
   updatePlayerHole,
   createOrFindPlayerHole,
-  updatePlayerPointEarned,
-  deletePlayerPointEarned,
 } from '../../data'
 import {
-  getPlayerPointEarnedQuantity,
   getScoreTotal,
   getTotalHoleScores,
-  holeOrFrequencyHasChanged,
   mapScoresToState,
-  ppeQuantityExceedsMax,
-  quantityInputScopeManager,
   selectAllInputText,
 } from '../shared/utils'
 import Modal from '../shared/components/Modal'
 import BasicInput from '../shared/components/BasicInput'
-import { selectableHoles } from './PlayerRoundEnterScoring'
-import { no_scope_key } from '../PointSettings/PointScopeRadios'
 import {
   useGetPlayerRoundPointsEarned,
   useGetPlayerRoundPointsEarnedTotal,
-  usePlayerPointBeingEdited,
 } from '../shared/hooks'
-import { PointBeingEdited } from '../shared/hooks/usePlayerPointBeingEdited'
-import styles from './PlayerRoundPointsAndScoring.module.css'
 import usePlayerHoleScoreBeingEdited, {
   PlayerHoleScoreState,
 } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
+import styles from './PlayerRoundPointsAndScoring.module.css'
 
 // TODO: somehow combine with PlayerHole interface in types?
 interface PlayerHole {
@@ -68,19 +58,12 @@ export default function PlayerRoundPointsAndScoring() {
     usePlayerHoleScoreBeingEdited()
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
 
+  // TODO: use context for this for easier passing of data to PlayerRoundPointsEarnedTable, PlayerRoundPointsEarnedTableRow, and EditPointEarned?
   const [roundPointsEarned, getPlayerRoundPointsEarned] =
     useGetPlayerRoundPointsEarned(playerId, roundId)
-  const [showEditPointEarnedModal, setShowEditPointEarnedModal] =
-    useState(false)
-  const [
-    pointEarnedBeingEdited,
-    setPointEarnedBeingEdited,
-    defaultPointEarnedBeingEditedState,
-  ] = usePlayerPointBeingEdited()
+
   const [totalPoints, getPlayerRoundTotalPoints] =
     useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
-  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
-    quantityInputScopeManager(pointEarnedBeingEdited)
 
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
@@ -126,15 +109,6 @@ export default function PlayerRoundPointsAndScoring() {
   }: PlayerHoleScoreState) {
     setScoreBeingEdited({ playerHoleId, hole, score: score ? +score : null })
     setShowEditScoreModal(true)
-  }
-
-  function handleEditPointEarnedModal(e, pointEarnedData: PointBeingEdited) {
-    console.log('pointEarnedData: ', pointEarnedData)
-    // TODO: handle this better so it's not dependent on class, which may change
-    if (!e.target.classList.contains('deletePointEarned')) {
-      setPointEarnedBeingEdited(pointEarnedData)
-      setShowEditPointEarnedModal(true)
-    }
   }
 
   // TODO: a better way to handle this where I don't need to check both round scores and round PPE to find playerHoleId? (e.g. maybe add playerHoleId to scorecard even for holes without score?)
@@ -186,160 +160,9 @@ export default function PlayerRoundPointsAndScoring() {
     }
   }
 
-  async function deletePointEarned() {
-    const res = await deletePlayerPointEarned(
-      pointEarnedBeingEdited.pointEarnedId
-    )
-    if (res.ok) {
-      getPlayerRoundPointsEarned()
-      handleCloseModal()
-      toast.success('Score was successfully deleted')
-    }
-  }
-
-  async function handleUpdatePointEarned(e) {
-    e.preventDefault()
-    const {
-      pointEarnedId,
-      pointSettingId,
-      originalFrequency,
-      frequency,
-      maxFrequencyPerScope,
-      originalHole,
-      hole,
-      scope,
-    } = pointEarnedBeingEdited
-
-    const { anyValueHasChanged, holeHasChanged, frequencyHasChanged } =
-      holeOrFrequencyHasChanged(
-        originalFrequency,
-        frequency,
-        originalHole,
-        hole
-      )
-
-    if (!anyValueHasChanged) {
-      handleCloseModal()
-      return
-    }
-
-    // TODO: check this refactoring is working
-    if (maxFrequencyPerScope) {
-      const holeToValidateAgainst = scope === 'hole' ? +hole : null
-      const ppeTotal = getPlayerPointEarnedQuantity(
-        pointSettingId,
-        roundPointsEarned,
-        holeToValidateAgainst,
-        null
-      )
-      console.log('ppeTotal', ppeTotal)
-      if (ppeQuantityExceedsMax(frequency, ppeTotal, maxFrequencyPerScope)) {
-        // TODO: change this to not auto-remove?
-        toast.error(
-          'Quantity entered would exceed maximum. Please enter a lower quantity.'
-        )
-        return
-      }
-    }
-    // if (scope === 'round') {
-    //   const ppeQuantityInRound = getPlayerPointEarnedQuantity(
-    //     pointSettingId,
-    //     roundPointsEarned,
-    //     null,
-    //     pointEarnedId
-    //   )
-    //   if (
-    //     maxFrequencyPerScope &&
-    //     ppeQuantityExceedsMax(
-    //       frequency,
-    //       ppeQuantityInRound,
-    //       maxFrequencyPerScope
-    //     )
-    //   ) {
-    //     // TODO: change this to not auto-remove?
-    //     toast.error(
-    //       'Quantity entered would exceed maximum. Please enter a lower quantity.'
-    //     )
-    //     return
-    //   }
-    // } else if (scope === 'hole' && hole) {
-    //   const ppeQuantityInHole = getPlayerPointEarnedQuantity(
-    //     pointSettingId,
-    //     roundPointsEarned,
-    //     hole,
-    //     pointEarnedId
-    //   )
-    //   if (
-    //     maxFrequencyPerScope &&
-    //     ppeQuantityExceedsMax(
-    //       frequency,
-    //       ppeQuantityInHole,
-    //       maxFrequencyPerScope
-    //     )
-    //   ) {
-    //     // TODO: change this to not auto-remove?
-    //     toast.error(
-    //       'Quantity entered would exceed maximum. Please enter a lower quantity.'
-    //     )
-    //     return
-    //   }
-    // }
-
-    if (holeHasChanged) {
-      const updatedholeData = {
-        playerId: playerId,
-        roundId: roundId,
-        hole: hole ? +hole : null,
-      }
-
-      const getPlayerHoleRes = await getPlayerHole(updatedholeData)
-      const getPlayerHoleResJson = await getPlayerHoleRes.json()
-      let updatedPlayerHoleId = null
-      if (getPlayerHoleRes.ok) {
-        /** PlayerHole exists, so update PlayerPointEarned to point to it */
-        updatedPlayerHoleId = getPlayerHoleResJson.id
-      } else {
-        /** PlayerHole doesn't exists, so create PlayerHole and update PlayerPointEarned to point to it */
-        const createdPlayerHoleRes = await createOrFindPlayerHole(
-          updatedholeData
-        )
-        // createdPlayerHoleResJson signature: [{PlayerHole}, created]
-        const createdPlayerHoleResJson = await createdPlayerHoleRes.json()
-        const { id } = createdPlayerHoleResJson[0]
-        updatedPlayerHoleId = id
-      }
-
-      const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
-        pointEarnedId,
-        { playerHoleId: updatedPlayerHoleId }
-      )
-      if (updatePlayerPointEarnedRes.ok) {
-        getPlayerRoundPointsEarned()
-        handleCloseModal()
-        // TODO: change message to say hole was updated?
-        toast.success('Point earned was successfully updated')
-      }
-    }
-
-    if (frequencyHasChanged) {
-      const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
-        pointEarnedId,
-        { frequency }
-      )
-      if (updatePlayerPointEarnedRes.ok) {
-        getPlayerRoundPointsEarned()
-        handleCloseModal()
-        // TODO: change message to say quantity was updated?
-        toast.success('Point earned was successfully updated')
-      }
-    }
-  }
-
   function handleCloseModal() {
     setShowEditScoreModal(false)
     setScoreBeingEdited(defaultScoreBeingEditedState)
-    setShowEditPointEarnedModal(false)
-    setPointEarnedBeingEdited(defaultPointEarnedBeingEditedState)
   }
 
   function EditHoleScoreButtons(): JSX.Element {
@@ -351,19 +174,9 @@ export default function PlayerRoundPointsAndScoring() {
     )
   }
 
-  function EditPointEarnedButtons(): JSX.Element {
-    return (
-      <>
-        {/* TODO: implement delete */}
-        <button onClick={handleUpdatePointEarned}>Save</button>
-        <button onClick={deletePointEarned}>Delete</button>
-      </>
-    )
-  }
-
   return (
     <>
-      <h3 className="page-title">Player Round Scoring </h3>
+      <h3 className="page-title">Player Round Points & Scorecard</h3>
       <h3 className="page-title">{playerName}</h3>
 
       <div className="centered-button">
@@ -382,11 +195,7 @@ export default function PlayerRoundPointsAndScoring() {
         backNineTotal={backNineTotal}
       />
 
-      <PlayerRoundPointsEarnedTable
-        roundPointsEarned={roundPointsEarned}
-        getPlayerRoundPointsEarned={getPlayerRoundPointsEarned}
-        handleEditPointEarnedModal={handleEditPointEarnedModal}
-      />
+      <PlayerRoundPointsEarnedTable roundPointsEarned={roundPointsEarned} />
 
       <p className="non-input-label">Scorecard</p>
       <ScorecardTable
@@ -425,65 +234,6 @@ export default function PlayerRoundPointsAndScoring() {
           />
         </Modal>
       )}
-
-      {showEditPointEarnedModal && (
-        <Modal
-          title={`Edit Point Earned`}
-          closeModal={handleCloseModal}
-          renderButtons={() => <EditPointEarnedButtons />}
-        >
-          <h3 className={styles.editPointEarnedStaticData}>
-            Player: <span>{pointEarnedBeingEdited.playerName}</span>
-          </h3>
-          <h3 className={styles.editPointEarnedStaticData}>
-            Point:{' '}
-            <span>
-              {pointEarnedBeingEdited.pointName} {pointEarnedBeingEdited.value}
-            </span>
-          </h3>
-          <form>
-            <BasicInput
-              type="number"
-              min="1"
-              max={
-                frequencyIsActive && maxFrequency
-                  ? maxFrequency.toString()
-                  : null
-              }
-              name="point-earned-quantity"
-              label={quantityInputLabel}
-              value={pointEarnedBeingEdited.frequency ?? ''}
-              onChange={(e) => {
-                const valueNum = +e.target.value
-                setPointEarnedBeingEdited({
-                  ...pointEarnedBeingEdited,
-                  frequency: valueNum > 0 ? valueNum : 1,
-                })
-              }}
-              // onBlur={validateInputFrequencyAgainstPointSetting}
-              disabled={!frequencyIsActive}
-            />
-
-            <label htmlFor="hole-select">Hole</label>
-            <select
-              id="hole-select"
-              value={pointEarnedBeingEdited.hole}
-              onChange={(e) => {
-                const val = e.target.value
-                const holeIsSelected = val !== ''
-                setPointEarnedBeingEdited({
-                  ...pointEarnedBeingEdited,
-                  hole: holeIsSelected ? +val : val,
-                })
-              }}
-            >
-              {selectableHoles()}
-            </select>
-          </form>
-        </Modal>
-      )}
-
-      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }

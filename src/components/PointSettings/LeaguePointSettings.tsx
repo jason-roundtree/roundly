@@ -7,6 +7,7 @@ import { AddPointSetting, LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
 import { selectAllInputText } from '../shared/utils'
+import { toast } from 'react-toastify'
 
 export default function LeaguePointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
@@ -23,8 +24,11 @@ export default function LeaguePointSettings(): JSX.Element {
   }
 
   async function handleDeletePointSetting(pointId) {
-    await deleteLeaguePointSetting(pointId)
-    refreshPointSettingsState()
+    const res = await deleteLeaguePointSetting(pointId)
+    if (res.ok) {
+      toast.success('Point setting was successfully deleted')
+      refreshPointSettingsState()
+    }
   }
 
   // function selectAllInputText(e): void {

@@ -33,9 +33,12 @@ const defaultPointEarnedBeingEditedState: PointBeingEdited = {
 }
 
 // TODO: type
-export default function usePlayerPointBeingEdited(): any {
+// TOTO: change name to usePlayerPointEarnedBeingEdited
+export default function usePlayerPointBeingEdited(
+  initialState = defaultPointEarnedBeingEditedState
+): any {
   const [pointEarnedBeingEdited, setPointEarnedBeingEdited] =
-    useState<PointBeingEdited>(defaultPointEarnedBeingEditedState)
+    useState<PointBeingEdited>(initialState)
 
   return [
     pointEarnedBeingEdited,

@@ -30,7 +30,7 @@ export async function updatePointSetting(pointSettingId, updatedPointSetting) {
   }
 }
 
-export async function deleteLeaguePointSetting(pointSettingId) {
+export async function deleteLeaguePointSetting(pointSettingId): Promise<any> {
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-setting/${pointSettingId}`,
@@ -39,6 +39,7 @@ export async function deleteLeaguePointSetting(pointSettingId) {
       }
     )
     console.log('delete general point setting res: ', res.json())
+    return res
   } catch (err) {
     console.log('delete general point setting error: ', err)
   }

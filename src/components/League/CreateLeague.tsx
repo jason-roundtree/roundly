@@ -4,8 +4,7 @@ import { BasicLeagueState } from '../../types'
 import BasicInput from '../shared/components/BasicInput'
 
 import './CreateLeague.css'
-import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
-import { validateStringInput } from '../shared/utils'
+import { toast } from 'react-toastify'
 
 export const defaultLeagueState: BasicLeagueState = {
   name: '',
@@ -25,9 +24,12 @@ export default function CreateLeague() {
 
   async function handleCreateLeague(e) {
     e.preventDefault()
-    if (!validateStringInput(league.name, setShowValidationError)) {
+    if (!league.name) {
+      toast.error('League name is required')
       return
     }
+
+    // TODO: validate that league name isn't already taken
 
     const leagueData = {
       name: league.name,
@@ -36,15 +38,18 @@ export default function CreateLeague() {
     }
     console.log('create League, basic league state ', leagueData)
     try {
-      const response = await fetch('http://localhost:3001/api/league', {
+      const res = await fetch('http://localhost:3001/api/league', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leagueData),
       })
-      const res = await response.json()
-      console.log('res', res)
-      setLeagueState(defaultLeagueState)
-      window.location.href = `http://localhost:3000/league/${res.id}`
+      const resJson = await res.json()
+      console.log('resJson', resJson)
+      if (res.ok) {
+        setLeagueState(defaultLeagueState)
+        toast.success('League has been created')
+        window.location.href = `http://localhost:3000/league/${resJson.id}`
+      }
     } catch (err) {
       console.log('create league error: ', err)
     }
@@ -77,17 +82,7 @@ export default function CreateLeague() {
         value={league.endDate}
       />
 
-      <div className="form-submit">
-        {/* TODO: add validation to ensure league name has been added */}
-        <button className="" onClick={handleCreateLeague}>
-          Create League
-        </button>
-        <ValidationErrorMessage
-          showErrorMsg={showValidationError}
-          errorMsgCode="MISSNG_VALUE"
-          errorField="League Name"
-        />
-      </div>
+      <button onClick={handleCreateLeague}>Create League</button>
     </form>
   )
 }

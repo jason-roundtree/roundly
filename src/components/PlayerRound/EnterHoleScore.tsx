@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 import BasicInput from '../shared/components/BasicInput'
 import { createOrFindPlayerHole, updatePlayerHole } from '../../data'
@@ -96,8 +96,6 @@ export default function EnterHoleScore({
       />
 
       <button onClick={handleSubmitScore}>Add Hole Score</button>
-
-      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }

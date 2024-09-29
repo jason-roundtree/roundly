@@ -7,6 +7,7 @@
   --light-gray: #cccccc;
   --gray: #b5b5b5;
   --label-margin-top: 1.1em;
+  /* --toastify-z-index: 9999999; */
 }
 * {
   margin: 0;

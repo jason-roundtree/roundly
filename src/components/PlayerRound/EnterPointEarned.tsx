@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 import Select from '../shared/components/Select'
 import BasicInput from '../shared/components/BasicInput'
@@ -183,8 +183,6 @@ export default function EnterPointEarned({
       />
 
       <button onClick={handleSubmitPointEarned}>Add Point Earned</button>
-
-      <ToastContainer position="bottom-left" autoClose={3000} />
     </>
   )
 }

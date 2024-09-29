@@ -10,7 +10,7 @@ interface ToastPortalOptions {
     | 'bottom-left'
     | 'bottom-center'
     | 'bottom-right'
-  autoClose?: number
+  autoClose?: number | false
 }
 
 // TODO: how to set this up so that options can be passed in? Context in App.tsx??
