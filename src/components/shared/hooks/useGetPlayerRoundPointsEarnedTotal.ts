@@ -10,11 +10,11 @@ export default function useGetPlayerRoundPointsEarnedTotal(
 
   useEffect(() => {
     if (playerId) {
-      getPlayerRoundTotalPoints(playerId, roundId)
+      getPlayerRoundTotalPoints()
     }
   }, [playerId])
 
-  async function getPlayerRoundTotalPoints(playerId, roundId) {
+  async function getPlayerRoundTotalPoints() {
     // TODO: rename getRoundPlayerPointsEarnedTotal for consistency with other names
     const res = await getRoundPlayerPointsEarnedTotal(playerId, roundId)
     // TODO: handle error case differently so 404 is not being thrown when player is in round but has no points
@@ -24,5 +24,5 @@ export default function useGetPlayerRoundPointsEarnedTotal(
     }
   }
 
-  return [totalPoints, getPlayerRoundTotalPoints]
+  return [totalPoints]
 }

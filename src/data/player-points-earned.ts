@@ -2,6 +2,7 @@ export async function getRoundPlayerPointsEarnedTotal(
   playerId: string,
   roundId: string
 ): Promise<any> {
+  console.log('getRoundPlayerPointsEarnedTotal', { playerId, roundId })
   try {
     const res = await fetch(
       `http://localhost:3001/api/player-points-earned/player/${playerId}/round/${roundId}/total-points`
@@ -16,7 +17,6 @@ export async function getRoundPlayerPointsEarnedByPlayer(
   playerId: string,
   roundId: string
 ): Promise<any> {
-  console.log('GET TOTAL RoundPlayerPointsEarned: ', { playerId, roundId })
   try {
     const res = await fetch(
       `http://localhost:3001/api/player-points-earned/player/${playerId}/round/${roundId}`

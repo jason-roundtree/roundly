@@ -48,6 +48,8 @@ export default function PlayerRoundPointsAndScoring() {
   const {
     state: { playerName, playerId },
   } = useLocation()
+  console.log('<< playerId', playerId)
+  console.log('<<<< roundId', roundId)
 
   const [roundHoleScoreData, setRoundHoleScoreData] = useState<PlayerHole[]>([])
   const [roundHoleScores, setRoundHoleScores] = useState<
@@ -59,11 +61,10 @@ export default function PlayerRoundPointsAndScoring() {
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
 
   // TODO: use context for this for easier passing of data to PlayerRoundPointsEarnedTable, PlayerRoundPointsEarnedTableRow, and EditPointEarned?
-  const [roundPointsEarned, getPlayerRoundPointsEarned] =
-    useGetPlayerRoundPointsEarned(playerId, roundId)
-
-  const [totalPoints, getPlayerRoundTotalPoints] =
-    useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
+  console.log('pre-roundPointsEarned: ', playerId)
+  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(playerId, roundId)
+  console.log('pre-getPlayerRoundTotalPoints: ', playerId)
+  const [totalPoints] = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
 
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
@@ -75,10 +76,8 @@ export default function PlayerRoundPointsAndScoring() {
   const holesInRound = 18
 
   useEffect(() => {
-    getPlayerRoundTotalPoints()
-    getPlayerRoundPointsEarned()
     getPlayerRoundHoleScoreData()
-  }, [playerId, roundId])
+  }, [playerId])
 
   useEffect(() => {
     setRoundHoleScores(mapScoresToState(holesInRound, roundHoleScoreData))
@@ -113,6 +112,11 @@ export default function PlayerRoundPointsAndScoring() {
 
   // TODO: a better way to handle this where I don't need to check both round scores and round PPE to find playerHoleId? (e.g. maybe add playerHoleId to scorecard even for holes without score?)
   async function updateHoleScore(): Promise<void> {
+    if (!score) {
+      handleCloseModal()
+      return
+    }
+
     let scoreUpdateSuccessful = false
     let _playerHoleId = playerHoleId
     if (!playerHoleId) {

@@ -43,6 +43,7 @@ export default function RoundScoring() {
     const playersWithPointTotals = await Promise.all(
       players.map(async (p) => {
         const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
+        console.log('RoundScoring getRoundPlayerPointsEarnedTotal res', res)
         if (res.status === 200) {
           const { total_points } = await res.json()
           return {
