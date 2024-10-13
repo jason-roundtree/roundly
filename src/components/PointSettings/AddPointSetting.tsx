@@ -15,8 +15,8 @@ import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import PointScopeRadios from './PointScopeRadios'
 import { no_scope_key } from './PointScopeRadios'
-import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
 import { RoundContext } from '../Round/RoundDetailsContainer'
+import { toast } from 'react-toastify'
 
 type NewPointSettingState = Omit<PointSetting, 'id'>
 
@@ -28,48 +28,47 @@ const defaultNewPointSettingState: NewPointSettingState = {
   isLeagueSetting: true,
 }
 
+function getDefaultPointSettingState(pointContext) {
+  return {
+    ...defaultNewPointSettingState,
+    isLeagueSetting: pointContext === 'league' ? true : false,
+  }
+}
+
 export default function AddPointSetting({
   pointContext,
 }: {
   pointContext: 'round' | 'league'
 }): JSX.Element {
-  const [newPointSetting, setNewPointSetting] = useState({
-    ...defaultNewPointSettingState,
-    isLeagueSetting: pointContext === 'league' ? true : false,
-  })
+  const [newPointSetting, setNewPointSetting] = useState(
+    getDefaultPointSettingState(pointContext)
+  )
   console.log('newPointSetting', newPointSetting)
-  const [showNameValidationError, setShowNameValidationError] = useState(false)
-  const [showMaxFrequencyError, setShowMaxFrequencyError] = useState(false)
-  const [showSuccessMsg, setShowSuccessMsg] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams()
   const { refreshRoundState } = useContext(RoundContext)
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
-    if (
-      !validateStringInput(newPointSetting.name, setShowNameValidationError)
-    ) {
+    if (!newPointSetting.name) {
+      toast.error('Point name is required')
       return
     }
 
     try {
-      const leaguePointJson = await createLeaguePointSetting(
-        leagueId,
-        newPointSetting
-      )
+      const res = await createLeaguePointSetting(leagueId, newPointSetting)
+      const leaguePointJson = await res.json()
       const { id: pointId } = leaguePointJson
 
       // TODO: should i just use roundId param instead?
       if (pointContext === 'round') {
-        const roundPointJson = await createRoundPointSetting(pointId, roundId)
-        console.log('roundPointJson JSON', roundPointJson)
-        refreshRoundState()
+        const res = await createRoundPointSetting(pointId, roundId)
       }
 
-      setNewPointSetting(defaultNewPointSettingState)
-      setShowSuccessMsg(true)
-      setTimeout(() => setShowSuccessMsg(false), 3000)
+      if (res.ok) {
+        setNewPointSetting(getDefaultPointSettingState(pointContext))
+        toast.success('Point successfully added')
+      }
       inputRef.current && inputRef.current.focus()
     } catch (err) {
       console.log('create point setting error: ', err)
@@ -96,10 +95,6 @@ export default function AddPointSetting({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void {
     const { name, value } = target
-    setShowSuccessMsg(false)
-    if (name === 'name') {
-      setShowNameValidationError(false)
-    }
     setNewPointSetting({
       ...newPointSetting,
       [name]: value,
@@ -107,8 +102,6 @@ export default function AddPointSetting({
   }
 
   function handleRadioInputChange({ target: { name, value } }) {
-    console.log('handleRadioInputChange', { name, value })
-    setShowSuccessMsg(false)
     switch (name) {
       case 'isLeaguePoint-radios':
         setNewPointSetting({
@@ -125,16 +118,11 @@ export default function AddPointSetting({
             ? null
             : newPointSetting.maxFrequencyPerScope ?? 1,
         })
-        setShowMaxFrequencyError(false)
         break
       default:
         console.log('no matching radio')
     }
   }
-
-  // function selectAllInputText(e): void {
-  //   e.target.select()
-  // }
 
   return (
     <form>
@@ -209,18 +197,6 @@ export default function AddPointSetting({
 
       <div className="form-submit">
         <button onClick={handleCreatePointSetting}>Add Point</button>
-        <ValidationErrorMessage
-          showErrorMsg={showNameValidationError}
-          errorMsgCode="MISSNG_VALUE"
-          errorField="Point Name"
-        />
-        <ValidationErrorMessage
-          showErrorMsg={showMaxFrequencyError}
-          errorMsgCode="MINIMUM_FREQUENCY_OF_ONE"
-        />
-        {showSuccessMsg && !showNameValidationError && (
-          <p className="success-msg">Point Successfully Added</p>
-        )}
       </div>
     </form>
   )

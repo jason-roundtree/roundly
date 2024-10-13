@@ -1,26 +1,34 @@
 import React from 'react'
-
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { PointSetting } from '../../types'
 interface EditablePointSettingListItemProps {
-  name: string
+  pointSetting: PointSetting
+  pointEditRoute: string
   value: string
-  onEdit(pointSetting): void
   onRemove(): void
   removeButtonText: string
 }
 
 export default function EditablePointSettingListItem({
-  name,
-  value,
-  onEdit,
+  pointSetting,
+  pointEditRoute,
   onRemove,
   removeButtonText,
 }: EditablePointSettingListItemProps): JSX.Element {
+  const { leagueId, roundId } = useParams()
+
   return (
     <li>
-      <span className="list-point-name">{name}</span>
-      <span className="list-point-value">{value}</span>
+      <span className="list-point-name">{pointSetting.name}</span>
+      <span className="list-point-value">{pointSetting.value}</span>
       <span className="list-edit-buttons">
-        <button onClick={onEdit}>Edit</button>
+        <Link
+          // TODO: replace name with id?
+          to={pointEditRoute}
+          state={{ leagueId, roundId, pointSetting }}
+        >
+          <button>Edit</button>
+        </Link>
         <button onClick={onRemove}>
           {/* TODO: add color key or icon to differentiate one-off round point */}
           {removeButtonText}

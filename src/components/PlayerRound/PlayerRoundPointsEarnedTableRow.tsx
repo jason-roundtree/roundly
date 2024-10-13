@@ -77,7 +77,7 @@ export default function PlayerRoundPointsEarnedTableRow({
         <td>{hole ?? ''}</td>
         {/* <td>
           <Link
-            to={`/league/${leagueId}/rounds/${roundId}/edit-player-point-earned?playerId=${playerId}&playerName=${encodeURIComponent(
+            to={`/league/${leagueId}/round/${roundId}/edit-player-point-earned?playerId=${playerId}&playerName=${encodeURIComponent(
               playerName
             )}`}
           >

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { toast } from 'react-toastify'
 
 import Select from '../shared/components/Select'
@@ -8,6 +8,7 @@ import {
   getPlayerPointEarnedQuantity,
   getSelectableOptions,
   quantityInputScopeManager,
+  selectAllInputText,
 } from '../shared/utils'
 import { PointScopes, PointSetting } from '../../types'
 import { no_scope_key } from '../PointSettings/PointScopeRadios'
@@ -52,10 +53,10 @@ export default function EnterPointEarned({
     maxFrequencyPerScope,
   } = selectedPointEarned
   console.log('selectedPointEarned >> ', selectedPointEarned)
+  const quantityRef = useRef<HTMLInputElement>(null)
   // TODO: move this to be managed by state and useEffect?
   const [frequencyIsActive, quantityInputLabel, maxFrequency] =
     quantityInputScopeManager(selectedPointEarned)
-  console.log('maxFrequency <<<<< ', maxFrequency)
 
   function handleUpdatePointEarnedState(e) {
     // TODO: reimplement
@@ -101,7 +102,6 @@ export default function EnterPointEarned({
         holeToValidateAgainst,
         null
       )
-      console.log('ppeTotal', ppeTotal)
       if (
         ppeQuantityExceedsMax(
           pointEarnedFrequency,
@@ -178,6 +178,7 @@ export default function EnterPointEarned({
           const valueNum = +e.target.value
           setPointEarnedFrequency(valueNum > 0 ? valueNum : 1)
         }}
+        onFocus={selectAllInputText}
         // onBlur={validateInputFrequencyAgainstPointSetting}
         disabled={!frequencyIsActive}
       />

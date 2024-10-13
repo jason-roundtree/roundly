@@ -36,7 +36,7 @@ export default function PlayerRoundPointsEarnedTable({ roundPointsEarned }) {
               const { name, value, scope, maxFrequencyPerScope } = point_setting
               const { hole } = player_hole || {}
               return (
-                // TODO: clean this up so not passing in so many props?
+                // TODO: clean this up so not passing in so many props? Maybe use context in PlayerRoundPointsAndScoring for this for easier passing of data to PlayerRoundPointsEarnedTable, PlayerRoundPointsEarnedTableRow, and EditPointEarned?
                 <PlayerRoundPointsEarnedTableRow
                   id={id}
                   key={id}

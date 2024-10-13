@@ -181,7 +181,7 @@ export default function EditPointEarned() {
       setPointEarnedBeingEdited(defaultPointEarnedBeingEditedState)
       toast.success('Point was successfully deleted')
       navigate(
-        `/league/${leagueId}/rounds/${roundId}/player-scoring/${playerName}`,
+        `/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`,
         {
           replace: true,
           state: { playerName, playerId },

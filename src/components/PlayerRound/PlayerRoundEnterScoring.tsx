@@ -297,7 +297,7 @@ export default function PlayerRoundEnterScoring() {
     <form className="player-scoring-form">
       <h3 className="page-title">Add Player Point / Score</h3>
       {/* <div className="taCenter">
-        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div> */}
@@ -388,7 +388,7 @@ export default function PlayerRoundEnterScoring() {
       )}
 
       <div className={styles.roundScoringLink}>
-        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>

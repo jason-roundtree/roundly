@@ -74,7 +74,7 @@ export default function RoundDetailsContainer(): JSX.Element {
         <FontAwesomeIcon icon={faAnglesRight} />
       </Link>
       {/* TODO: add link bavk to round details */}
-      <Link to={`/league/${leagueId}/rounds/${roundId}`} className="">
+      <Link to={`/league/${leagueId}/round/${roundId}`} className="">
         <div id={styles.basicRoundInfo}>
           <p id={styles.basicRoundInfoTitle}>Round -&nbsp;</p>
           {name && (

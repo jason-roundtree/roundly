@@ -21,13 +21,13 @@ export default function RoundDetails() {
     <>
       {/* TODO: */}
       <p className={styles.editPageLinks}>
-        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           SCORING <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </p>
 
       <p className={styles.editPageLinks}>
-        <Link to={`/league/${leagueId}/rounds/${roundId}/players`}>
+        <Link to={`/league/${leagueId}/round/${roundId}/players`}>
           PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </p>
@@ -38,7 +38,7 @@ export default function RoundDetails() {
       </ul>
 
       <p className={styles.editPageLinks}>
-        <Link to={`/league/${leagueId}/rounds/${roundId}/point-settings`}>
+        <Link to={`/league/${leagueId}/round/${roundId}/point-settings`}>
           POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </p>

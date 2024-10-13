@@ -42,7 +42,9 @@ import {
 import { Signup, Login, Profile } from './components/User'
 import {
   LeaguePointSettings,
+  LeaguePointSetting,
   RoundPointSettings,
+  RoundPointSetting,
   AddPointSetting,
 } from './components/PointSettings'
 
@@ -75,6 +77,10 @@ export default function Router() {
         element={<LeaguePointSettings />}
       />
       <Route
+        path="league/:leagueId/point-settings/:pointSetting"
+        element={<LeaguePointSetting />}
+      />
+      <Route
         path="league/:leagueId/new-point"
         element={<AddPointSetting pointContext="league" />}
       />
@@ -84,7 +90,7 @@ export default function Router() {
       <Route path="league/:leagueId/standings" element={<LeagueStandings />} />
 
       <Route
-        path="league/:leagueId/rounds/:roundId"
+        path="league/:leagueId/round/:roundId"
         element={<RoundDetailsContainer />}
       >
         <Route index element={<RoundDetails />} />
@@ -109,6 +115,11 @@ export default function Router() {
         {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
         {/* <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} /> */}
         <Route path="point-settings" element={<RoundPointSettings />} />
+        {/* TODO: add component */}
+        <Route
+          path="point-settings/:pointSetting"
+          element={<RoundPointSetting />}
+        />
         <Route
           // path="league/:leagueId/rounds/:roundId/players"
           path="players"

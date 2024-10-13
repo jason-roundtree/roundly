@@ -37,11 +37,14 @@ button {
   padding: 5px 10px;
   background: var(--primary-color);
   color: var(--secondary-color);
-  margin: 0.5em 0;
+  margin: 1.5em 0 0.5em;
 }
 button:hover {
   cursor: pointer;
   filter: brightness(105%);
+}
+button + button {
+  margin-left: 1.5em;
 }
 input {
   display: block;
@@ -374,4 +377,18 @@ th {
 
 .hidden {
   display: none !important;
+}
+
+/* util classes */
+.mt-0 {
+  margin-top: 0 !important;
+}
+.mr-0 {
+  margin-right: 0 !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.ml-0 {
+  margin-left: 0 !important;
 }

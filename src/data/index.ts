@@ -6,6 +6,7 @@ export {
   createRoundPlayer,
 } from './player'
 export {
+  getPointSetting,
   createLeaguePointSetting,
   updatePointSetting,
   deleteLeaguePointSetting,

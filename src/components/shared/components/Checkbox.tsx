@@ -7,6 +7,7 @@ export interface CheckboxProps {
   onChange(e): void
   value?: string
   containerClassName?: string
+  // className?: string
 }
 
 // TODO: unused (except for interface) and still needs work. Maybe just make CheckboxButton use this and style it differently

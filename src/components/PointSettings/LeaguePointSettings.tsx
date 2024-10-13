@@ -3,10 +3,9 @@ import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { AddPointSetting, LeaguePointSettingsListItem } from '.'
+import { LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
-import { selectAllInputText } from '../shared/utils'
 import { toast } from 'react-toastify'
 
 export default function LeaguePointSettings(): JSX.Element {
@@ -31,10 +30,6 @@ export default function LeaguePointSettings(): JSX.Element {
     }
   }
 
-  // function selectAllInputText(e): void {
-  //   e.target.select()
-  // }
-
   return (
     <>
       <Link to={`/league/${leagueId}`} className="leagueHomeLink">
@@ -56,9 +51,8 @@ export default function LeaguePointSettings(): JSX.Element {
             <LeaguePointSettingsListItem
               key={pointSetting.id}
               pointSetting={pointSetting}
-              deleteLeaguePointSetting={handleDeletePointSetting}
-              refreshState={refreshPointSettingsState}
-              selectAllInputText={selectAllInputText}
+              handleDeletePointSetting={handleDeletePointSetting}
+              leagueId={leagueId}
             />
           )
         })}

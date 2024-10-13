@@ -7,6 +7,8 @@ import styles from './EnterPointOrScore.module.css'
 import PlayerSelectInput from '../Player/PlayerSelectInput'
 import { useGetPlayerRoundPointsEarned } from '../shared/hooks'
 import { HoleSelectInput } from '../Round'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 const defaultSelectedPlayerState: {
   id: string
@@ -41,9 +43,16 @@ export default function EnterPointOrScore() {
 
   return (
     // TODO: make into form?
-    <div className="">
+    <div>
       {/* className={styles.} */}
-      <h3 className="page-title">Add Player Point / Score</h3>
+      <h3 className="decrease-bottom-margin page-title">
+        Add Player Point / Score
+      </h3>
+      <div className="taCenter">
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
+          Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
 
       <PlayerSelectInput
         players={playersFromContext}
@@ -77,14 +86,6 @@ export default function EnterPointOrScore() {
           roundId={roundId}
         />
       )}
-
-      <div>
-        {/* <div className={styles.roundScoringLink}> */}
-        <Link to={`/league/${leagueId}/rounds/${roundId}/scoring`}>
-          Round Scoring
-          {/* Round Scoring <FontAwesomeIcon icon={faAnglesRight} /> */}
-        </Link>
-      </div>
     </div>
   )
 }

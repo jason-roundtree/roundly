@@ -48,8 +48,9 @@ export default function PlayerRoundPointsAndScoring() {
   const {
     state: { playerName, playerId },
   } = useLocation()
-  console.log('<< playerId', playerId)
-  console.log('<<<< roundId', roundId)
+
+  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(playerId, roundId)
+  const [totalPoints] = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
 
   const [roundHoleScoreData, setRoundHoleScoreData] = useState<PlayerHole[]>([])
   const [roundHoleScores, setRoundHoleScores] = useState<
@@ -59,12 +60,6 @@ export default function PlayerRoundPointsAndScoring() {
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
-
-  // TODO: use context for this for easier passing of data to PlayerRoundPointsEarnedTable, PlayerRoundPointsEarnedTableRow, and EditPointEarned?
-  console.log('pre-roundPointsEarned: ', playerId)
-  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(playerId, roundId)
-  console.log('pre-getPlayerRoundTotalPoints: ', playerId)
-  const [totalPoints] = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
 
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
@@ -185,7 +180,7 @@ export default function PlayerRoundPointsAndScoring() {
 
       <div className="centered-button">
         <Link
-          to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}
+          to={`/league/${leagueId}/round/${roundId}/round-player-scoring`}
           state={{ playerId, playerName }}
         >
           <button>Enter Point Earned / Score</button>

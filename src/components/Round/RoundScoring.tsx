@@ -102,7 +102,7 @@ export default function RoundScoring() {
         <>
           <div className="centered-button">
             <Link
-              to={`/league/${leagueId}/rounds/${roundId}/round-player-scoring`}
+              to={`/league/${leagueId}/round/${roundId}/round-player-scoring`}
             >
               <button>Enter Point Earned / Score</button>
             </Link>
@@ -183,10 +183,10 @@ export default function RoundScoring() {
                   </span>
                   <span className="list-edit-buttons">
                     <Link
-                      // to={`/league/${leagueId}/rounds/${roundId}/player-scoring?playerId=${
+                      // to={`/league/${leagueId}/round/${roundId}/player-scoring?playerId=${
                       //   player.id
                       // }&playerName=${encodeURIComponent(playerName)}`}
-                      to={`/league/${leagueId}/rounds/${roundId}/player-scoring/${encodeURIComponent(
+                      to={`/league/${leagueId}/round/${roundId}/player-scoring/${encodeURIComponent(
                         playerName
                       )}`}
                       state={{ playerId: player.id, playerName }}
@@ -205,7 +205,7 @@ export default function RoundScoring() {
             No players have been activated for this round
           </p>
           <div className="centered-button">
-            <Link to={`/league/${leagueId}/rounds/${roundId}/players`}>
+            <Link to={`/league/${leagueId}/round/${roundId}/players`}>
               <button className="centered-button">Activate Players</button>
             </Link>
           </div>

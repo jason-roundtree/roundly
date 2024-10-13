@@ -1,4 +1,7 @@
-export async function createLeaguePointSetting(leagueId, newPointSetting) {
+export async function createLeaguePointSetting(
+  leagueId,
+  newPointSetting
+): Promise<any> {
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-setting/${leagueId}`,
@@ -8,13 +11,16 @@ export async function createLeaguePointSetting(leagueId, newPointSetting) {
         body: JSON.stringify(newPointSetting),
       }
     )
-    return await res.json()
+    return res
   } catch (err) {
     console.log('create league point settings error: ', err)
   }
 }
 
-export async function updatePointSetting(pointSettingId, updatedPointSetting) {
+export async function updatePointSetting(
+  pointSettingId,
+  updatedPointSetting
+): Promise<any> {
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-setting/${pointSettingId}`,
@@ -25,6 +31,7 @@ export async function updatePointSetting(pointSettingId, updatedPointSetting) {
       }
     )
     console.log('update general point settings res: ', res)
+    return res
   } catch (err) {
     console.log('update general point settings error: ', err)
   }
@@ -45,7 +52,10 @@ export async function deleteLeaguePointSetting(pointSettingId): Promise<any> {
   }
 }
 
-export async function createRoundPointSetting(pointSettingId, roundId) {
+export async function createRoundPointSetting(
+  pointSettingId,
+  roundId
+): Promise<any> {
   try {
     const res = await fetch(`http://localhost:3001/api/round-point-setting/`, {
       method: 'POST',
@@ -55,13 +65,16 @@ export async function createRoundPointSetting(pointSettingId, roundId) {
         roundId: roundId,
       }),
     })
-    return await res.json()
+    return res
   } catch (err) {
     console.log('create round point settings error: ', err)
   }
 }
 
-export async function removeRoundPointSetting(pointSettingId, roundId) {
+export async function removeRoundPointSetting(
+  pointSettingId,
+  roundId
+): Promise<any> {
   const roundPointSetting = { pointSettingId, roundId }
   console.log('roundPointSetting', roundPointSetting)
   try {
@@ -70,8 +83,23 @@ export async function removeRoundPointSetting(pointSettingId, roundId) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(roundPointSetting),
     })
-    console.log('delete round point settings res: ', res.json())
+    console.log('delete round point settings res: ', res)
+    return res
   } catch (err) {
     console.log('delete round point settings error: ', err)
+    return err
+  }
+}
+
+export async function getPointSetting(pointSettingId): Promise<any> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/point-setting/${pointSettingId}`
+    )
+    console.log('getPointSetting res: ', res)
+    return res
+  } catch (err) {
+    console.log('getPointSetting err: ', err)
+    return err
   }
 }

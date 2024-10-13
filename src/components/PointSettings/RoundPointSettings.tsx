@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { RoundContext } from '../Round/RoundDetailsContainer'
 import {
@@ -10,8 +12,7 @@ import {
 } from '../../data'
 import RoundPointSettingsListItem from './RoundPointSettingsListItem'
 import { PointSetting } from '../../types'
-import AddPointSetting from './AddPointSetting'
-import { selectAllInputText, sortArrayOfObjects } from '../shared/utils'
+import { sortArrayOfObjects } from '../shared/utils'
 
 export default function RoundPointSettings(): JSX.Element {
   const [leaguePointSettings, setLeaguePointSettings] = useState<
@@ -28,9 +29,6 @@ export default function RoundPointSettings(): JSX.Element {
 
   const { pointSettings: roundPointSettings, refreshRoundState } =
     useContext(RoundContext)
-  console.log('roundPointSettings: ', roundPointSettings)
-  console.log('leaguePointSettings: ', leaguePointSettings)
-  console.log('inactivePointSettings: ', inactivePointSettings)
 
   useEffect(() => {
     // TODO: why is this necessary when going back in browser after new point entry?
@@ -60,10 +58,6 @@ export default function RoundPointSettings(): JSX.Element {
     refreshRoundState()
   }
 
-  // function selectAllInputText(e): void {
-  //   e.target.select()
-  // }
-
   function getInactiveRoundPointSettings() {
     const nonRoundPointSettings = leaguePointSettings?.filter(
       ({ id: leaguePointSettingId }) => {
@@ -78,17 +72,19 @@ export default function RoundPointSettings(): JSX.Element {
   return (
     <>
       <h3 className="page-title">Round Point Settings</h3>
-
-      {/* TODO: make this round/league agnostic? */}
-      <div className="centered-button">
-        <Link to={`/league/${leagueId}/rounds/${roundId}/new-point`}>
-          <button>Create New Round Point</button>
+      <div className="taCenter">
+        <Link to={`/league/${leagueId}/point-settings`}>
+          League Point Settings
+          <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>
 
-      {/* <Link to={`/league/${leagueId}/point-settings`} className="text-link">
-        League Point Settings
-      </Link> */}
+      {/* TODO: make this round/league agnostic? */}
+      <div className="centered-button">
+        <Link to={`/league/${leagueId}/round/${roundId}/new-point`}>
+          <button>Create New Round Point</button>
+        </Link>
+      </div>
 
       <p className="non-input-label">Active Round Points</p>
       <ul className="editable-list--points">
@@ -99,8 +95,6 @@ export default function RoundPointSettings(): JSX.Element {
                 key={pointSetting.id}
                 pointSetting={pointSetting}
                 removePointSettingFromRound={removePointSettingFromRound}
-                refreshState={refreshRoundState}
-                selectAllInputText={selectAllInputText}
               />
             )
           })

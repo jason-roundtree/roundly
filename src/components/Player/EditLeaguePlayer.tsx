@@ -18,7 +18,7 @@ export default function EditLeaguePlayer(): JSX.Element {
   const location = useLocation()
   const { name, playerId, navigateBackTo } = location.state
   const [updatedPlayer, setUpdatedPlayer] = useState<EditablePlayer>(
-    () => ({ name } || defaultState)
+    () => name || defaultState
   )
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()

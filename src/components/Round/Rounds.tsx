@@ -38,7 +38,7 @@ export default function Rounds() {
           const dateFormatted = new Date(date).toLocaleDateString()
           return (
             <li key={roundId}>
-              <Link to={`/league/${leagueId}/rounds/${roundId}`} state={round}>
+              <Link to={`/league/${leagueId}/round/${roundId}`} state={round}>
                 <div className={styles.roundCard}>
                   <p>{name}</p>
                   <p>{dateFormatted.toString()}</p>
