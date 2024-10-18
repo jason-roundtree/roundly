@@ -176,7 +176,7 @@ export default function PlayerRoundPointsAndScoring() {
   return (
     <>
       <h3 className="page-title">Player Round Points & Scorecard</h3>
-      <h3 className="page-title">{playerName}</h3>
+      <h3 className="ta-center">{playerName}</h3>
 
       <div className="centered-button">
         <Link
@@ -218,9 +218,7 @@ export default function PlayerRoundPointsAndScoring() {
           closeModal={handleCloseModal}
           renderButtons={() => <EditHoleScoreButtons />}
         >
-          <h3 className={styles.editPointEarnedStaticData}>
-            Player: <span>{playerName}</span>
-          </h3>
+          <h3 className={styles.playerName}>{playerName}</h3>
 
           <BasicInput
             min="1"

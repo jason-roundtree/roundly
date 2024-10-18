@@ -40,7 +40,7 @@ export async function deletePlayerFromRound(playerId, roundId): Promise<void> {
   }
 }
 
-export async function createRoundPlayer(playerId, roundId): Promise<void> {
+export async function createRoundPlayer(playerId, roundId): Promise<any> {
   try {
     const res = await fetch('http://localhost:3001/api/player-round', {
       method: 'POST',
@@ -50,9 +50,10 @@ export async function createRoundPlayer(playerId, roundId): Promise<void> {
         roundId: roundId,
       }),
     })
-    // const res = await res.json()
     console.log('createRoundPlayer res', res)
+    return res
   } catch (err) {
     console.log('createRoundPlayer error: ', err)
+    return err
   }
 }

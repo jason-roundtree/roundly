@@ -4,8 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import { RoundContext } from './RoundDetailsContainer'
+import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
+
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import styles from './RoundDetails.module.css'
+import { sortArrayOfObjects } from '../shared/utils'
 
 export default function RoundDetails() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
@@ -17,32 +20,47 @@ export default function RoundDetails() {
     handleDeleteRound,
   } = useContext(RoundContext)
 
+  // TODO: sort
+  const [playersWithPointTotals] = useGetAllPlayersRoundPointsEarnedTotals(
+    players,
+    roundId
+  )
+
   return (
     <>
-      {/* TODO: */}
-      <p className={styles.editPageLinks}>
+      <h2 className="page-title">Round Home</h2>
+      <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           SCORING <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
-      </p>
-
-      <p className={styles.editPageLinks}>
-        <Link to={`/league/${leagueId}/round/${roundId}/players`}>
-          PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
-        </Link>
-      </p>
-      <ul>
-        {players?.map((player) => {
-          return <li key={player.id}>{player.name}</li>
+      </h3>
+      <ul className="summaryListContainer">
+        {sortArrayOfObjects(
+          playersWithPointTotals,
+          'total_points',
+          'DESC'
+        )?.map((player) => {
+          return (
+            <li key={player.id}>
+              <span>{player.name}</span>&nbsp;&nbsp;&nbsp;
+              <span>{player.total_points}</span>
+            </li>
+          )
         })}
       </ul>
 
-      <p className={styles.editPageLinks}>
+      <h3 className={styles.editPageLinks}>
+        <Link to={`/league/${leagueId}/round/${roundId}/players`}>
+          PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </h3>
+
+      <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/round/${roundId}/point-settings`}>
           POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
-      </p>
-      <ul>
+      </h3>
+      <ul className="summaryListContainer">
         {pointSettings?.map((ps) => {
           return (
             <li key={ps.id}>

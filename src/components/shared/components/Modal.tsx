@@ -36,9 +36,9 @@ export default function Modal({
           >
             X
           </button>
-          <h2 className="" id="modal-title">
+          <h3 className="" id="modal-title">
             {title}
-          </h2>
+          </h3>
           <div id="modal-body">{children}</div>
           <div id="modal-edit-buttons-container">{renderButtons()}</div>
         </div>

@@ -109,7 +109,7 @@ export default function RoundPointSetting() {
   return (
     <div>
       <h3 className="page-title">Point Setting</h3>
-      <p>{pointContextDescription}</p>
+      <p className="ital">{pointContextDescription}</p>
       {!isLeagueSetting && (
         <Checkbox
           id="updateRoundPointToLeague"

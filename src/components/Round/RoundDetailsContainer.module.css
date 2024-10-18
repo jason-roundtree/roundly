@@ -1,21 +1,36 @@
 #basicRoundInfo {
   margin: 0.5em 0;
-  padding: 0.5em 0;
-  /* background: var(--secondary-color); */
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
+  padding: 0.25em 1em;
+  background: var(--secondary-color);
+  /* border-top: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--primary-color); */
 }
 
-#basicRoundInfo p {
-  display: inline-block;
-}
+/* #basicRoundInfo p { */
+/* display: inline-block; */
+/* } */
+/* #basicRoundInfo p:not(#basicRoundInfoTitle) { */
+/* display: inline-block; */
+/* font-style: italic; */
+/* } */
 
 #basicRoundInfo span {
-  color: var(--primary-color);
+  font-style: normal;
+  font-family: 'Krub', serif;
+  /* color: var(--primary-dark-color); */
 }
 
 #basicRoundInfoTitle {
   font-size: 1.2em;
   display: block;
   font-weight: bold;
+}
+
+.editBasicRoundInfo {
+  font-size: 0.8em;
+}
+
+.editIcon {
+  font-size: 1.3em;
+  margin: 0.25em 0.25em 0 0;
 }

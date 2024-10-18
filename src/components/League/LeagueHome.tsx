@@ -54,14 +54,17 @@ export default function LeagueHome() {
 
   return (
     <>
-      <h1>{name} - League Home</h1>
+      <div className="ta-center">
+        <h1>{name}</h1>
+        <h2>League Home</h2>
+      </div>
 
-      <p className={styles.editPageLinks}>
+      <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/rounds`}>
           ROUNDS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
-      </p>
-      <ul>
+      </h3>
+      <ul className="summaryListContainer">
         {rounds.map(({ id, name, location, date }) => {
           const dateFormatted = new Date(date).toLocaleDateString()
           return (
@@ -72,23 +75,23 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <p className={styles.editPageLinks}>
+      <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/players`}>
           PLAYERS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
-      </p>
-      <ul>
+      </h3>
+      <ul className="summaryListContainer">
         {players.map(({ id, name }) => {
           return <li key={id}>{name}</li>
         })}
       </ul>
 
-      <p className={styles.editPageLinks}>
+      <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/point-settings`}>
           POINT SETTINGS <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
-      </p>
-      <ul>
+      </h3>
+      <ul className="summaryListContainer">
         {pointSettings.map(({ id, name, value }) => {
           return (
             <li key={id}>
@@ -98,9 +101,9 @@ export default function LeagueHome() {
         })}
       </ul>
 
-      <p className={styles.editPageLinks}>
+      <h3 className={styles.editPageLinks}>
         STANDINGS <FontAwesomeIcon icon={faAnglesRight} />
-      </p>
+      </h3>
     </>
   )
 }

@@ -28,10 +28,12 @@ export default function Rounds() {
       </Link>
 
       <h2 className="page-title">Rounds</h2>
-      <Link to={`/league/${leagueId}/create-round`} id={styles.createRound}>
-        CREATE ROUND
-        <FontAwesomeIcon icon={faAnglesRight} />
-      </Link>
+      <div className="centered-button">
+        <Link to={`/league/${leagueId}/create-round`} id={styles.createRound}>
+          <button>Create Round</button>
+        </Link>
+      </div>
+
       <ul id={styles.roundCards}>
         {rounds.map((round) => {
           const { id: roundId, name, location, date } = round

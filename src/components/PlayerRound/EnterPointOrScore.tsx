@@ -33,6 +33,7 @@ export default function EnterPointOrScore() {
     pointSettings,
     leagueId,
   } = useContext(RoundContext)
+  console.log('roundId, leagueId from context', { roundId, leagueId })
   console.log('players from context', playersFromContext)
   console.log('pointSettings from context', pointSettings)
 
@@ -48,7 +49,7 @@ export default function EnterPointOrScore() {
       <h3 className="decrease-bottom-margin page-title">
         Add Player Point / Score
       </h3>
-      <div className="taCenter">
+      <div className="ta-center">
         <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
         </Link>

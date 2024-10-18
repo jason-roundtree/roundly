@@ -7,7 +7,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { faAnglesRight, faEdit } from '@fortawesome/free-solid-svg-icons'
 
 import { Round, Player, PointSetting } from '../../types'
 import { fetchRound, deleteRound } from '../../data'
@@ -39,7 +39,7 @@ export default function RoundDetailsContainer(): JSX.Element {
   const navigate = useNavigate()
 
   const sortedPlayers = sortArrayOfObjects(players, 'name')
-  const dateFormatted = new Date(date).toLocaleDateString()
+  const dateFormatted = date ? new Date(date).toLocaleDateString() : ''
 
   useEffect(() => {
     refreshRoundState()
@@ -74,24 +74,43 @@ export default function RoundDetailsContainer(): JSX.Element {
         <FontAwesomeIcon icon={faAnglesRight} />
       </Link>
       {/* TODO: add link bavk to round details */}
-      <Link to={`/league/${leagueId}/round/${roundId}`} className="">
-        <div id={styles.basicRoundInfo}>
-          <p id={styles.basicRoundInfoTitle}>Round -&nbsp;</p>
-          {name && (
+
+      <div id={styles.basicRoundInfo}>
+        <Link to={`/league/${leagueId}/round/${roundId}`}>
+          <h2 id={styles.basicRoundInfoTitle}>Round</h2>
+          {dateFormatted && (
             <>
-              <p>{name}</p>
-              <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+              <p>
+                <span>Date:</span> {dateFormatted}
+              </p>
+              {/* <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> */}
             </>
           )}
+
           {location && (
             <>
-              <p>{location}</p>
-              <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+              <p>
+                <span>Course:</span> {location}
+              </p>
+              {/* <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> */}
             </>
           )}
-          <p>{dateFormatted}</p>
-        </div>
-      </Link>
+
+          {name && (
+            <>
+              <p>
+                <span>Round Name:</span> {name}
+              </p>
+            </>
+          )}
+        </Link>
+        <Link to="edit-round-info" state={{ name, location, date }}>
+          <p className={styles.editBasicRoundInfo}>
+            <FontAwesomeIcon icon={faEdit} className={styles.editIcon} />
+            Edit Basic Round Info
+          </p>
+        </Link>
+      </div>
 
       <Outlet />
     </RoundContext.Provider>

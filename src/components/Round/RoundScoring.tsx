@@ -7,9 +7,10 @@ import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'
 import { getRoundPlayerPointsEarnedTotal } from '../../data'
 import { simpleTextSearchMatch, sortArrayOfObjects } from '../shared/utils'
+import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
 
 type RoundScoringSortBy = 'a-z' | 'z-a' | 'high-low' | 'low-high'
-interface PlayersWithPointTotals {
+export interface PlayersWithPointTotals {
   total_points: number
   id: string
   name: string
@@ -18,18 +19,13 @@ interface PlayersWithPointTotals {
 export default function RoundScoring() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<RoundScoringSortBy>('high-low')
-  const [playersWithPointTotals, setPlayersWithPointTotals] = useState<
-    Array<PlayersWithPointTotals>
-  >([])
   const [sortedPlayersWithPointTotals, setSortedPlayersWithPointTotals] =
     useState<Array<any>>([])
   const { leagueId } = useParams()
-  const {
-    id: roundId,
-    players,
-    pointSettings,
-    handleDeleteRound,
-  } = useContext(RoundContext)
+  const { id: roundId, players } = useContext(RoundContext)
+
+  const [playersWithPointTotals, generatePlayersWithPointTotals] =
+    useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
 
   useEffect(() => {
     generatePlayersWithPointTotals()
@@ -38,28 +34,6 @@ export default function RoundScoring() {
   useEffect(() => {
     sortPlayersByView()
   }, [sortBy, playersWithPointTotals])
-
-  async function generatePlayersWithPointTotals() {
-    const playersWithPointTotals = await Promise.all(
-      players.map(async (p) => {
-        const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
-        console.log('RoundScoring getRoundPlayerPointsEarnedTotal res', res)
-        if (res.status === 200) {
-          const { total_points } = await res.json()
-          return {
-            ...p,
-            total_points: total_points,
-          }
-        } else {
-          return {
-            ...p,
-            total_points: 0,
-          }
-        }
-      })
-    )
-    setPlayersWithPointTotals(playersWithPointTotals)
-  }
 
   function handleUpdateSortBy(e) {
     setSortBy(e.target.id)

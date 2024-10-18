@@ -126,10 +126,10 @@ export default function AddPointSetting({
 
   return (
     <form>
-      <h3 className="decrease-bottom-margin page-title">
+      <h3 className="page-title">
         Create New {capitalizeFirstLetter(pointContext)} Point
       </h3>
-      <div className="taCenter">
+      <div className="ta-center">
         <Link to={`/league/${leagueId}/point-settings`}>
           League Point Settings <FontAwesomeIcon icon={faAnglesRight} />
         </Link>

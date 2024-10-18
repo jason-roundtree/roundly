@@ -45,7 +45,7 @@ export default function AddPlayer(): JSX.Element {
         Add New Player to League
       </h3>
 
-      <div className="taCenter">
+      <div className="ta-center">
         <Link to={`/league/${leagueId}/players`}>
           League Players <FontAwesomeIcon icon={faAnglesRight} />
         </Link>

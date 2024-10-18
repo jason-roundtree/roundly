@@ -195,7 +195,7 @@ export default function EditPointEarned() {
       <>
         {/* <p>Are you sure you want to delete this point?</p> */}
         {/* TODO: add style back */}
-        {/* <div className={`${styles.pointSummary} taCenter`}> */}
+        {/* <div className={`${styles.pointSummary} ta-center`}> */}
         <div className={``}>
           <p>
             <b>Player:</b> {playerName}
@@ -220,9 +220,8 @@ export default function EditPointEarned() {
   return (
     <>
       <h3 className="page-title">Edit Player Point Earned</h3>
-      <h4 className={styles.editPointEarnedStaticData}>
-        Player: <span>{playerName}</span>
-      </h4>
+      <h3 className="ta-center">{playerName}</h3>
+
       <h4 className={styles.editPointEarnedStaticData}>
         Point:{' '}
         <span>

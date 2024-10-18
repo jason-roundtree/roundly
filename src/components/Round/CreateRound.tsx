@@ -15,11 +15,11 @@ import {
   createRoundPlayer,
 } from '../../data'
 import styles from './CreateRound.module.css'
-import ValidationErrorMessage from '../shared/components/ValidationErrorMessage'
-import { toggleStringItemInList, validateStringInput } from '../shared/utils'
+import { toggleStringItemInList } from '../shared/utils'
 import Checkbox from '../shared/components/Checkbox'
+import { toast } from 'react-toastify'
 
-interface RoundState {
+export interface RoundState {
   name: string
   location?: string
   date: string
@@ -38,7 +38,6 @@ export default function CreateRound() {
   const [players, setPlayers] = useState<Player[]>([])
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [allPlayersAreSelected, setAllPlayersAreSelected] = useState(false)
-  const [showValidationError, setShowValidationError] = useState(false)
   const navigate = useNavigate()
   const { leagueId } = useParams()
 
@@ -64,16 +63,27 @@ export default function CreateRound() {
     selectedPlayers.length < players.length && setAllPlayersAreSelected(false)
   }, [selectedPlayers])
 
-  async function createRoundPointSettings(roundId) {
+  // TODO: better of handling return?
+  async function createRoundPointSettings(roundId): Promise<string[]> {
+    const failedRequests: string[] = []
     for (const pointId of selectedPointSettings) {
       const res = await createRoundPointSetting(pointId, roundId)
+      if (!res.ok) {
+        failedRequests.push(pointId)
+      }
     }
+    return failedRequests
   }
-
-  async function createRoundPlayers(roundId) {
+  // TODO: better of handling return?
+  async function createRoundPlayers(roundId): Promise<string[]> {
+    const failedRequests: string[] = []
     for (const playerId of selectedPlayers) {
       const res = await createRoundPlayer(playerId, roundId)
+      if (!res.ok) {
+        failedRequests.push(playerId)
+      }
     }
+    return failedRequests
   }
 
   async function createRound() {
@@ -89,8 +99,16 @@ export default function CreateRound() {
       })
 
       const { id: roundId } = await response.json()
-      await createRoundPlayers(roundId)
-      await createRoundPointSettings(roundId)
+      const createRoundPlayerFailures = await createRoundPlayers(roundId)
+      const createRoundPointSettingsFailures = await createRoundPointSettings(
+        roundId
+      )
+      if (
+        !createRoundPlayerFailures.length &&
+        !createRoundPointSettingsFailures.length
+      ) {
+        toast.success('Round successfully created')
+      }
     } catch (err) {
       console.log('create round error: ', err)
     }
@@ -98,7 +116,8 @@ export default function CreateRound() {
 
   async function handleSaveRound(e) {
     e.preventDefault()
-    if (!validateStringInput(roundState.name, setShowValidationError)) {
+    if (!roundState.name) {
+      toast.error('Round name is required')
       return
     }
     await createRound()
@@ -108,9 +127,6 @@ export default function CreateRound() {
   function handleInputChange({
     target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
-    if (name === 'name') {
-      setShowValidationError(false)
-    }
     setRoundState({ ...roundState, [name]: value })
   }
 
@@ -137,7 +153,7 @@ export default function CreateRound() {
       </Link>
 
       <form>
-        <h2>Create Round</h2>
+        <h2 className="ta-center">Create Round</h2>
 
         <BasicInput
           type="text"
@@ -194,7 +210,9 @@ export default function CreateRound() {
         </div>
 
         <label>Active Round Points</label>
-        <p>You can add and edit points once the round is created</p>
+        <p className="ital">
+          You can add and edit points once the round is created
+        </p>
         <div className={styles.createRoundSelectables}>
           {pointSettings.map(({ name, value, id }) => {
             const isSelected = selectedPointSettings.includes(id)
@@ -220,11 +238,6 @@ export default function CreateRound() {
         {/* TODO: add validation to ensure league name has been added */}
         <div className="form-submit">
           <button onClick={handleSaveRound}>Create Round</button>
-          <ValidationErrorMessage
-            showErrorMsg={showValidationError}
-            errorField="Round Name"
-            errorMsgCode="MISSNG_VALUE"
-          />
         </div>
       </form>
     </>

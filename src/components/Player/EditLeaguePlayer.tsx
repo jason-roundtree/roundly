@@ -13,19 +13,16 @@ const defaultState: EditablePlayer = {
   name: '',
 }
 
-// TODO: style,
 export default function EditLeaguePlayer(): JSX.Element {
   const location = useLocation()
   const { name, playerId, navigateBackTo } = location.state
+  console.log('## name', name)
   const [updatedPlayer, setUpdatedPlayer] = useState<EditablePlayer>(
-    () => name || defaultState
+    () => ({ name } || 'asdasdasd')
   )
+  console.log('## updatedPlayer name', updatedPlayer.name)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
-
-  //   useEffect(() => {
-  //     if (location.state) { setUpdatedPlayer(playerFromLocation.name) }
-  //   }, [location.state])
 
   async function handleUpdatePlayer() {
     if (!updatedPlayer.name) {
@@ -35,6 +32,9 @@ export default function EditLeaguePlayer(): JSX.Element {
     const updatePlayerRes = await updatePlayer(playerId, updatedPlayer)
     if (updatePlayerRes.ok) {
       toast.success('Player was successfully updated')
+      navigate(navigateBackTo, {
+        replace: true,
+      })
     }
   }
 
@@ -59,7 +59,7 @@ export default function EditLeaguePlayer(): JSX.Element {
   return (
     <>
       {/* TODO: update title */}
-      <div>Edit League Player</div>
+      <h3 className="page-title">Edit League Player</h3>
 
       <BasicInput
         type="text"

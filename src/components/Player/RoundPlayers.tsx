@@ -51,7 +51,7 @@ export default function RoundPlayers(): JSX.Element {
   return (
     <>
       <h3 className="decrease-bottom-margin page-title">Round Players</h3>
-      <div className="taCenter">
+      <div className="ta-center">
         <Link to={`/league/${leagueId}/players`}>
           League Players <FontAwesomeIcon icon={faAnglesRight} />
         </Link>

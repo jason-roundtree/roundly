@@ -13,7 +13,7 @@ export default function PointScopeRadios({ onChange, selectedScope, name }) {
     <>
       <fieldset className={styles.pointScopeRadios}>
         <legend>Point Scope</legend>
-        <p>{POINT_SCOPE_DESCRIPTION}</p>
+        <p className="ital">{POINT_SCOPE_DESCRIPTION}</p>
         <Radio
           id={`${no_scope_key}-${name}`}
           value={no_scope_key}

@@ -21,3 +21,4 @@ export {
   holeOrFrequencyHasChanged,
   mapScoresToState,
 } from './playerRoundPointAndScoreUtils'
+export { default as formatDateForInput } from './formatDateForInput'

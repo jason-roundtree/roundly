@@ -67,7 +67,7 @@ export interface PointSetting {
 export type PointScopes = PointSetting['scope']
 
 export const POINT_SCOPE_DESCRIPTION =
-  'Allows you to restrict where and how often the point can be earned'
+  'Allows you to restrict where and how often the point can be earned by a player'
 
 export const POINT_SCOPE_SETTINGS = [
   { key: 'no_scope', label: 'No scope' },

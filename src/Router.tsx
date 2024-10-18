@@ -38,6 +38,7 @@ import {
   RoundDetailsContainer,
   RoundDetails,
   RoundScoring,
+  EditRoundInfo,
 } from './components/Round'
 import { Signup, Login, Profile } from './components/User'
 import {
@@ -94,6 +95,7 @@ export default function Router() {
         element={<RoundDetailsContainer />}
       >
         <Route index element={<RoundDetails />} />
+        {/* <Route path="edit-round-info" element={<EditRoundInfo />} /> */}
         <Route path="scoring" element={<RoundScoring />} />
         <Route
           path="player-scoring/:player"
@@ -121,12 +123,15 @@ export default function Router() {
           element={<RoundPointSetting />}
         />
         <Route
-          // path="league/:leagueId/rounds/:roundId/players"
+          // path="league/:leagueId/round/:roundId/players"
           path="players"
           element={<RoundPlayers />}
         />
       </Route>
-      {/* </Route> */}
+      <Route
+        path="league/:leagueId/round/:roundId/edit-round-info"
+        element={<EditRoundInfo />}
+      />
 
       {/* <Route path="league/:id/members" element={<LeagueMembers />} /> */}
       {/* <Route path="league/:id/settings" element={<LeagueSettings />} /> */}

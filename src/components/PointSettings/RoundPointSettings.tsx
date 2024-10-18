@@ -72,7 +72,7 @@ export default function RoundPointSettings(): JSX.Element {
   return (
     <>
       <h3 className="page-title">Round Point Settings</h3>
-      <div className="taCenter">
+      <div className="ta-center">
         <Link to={`/league/${leagueId}/point-settings`}>
           League Point Settings
           <FontAwesomeIcon icon={faAnglesRight} />

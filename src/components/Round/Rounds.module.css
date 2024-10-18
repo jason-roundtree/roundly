@@ -1,6 +1,5 @@
 #createRound {
   font-size: 1.25em;
-  font-weight: bold;
 }
 
 #roundCards {
@@ -10,9 +9,9 @@
 
 .roundCard {
   border: 1px solid var(--tertiary-color);
-  /* border-radius: 3px; */
   margin: 5px;
   padding: 5px;
+  min-height: 75px;
 }
 .roundCard:hover {
   background: var(--tertiary-color);
