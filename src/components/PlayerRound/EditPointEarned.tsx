@@ -98,7 +98,7 @@ export default function EditPointEarned() {
       )
 
     if (!anyValueHasChanged) {
-      // handleCloseModal()
+      navigate(-1)
       return
     }
 
@@ -201,7 +201,7 @@ export default function EditPointEarned() {
             <b>Player:</b> {playerName}
           </p>
           <p>
-            <b>Point:</b> {pointEarnedBeingEdited.name}
+            <b>Point:</b> {pointEarnedBeingEdited.pointName}
           </p>
           <p>
             <b>Hole:</b> {hole ? hole : 'No associated hole'}
@@ -271,6 +271,7 @@ export default function EditPointEarned() {
         <button
           onClick={() => setShowDeleteConfirmationModal(true)}
           type="button"
+          className="delete-button"
         >
           Delete
         </button>

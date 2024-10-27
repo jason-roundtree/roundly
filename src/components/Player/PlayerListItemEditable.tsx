@@ -38,9 +38,6 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
           >
             Edit
           </button>
-          <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
-            Delete
-          </button>
         </span>
       </li>
 

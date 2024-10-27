@@ -18,7 +18,11 @@ export default function DeleteConfirmationModal({
   onConfirmDelete,
 }: DeleteConfirmationModalProps) {
   function ConfirmDeletionButton(): JSX.Element {
-    return <button onClick={onConfirmDelete}>{buttonText}</button>
+    return (
+      <button onClick={onConfirmDelete} className="delete-button">
+        {buttonText}
+      </button>
+    )
   }
 
   const confirmationElement =

@@ -137,7 +137,12 @@ export default function LeaguePointSetting() {
       )}
 
       <button onClick={handleUpdatePointSetting}>Save</button>
-      <button onClick={() => setShowDeleteConfirmation(true)}>Delete</button>
+      <button
+        onClick={() => setShowDeleteConfirmation(true)}
+        className="delete-button"
+      >
+        Delete
+      </button>
     </div>
   )
 }

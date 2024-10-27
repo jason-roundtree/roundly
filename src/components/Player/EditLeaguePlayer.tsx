@@ -70,7 +70,10 @@ export default function EditLeaguePlayer(): JSX.Element {
       />
 
       <button onClick={() => handleUpdatePlayer()}>Save</button>
-      <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+      <button
+        onClick={() => setShowDeleteConfirmation((show) => !show)}
+        className="delete-button"
+      >
         Delete
       </button>
 

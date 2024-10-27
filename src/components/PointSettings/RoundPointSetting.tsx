@@ -178,7 +178,12 @@ export default function RoundPointSetting() {
           Deactivate for round
         </button>
       ) : (
-        <button onClick={() => setShowDeleteConfirmation(true)}>Delete</button>
+        <button
+          onClick={() => setShowDeleteConfirmation(true)}
+          className="delete-button"
+        >
+          Delete
+        </button>
       )}
     </div>
   )

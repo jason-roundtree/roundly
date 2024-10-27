@@ -77,7 +77,10 @@ export default function RoundDetails() {
         })}
       </ul>
 
-      <button onClick={() => setShowDeleteConfirmation((show) => !show)}>
+      <button
+        onClick={() => setShowDeleteConfirmation((show) => !show)}
+        className="delete-button"
+      >
         Delete Round
       </button>
 

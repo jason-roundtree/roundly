@@ -18,25 +18,28 @@ export default function useGetAllPlayersRoundPointsEarnedTotals(
     players,
     roundId
   ): Promise<void> {
-    const playersWithPointTotals = await Promise.all(
-      players.map(async (p) => {
-        const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
-        console.log('RoundScoring getRoundPlayerPointsEarnedTotal res', res)
-        if (res.status === 200) {
-          const { total_points } = await res.json()
-          return {
-            ...p,
-            total_points: total_points,
+    console.log('generatePlayersWithPointTotals players', players)
+    if (players && roundId) {
+      const playersWithPointTotals = await Promise.all(
+        players.map(async (p) => {
+          const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
+          console.log('RoundScoring getRoundPlayerPointsEarnedTotal res', res)
+          if (res.status === 200) {
+            const { total_points } = await res.json()
+            return {
+              ...p,
+              total_points: total_points,
+            }
+          } else {
+            return {
+              ...p,
+              total_points: 0,
+            }
           }
-        } else {
-          return {
-            ...p,
-            total_points: 0,
-          }
-        }
-      })
-    )
-    setPlayersWithPointTotals(playersWithPointTotals)
+        })
+      )
+      setPlayersWithPointTotals(playersWithPointTotals)
+    }
   }
 
   return [playersWithPointTotals, generatePlayersWithPointTotals]

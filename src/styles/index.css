@@ -10,7 +10,7 @@
   --light-gray: #cccccc;
   --gray: #b5b5b5;
   --label-margin-top: 1.1em;
-  --warning-red: #eca6a6;
+  --alert-red: #ed7575;
   /* --toastify-z-index: 9999999; */
 }
 * {
@@ -61,11 +61,6 @@ button {
   color: var(--secondary-color);
   margin: 1em 0 0.5em;
 }
-/* @media (max-width: 620px) {
-  button {
-    margin-top: 1em;
-  }
-} */
 button:hover {
   cursor: pointer;
   filter: brightness(105%);
@@ -73,6 +68,10 @@ button:hover {
 button + button {
   margin-left: 1.5em;
 }
+.delete-button {
+  background: var(--alert-red);
+}
+
 input {
   display: block;
 }
@@ -237,9 +236,11 @@ input::-webkit-calendar-picker-indicator:hover {
   border: 1px solid var(--tertiary-color);
 }
 
-.editable-list--points li,
-.editable-list--player-scoring li {
+.editable-list--points li {
   grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+}
+.editable-list--player-scoring li {
+  grid-template-columns: 2fr 1fr 1fr;
 }
 .editable-list--players li {
   grid-template-columns: 3fr 2fr;

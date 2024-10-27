@@ -171,7 +171,11 @@ export default function PlayerRoundPointsAndScoring() {
     return (
       <>
         <button onClick={updateHoleScore}>Save</button>
-        {playerHoleId && <button onClick={deleteHoleScore}>Delete</button>}
+        {playerHoleId && (
+          <button onClick={deleteHoleScore} className="delete-button">
+            Delete
+          </button>
+        )}
       </>
     )
   }

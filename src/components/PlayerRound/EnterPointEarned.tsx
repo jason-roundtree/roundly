@@ -88,7 +88,7 @@ export default function EnterPointEarned({
 
     // TODO: move all validation to separate validation function? Just move max frequency stuff?
     if (!selectedPointEarned.name) {
-      toast.error('Please select a point setting')
+      toast.error('Please select the point earned')
       return
     }
     // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
