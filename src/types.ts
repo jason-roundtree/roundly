@@ -70,7 +70,7 @@ export const POINT_SCOPE_DESCRIPTION =
   'Allows you to restrict where and how often the point can be earned by a player'
 
 export const POINT_SCOPE_SETTINGS = [
-  { key: 'no_scope', label: 'No scope' },
+  { key: 'no_scope', label: 'No limit' },
   { key: 'hole', label: 'Earned by hole' },
   { key: 'round', label: 'Earned by round' },
 ] as const

@@ -84,6 +84,9 @@ export default function PlayerRoundPointsAndScoring() {
       const holeScores = await res.json()
       setRoundHoleScoreData(holeScores)
     }
+    if (res.status === 204) {
+      setRoundHoleScoreData([])
+    }
   }
 
   function handleUpdateHoleScoreState(e) {
@@ -143,17 +146,17 @@ export default function PlayerRoundPointsAndScoring() {
     }
 
     if (scoreUpdateSuccessful) {
+      await getPlayerRoundHoleScoreData()
       handleCloseModal()
       // TODO: handle logic and different messaging for if score was updated or created
       toast.success('Score was successfully added')
-      getPlayerRoundHoleScoreData()
     }
   }
 
   async function deleteHoleScore() {
     const res = await updatePlayerHole(playerHoleId, { score: null })
     if (res.ok) {
-      getPlayerRoundHoleScoreData()
+      await getPlayerRoundHoleScoreData()
       handleCloseModal()
       toast.success('Score was successfully deleted')
     }

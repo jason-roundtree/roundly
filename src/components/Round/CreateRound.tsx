@@ -116,11 +116,19 @@ export default function CreateRound() {
 
   async function handleSaveRound(e) {
     e.preventDefault()
-    if (!roundState.name) {
-      toast.error('Round name is required')
-      return
+    let validationFailed = false
+    if (!roundState.name && !roundState.location) {
+      toast.error('Round name or location is required')
+      validationFailed = true
     }
-    await createRound()
+    if (!roundState.date) {
+      toast.error('Date is required')
+      validationFailed = true
+    }
+    if (validationFailed) return
+
+    const res = await createRound()
+    console.log('createRound res', res)
     navigate(`/league/${leagueId}/rounds`)
   }
 

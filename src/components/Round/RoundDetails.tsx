@@ -29,6 +29,12 @@ export default function RoundDetails() {
   return (
     <>
       <h2 className="page-title">Round Home</h2>
+      {/* <div className="centered-button">
+        <Link to={`/league/${leagueId}/round/${roundId}/round-player-scoring`}>
+          <button>Enter Point Earned / Score</button>
+        </Link>
+      </div> */}
+
       <h3 className={styles.editPageLinks}>
         <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
           SCORING <FontAwesomeIcon icon={faAnglesRight} />

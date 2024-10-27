@@ -21,7 +21,7 @@ export default function ScorecardHoleScoreTableRow({
           </td>
         )
       })}
-      {holeGroupScoreTotal ? <td key="total">{holeGroupScoreTotal}</td> : ''}
+      {<td key="total">{holeGroupScoreTotal ? holeGroupScoreTotal : ''}</td>}
     </tr>
   )
 }

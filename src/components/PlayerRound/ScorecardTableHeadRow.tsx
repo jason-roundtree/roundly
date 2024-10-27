@@ -8,15 +8,13 @@ export default function ScorecardTableHeadRow({
 }) {
   const startNumber = holeGroup === 'back-nine' ? 10 : 1
   const scorecardHeader = getIncrementalHoleNumbers(numberOfHoles, startNumber)
-  if (holeGroupScoreTotal) {
-    switch (holeGroup) {
-      case 'front-nine':
-        scorecardHeader.splice(9, 0, 'Out')
-        break
-      case 'back-nine':
-        scorecardHeader.splice(9, 0, 'In')
-        break
-    }
+  switch (holeGroup) {
+    case 'front-nine':
+      scorecardHeader.splice(9, 0, 'Out')
+      break
+    case 'back-nine':
+      scorecardHeader.splice(9, 0, 'In')
+      break
   }
 
   return (

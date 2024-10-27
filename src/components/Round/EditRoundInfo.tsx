@@ -24,6 +24,17 @@ export default function EditRoundInfo() {
 
   async function updateRound(e) {
     e.preventDefault()
+    let validationFailed = false
+    if (!roundState.name && !roundState.location) {
+      toast.error('Round name or location is required')
+      validationFailed = true
+    }
+    if (!roundState.date) {
+      toast.error('Date is required')
+      validationFailed = true
+    }
+    if (validationFailed) return
+
     try {
       const res = await fetch(`http://localhost:3001/api/round/${roundId}`, {
         method: 'PUT',
@@ -70,7 +81,7 @@ export default function EditRoundInfo() {
         />
         <BasicInput
           type="text"
-          label="Location"
+          label="Course"
           name="location"
           value={roundState.location || ''}
           onChange={handleInputChange}

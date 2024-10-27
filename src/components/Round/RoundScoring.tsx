@@ -99,7 +99,7 @@ export default function RoundScoring() {
                 id="high-low"
                 value="high-low"
                 name="sort-round-player-scoring-radio-buttons"
-                label="Score - high to low"
+                label="Total Points - high to low"
                 onChange={handleUpdateSortBy}
                 checked={sortBy === 'high-low'}
                 // hidden
@@ -109,7 +109,7 @@ export default function RoundScoring() {
                 id="low-high"
                 value="low-high"
                 name="sort-round-player-scoring-radio-buttons"
-                label="Score - low to high"
+                label="Total Points - low to high"
                 onChange={handleUpdateSortBy}
                 checked={sortBy === 'low-high'}
                 // hidden

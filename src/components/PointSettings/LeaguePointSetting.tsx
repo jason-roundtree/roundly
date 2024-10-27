@@ -42,7 +42,9 @@ export default function LeaguePointSetting() {
     const res = await updatePointSetting(id, updatedPointSetting)
     if (res.ok) {
       toast.success('Point setting was successfully updated')
-      navigate(-1)
+      navigate(`/league/${leagueId}/point-settings`, {
+        replace: true,
+      })
     }
   }
 

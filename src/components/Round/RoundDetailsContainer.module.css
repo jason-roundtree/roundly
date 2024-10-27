@@ -2,6 +2,7 @@
   margin: 0.5em 0;
   padding: 0.25em 1em;
   background: var(--secondary-color);
+  font-size: 0.9em;
   /* border-top: 1px solid var(--primary-color);
   border-bottom: 1px solid var(--primary-color); */
 }
