@@ -94,7 +94,7 @@ export default function CreateRound() {
         body: JSON.stringify({
           ...roundState,
           leagueId,
-          date: roundState.date ? new Date(roundState.date) : new Date(),
+          date: roundState.date,
         }),
       })
 

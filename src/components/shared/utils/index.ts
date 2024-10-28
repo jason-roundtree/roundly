@@ -22,3 +22,4 @@ export {
   mapScoresToState,
 } from './playerRoundPointAndScoreUtils'
 export { default as formatDateForInput } from './formatDateForInput'
+export { default as formatDateForDisplay } from './formatDateForDisplay'

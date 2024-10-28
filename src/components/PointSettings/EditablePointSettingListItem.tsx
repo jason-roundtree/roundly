@@ -42,10 +42,7 @@ export default function EditablePointSettingListItem({
         >
           <button>Edit</button>
         </Link>
-        {/* <button onClick={onRemove}> */}
-        {/* TODO: add color key or icon to differentiate one-off round point */}
-        {/* {removeButtonText} */}
-        {/* </button> */}
+        <button onClick={onRemove}>{removeButtonText}</button>
       </span>
     </li>
   )

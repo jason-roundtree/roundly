@@ -37,13 +37,12 @@ export default function Rounds() {
       <ul id={styles.roundCards}>
         {rounds.map((round) => {
           const { id: roundId, name, location, date } = round
-          const dateFormatted = new Date(date).toLocaleDateString()
           return (
             <li key={roundId}>
               <Link to={`/league/${leagueId}/round/${roundId}`} state={round}>
                 <div className={styles.roundCard}>
                   <p>{name}</p>
-                  <p>{dateFormatted.toString()}</p>
+                  <p>{date}</p>
                   {location && <p>{location}</p>}
                 </div>
               </Link>

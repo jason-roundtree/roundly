@@ -3,12 +3,11 @@ import { useParams, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import {
   createRoundPointSetting,
   removeRoundPointSetting,
   fetchLeaguePointSettings,
-  updatePointSetting,
 } from '../../data'
 import RoundPointSettingsListItem from './RoundPointSettingsListItem'
 import { PointSetting } from '../../types'
@@ -108,10 +107,27 @@ export default function RoundPointSettings(): JSX.Element {
       <ul className="editable-list--points">
         {inactivePointSettings.length ? (
           inactivePointSettings.map((pointSetting) => {
+            {
+              /* TODO: make this into component/incorporate it with RoundPointSettingsListItem? */
+            }
+            const { scope, maxFrequencyPerScope, isLeagueSetting } =
+              pointSetting
+            const scopeAndMax =
+              scope === 'no_scope'
+                ? 'No limit'
+                : `${maxFrequencyPerScope}x max per ${scope}`
+
+            const oneOffRoundPoint = !isLeagueSetting && 'One-off round point'
             return (
               <li key={pointSetting.id}>
                 <span className="list-point-name">{pointSetting.name}</span>
                 <span className="list-point-value">{pointSetting.value}</span>
+                <span className="list-point-round-point">
+                  {oneOffRoundPoint}
+                </span>
+                <span className="list-point-scope-and-frequency">
+                  {scopeAndMax}
+                </span>
                 <span className="list-edit-buttons non-round-point-setting">
                   <button
                     onClick={() => addPointSettingToRound(pointSetting.id)}
@@ -123,7 +139,7 @@ export default function RoundPointSettings(): JSX.Element {
             )
           })
         ) : (
-          <p className="indented-text-small">All points are active</p>
+          <p className="indented-text-small">All league points are active</p>
         )}
       </ul>
     </>

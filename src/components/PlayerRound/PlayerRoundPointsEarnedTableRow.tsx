@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { deletePlayerPointEarned } from '../../data'
 import { PointSetting } from '../../types'

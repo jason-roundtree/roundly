@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'
 
 import { RoundState } from './CreateRound'
 import BasicInput from '../shared/components/BasicInput'
-import { toast } from 'react-toastify'
-import { formatDateForInput } from '../shared/utils'
+import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
+import { deleteRound } from '../../data'
 
 export default function EditRoundInfo() {
   const routerLocation = useLocation()
@@ -19,6 +20,7 @@ export default function EditRoundInfo() {
         date: '',
       })
   )
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const { leagueId, roundId } = useParams()
   const navigate = useNavigate()
 
@@ -41,7 +43,7 @@ export default function EditRoundInfo() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...roundState,
-          date: roundState.date ? new Date(roundState.date) : new Date(),
+          date: roundState.date,
         }),
       })
       console.log('update round res: ', res)
@@ -59,13 +61,19 @@ export default function EditRoundInfo() {
   function handleInputChange({
     target: { name: name, value: value },
   }: React.ChangeEvent<HTMLInputElement>): void {
+    console.log('value', value)
     setRoundState({ ...roundState, [name]: value })
+  }
+
+  async function handleDeleteRound() {
+    await deleteRound(roundId)
+    navigate(`/league/${leagueId}/rounds`)
   }
 
   return (
     <>
       <form>
-        <h3 className="ta-center">Edit Basic Round Info</h3>
+        <h3 className="ta-center">Edit Round</h3>
         <div className="ta-center">
           <Link to={`/league/${leagueId}/round/${roundId}`}>
             Round Home <FontAwesomeIcon icon={faAnglesRight} />
@@ -90,13 +98,29 @@ export default function EditRoundInfo() {
           type="date"
           label="Date"
           name="date"
-          // value={new Date(roundState.date).toISOString().slice(0, 10)}
-          value={formatDateForInput(roundState.date)}
+          value={roundState.date}
           onChange={handleInputChange}
         />
 
         <button onClick={updateRound}>Save</button>
       </form>
+
+      <button
+        onClick={() => setShowDeleteConfirmation((show) => !show)}
+        className="delete-button"
+      >
+        Delete Round
+      </button>
+
+      {showDeleteConfirmation && (
+        <DeleteConfirmationModal
+          modalTitle="Confirm Round Deletion"
+          confirmationText="Are you sure you want to delete this round from the league?"
+          buttonText="Delete"
+          onConfirmDelete={handleDeleteRound}
+          toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
+        />
+      )}
     </>
   )
 }

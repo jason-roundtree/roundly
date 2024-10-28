@@ -35,8 +35,8 @@ import {
   CreateRound,
   // Round,
   Rounds,
-  RoundDetailsContainer,
-  RoundDetails,
+  RoundContainer,
+  RoundHome,
   RoundScoring,
   EditRoundInfo,
 } from './components/Round'
@@ -92,9 +92,9 @@ export default function Router() {
 
       <Route
         path="league/:leagueId/round/:roundId"
-        element={<RoundDetailsContainer />}
+        element={<RoundContainer />}
       >
-        <Route index element={<RoundDetails />} />
+        <Route index element={<RoundHome />} />
         {/* <Route path="edit-round-info" element={<EditRoundInfo />} /> */}
         <Route path="scoring" element={<RoundScoring />} />
         <Route

@@ -3,22 +3,15 @@ import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { RoundContext } from './RoundDetailsContainer'
+import { RoundContext } from './RoundContainer'
 import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
 
-import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import styles from './RoundDetails.module.css'
+import styles from './RoundHome.module.css'
 import { sortArrayOfObjects } from '../shared/utils'
 
-export default function RoundDetails() {
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+export default function RoundHome() {
   const { leagueId } = useParams()
-  const {
-    id: roundId,
-    players,
-    pointSettings,
-    handleDeleteRound,
-  } = useContext(RoundContext)
+  const { id: roundId, players, pointSettings } = useContext(RoundContext)
 
   // TODO: sort
   const [playersWithPointTotals] = useGetAllPlayersRoundPointsEarnedTotals(
@@ -76,23 +69,6 @@ export default function RoundDetails() {
           )
         })}
       </ul>
-
-      <button
-        onClick={() => setShowDeleteConfirmation((show) => !show)}
-        className="delete-button"
-      >
-        Delete Round
-      </button>
-
-      {showDeleteConfirmation && (
-        <DeleteConfirmationModal
-          modalTitle="Confirm Round Deletion"
-          confirmationText="Are you sure you want to delete this round from the league?"
-          buttonText="Delete"
-          onConfirmDelete={handleDeleteRound}
-          toggleModalActive={() => setShowDeleteConfirmation((show) => !show)}
-        />
-      )}
     </>
   )
 }

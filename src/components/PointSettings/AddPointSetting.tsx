@@ -15,7 +15,7 @@ import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import PointScopeRadios from './PointScopeRadios'
 import { no_scope_key } from './PointScopeRadios'
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import { toast } from 'react-toastify'
 
 type NewPointSettingState = Omit<PointSetting, 'id'>

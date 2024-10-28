@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import { EnterHoleScore, EnterPointEarned, EnterPointOrScoreRadios } from '.'
 import styles from './EnterPointOrScore.module.css'
 import PlayerSelectInput from '../Player/PlayerSelectInput'

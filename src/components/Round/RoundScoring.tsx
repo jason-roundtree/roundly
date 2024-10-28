@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { RoundContext } from './RoundDetailsContainer'
+import { RoundContext } from './RoundContainer'
 import styles from './RoundScoring.module.css'
 import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'

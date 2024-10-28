@@ -60,14 +60,15 @@ button {
   background: var(--primary-color);
   color: var(--secondary-color);
   margin: 1em 0 0.5em;
+  display: block;
 }
 button:hover {
   cursor: pointer;
   filter: brightness(105%);
 }
-button + button {
+/* button + button {
   margin-left: 1.5em;
-}
+} */
 .delete-button {
   background: var(--alert-red);
 }
@@ -247,6 +248,9 @@ input::-webkit-calendar-picker-indicator:hover {
 }
 .list-edit-buttons {
   text-align: right;
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
 }
 .list-edit-buttons button {
   padding: 2px 6px;
@@ -259,6 +263,7 @@ input::-webkit-calendar-picker-indicator:hover {
 
 .list-point-name {
   line-height: 1;
+  font-weight: 600;
 }
 
 /* TODO: make common breakpoint variables */

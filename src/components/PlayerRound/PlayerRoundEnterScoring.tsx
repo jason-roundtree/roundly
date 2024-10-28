@@ -5,7 +5,7 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import Select from '../shared/components/Select'
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import { PointSetting, Player, PointScopes } from '../../types'
 import {
   getPlayerPointEarnedQuantity,

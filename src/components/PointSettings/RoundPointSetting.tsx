@@ -2,7 +2,7 @@ import { useState, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import { RoundContext } from '../Round/RoundDetailsContainer'
+import { RoundContext } from '../Round/RoundContainer'
 import BasicInput from '../shared/components/BasicInput'
 import PointScopeRadios, { no_scope_key } from './PointScopeRadios'
 import Checkbox from '../shared/components/Checkbox'
