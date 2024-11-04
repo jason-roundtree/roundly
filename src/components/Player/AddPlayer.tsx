@@ -29,6 +29,9 @@ export default function AddPlayer(): JSX.Element {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPlayer),
       })
+      if (res.status === 409) {
+        toast.error('Player name already exists in league')
+      }
       if (res.ok) {
         setNewPlayerName('')
         toast.success('Player successfully created')
