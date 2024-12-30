@@ -3,19 +3,27 @@ import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { LeaguePointSettingsListItem } from '.'
+import { EditablePointSettingDetailsItem, LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
 import { toast } from 'react-toastify'
 
 export default function LeaguePointSettings(): JSX.Element {
   const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
+  const [detailsAreBulkToggledOn, setDetailsAreBulkToggledOn] = useState(false)
 
   const { leagueId } = useParams()
 
   useEffect(() => {
     refreshPointSettingsState()
   }, [])
+
+  useEffect(() => {
+    const detailsToggles = Array.from(document.querySelectorAll('details'))
+    for (const t of detailsToggles) {
+      t.open = detailsAreBulkToggledOn
+    }
+  }, [detailsAreBulkToggledOn])
 
   async function refreshPointSettingsState(): Promise<void> {
     const pointSettings = await fetchLeaguePointSettings(leagueId)
@@ -44,6 +52,14 @@ export default function LeaguePointSettings(): JSX.Element {
           <button>Create New League Point</button>
         </Link>
       </div>
+
+      <button
+        className="toggle-button"
+        onClick={() => setDetailsAreBulkToggledOn((s) => !s)}
+      >
+        {/* {detailsAreBulkToggledOn ? 'Collapse' : 'Expand'} All Point Details */}
+        Toggle all point details
+      </button>
 
       <ul className="editable-list--points">
         {pointSettings.map((pointSetting) => {

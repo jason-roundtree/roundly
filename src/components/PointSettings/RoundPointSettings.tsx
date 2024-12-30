@@ -20,6 +20,7 @@ export default function RoundPointSettings(): JSX.Element {
   const [inactivePointSettings, setInactivePointSettings] = useState<
     PointSetting[]
   >([])
+  const [detailsAreBulkToggledOn, setDetailsAreBulkToggledOn] = useState(false)
 
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
@@ -41,6 +42,13 @@ export default function RoundPointSettings(): JSX.Element {
   useEffect(() => {
     getInactiveRoundPointSettings()
   }, [leaguePointSettings])
+
+  useEffect(() => {
+    const detailsToggles = Array.from(document.querySelectorAll('details'))
+    for (const t of detailsToggles) {
+      t.open = detailsAreBulkToggledOn
+    }
+  }, [detailsAreBulkToggledOn])
 
   async function getLeaguePointSettings() {
     const leaguePointSettings = await fetchLeaguePointSettings(leagueId)
@@ -85,6 +93,14 @@ export default function RoundPointSettings(): JSX.Element {
         </Link>
       </div>
 
+      <button
+        className="toggle-button"
+        onClick={() => setDetailsAreBulkToggledOn((s) => !s)}
+      >
+        {/* {detailsAreBulkToggledOn ? 'Collapse' : 'Expand'} All Point Details */}
+        Toggle all point details
+      </button>
+
       <p className="non-input-label">Active Round Points</p>
       <ul className="editable-list--points">
         {roundPointSettings.length ? (
@@ -102,7 +118,7 @@ export default function RoundPointSettings(): JSX.Element {
         )}
       </ul>
 
-      <p className="non-input-label">Inactive Round Points</p>
+      <p className="non-input-label">Inactive League Points</p>
       {/* TODO: add edit button to inactive points? If not then probably change this className */}
       <ul className="editable-list--points">
         {inactivePointSettings.length ? (
@@ -119,23 +135,27 @@ export default function RoundPointSettings(): JSX.Element {
 
             const oneOffRoundPoint = !isLeagueSetting && 'One-off round point'
             return (
-              <li key={pointSetting.id}>
-                <span className="list-point-name">{pointSetting.name}</span>
-                <span className="list-point-value">{pointSetting.value}</span>
-                <span className="list-point-round-point">
-                  {oneOffRoundPoint}
-                </span>
-                <span className="list-point-scope-and-frequency">
-                  {scopeAndMax}
-                </span>
-                <span className="list-edit-buttons non-round-point-setting">
-                  <button
-                    onClick={() => addPointSettingToRound(pointSetting.id)}
-                  >
-                    Activate
-                  </button>
-                </span>
-              </li>
+              <details key={pointSetting.id}>
+                <summary>
+                  <span className="list-point-name">{pointSetting.name}</span>
+                  <span className="list-point-value">{pointSetting.value}</span>
+                  <span className="list-edit-buttons non-round-point-setting">
+                    <button
+                      onClick={() => addPointSettingToRound(pointSetting.id)}
+                    >
+                      Activate
+                    </button>
+                  </span>
+                </summary>
+                <div className="details-body">
+                  <span className="list-point-round-point">
+                    {oneOffRoundPoint}
+                  </span>
+                  <span className="list-point-scope-and-frequency">
+                    {scopeAndMax}
+                  </span>
+                </div>
+              </details>
             )
           })
         ) : (

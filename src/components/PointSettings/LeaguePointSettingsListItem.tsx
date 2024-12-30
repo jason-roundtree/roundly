@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import { EditablePointSettingListItem, PointScopeRadios } from '.'
+import {
+  EditablePointSettingDetailsItem,
+  EditablePointSettingListItem,
+  PointScopeRadios,
+} from '.'
 import { PointSetting } from '../../types'
 import { no_scope_key } from './PointScopeRadios'
 import { toast } from 'react-toastify'
@@ -20,7 +24,7 @@ export default function LeaguePointSettingsListItem({
 
   return (
     <>
-      <EditablePointSettingListItem
+      <EditablePointSettingDetailsItem
         pointEditRoute={`/league/${leagueId}/point-settings/${encodeURIComponent(
           pointSetting.name
         )}`}

@@ -1,10 +1,11 @@
 export async function createLeaguePointSetting(
-  leagueId,
-  newPointSetting
+  leagueId: string,
+  newPointSetting: Record<string, any>,
+  roundId?: string
 ): Promise<any> {
   try {
     const res = await fetch(
-      `http://localhost:3001/api/point-setting/${leagueId}`,
+      `http://localhost:3001/api/point-setting/${leagueId}?roundId=${roundId}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

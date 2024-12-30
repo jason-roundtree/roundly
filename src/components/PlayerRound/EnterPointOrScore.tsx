@@ -72,21 +72,23 @@ export default function EnterPointOrScore() {
         setShowEnterPointForm={setShowEnterPointForm}
       />
 
-      {showEnterPointForm ? (
-        <EnterPointEarned
-          pointSettings={pointSettings}
-          selectedPlayer={selectedPlayer}
-          roundPointsEarned={roundPointsEarned}
-          selectedHole={selectedHole}
-          roundId={roundId}
-        />
-      ) : (
-        <EnterHoleScore
-          selectedHole={selectedHole}
-          selectedPlayer={selectedPlayer}
-          roundId={roundId}
-        />
-      )}
+      <div id={styles.pointEarnedOrScoreForm}>
+        {showEnterPointForm ? (
+          <EnterPointEarned
+            pointSettings={pointSettings}
+            selectedPlayer={selectedPlayer}
+            roundPointsEarned={roundPointsEarned}
+            selectedHole={selectedHole}
+            roundId={roundId}
+          />
+        ) : (
+          <EnterHoleScore
+            selectedHole={selectedHole}
+            selectedPlayer={selectedPlayer}
+            roundId={roundId}
+          />
+        )}
+      </div>
     </div>
   )
 }

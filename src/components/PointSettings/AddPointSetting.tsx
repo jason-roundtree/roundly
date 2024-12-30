@@ -45,7 +45,10 @@ export default function AddPointSetting({
   )
   console.log('newPointSetting', newPointSetting)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { leagueId, roundId } = useParams()
+  const { leagueId, roundId } = useParams() as {
+    leagueId: string
+    roundId: string
+  }
   const { refreshRoundState } = useContext(RoundContext)
 
   async function handleCreatePointSetting(e) {
@@ -56,7 +59,11 @@ export default function AddPointSetting({
     }
 
     try {
-      const res = await createLeaguePointSetting(leagueId, newPointSetting)
+      const res = await createLeaguePointSetting(
+        leagueId,
+        newPointSetting,
+        roundId
+      )
       const leaguePointJson = await res.json()
       const { id: pointId } = leaguePointJson
 

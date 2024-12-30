@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { EditablePointSettingListItem } from '.'
+import {
+  EditablePointSettingDetailsItem,
+  EditablePointSettingListItem,
+} from '.'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { deleteLeaguePointSetting } from '../../data'
 import { toast } from 'react-toastify'
@@ -23,6 +26,7 @@ export default function RoundPointSettingsListItem({
     const res = await deleteLeaguePointSetting(pointId)
     if (res.ok) {
       toast.success('Point setting was successfully deleted')
+      setShowDeleteConfirmation(false)
     }
   }
 
@@ -36,7 +40,7 @@ export default function RoundPointSettingsListItem({
 
   return (
     <>
-      <EditablePointSettingListItem
+      <EditablePointSettingDetailsItem
         pointSetting={pointSetting}
         pointEditRoute={`/league/${leagueId}/round/${roundId}/point-settings/${encodeURIComponent(
           pointSetting.name
