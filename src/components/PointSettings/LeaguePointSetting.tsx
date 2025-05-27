@@ -18,7 +18,7 @@ export const defaultEditablePointSettingState: EditablePointSetting = {
   value: '',
   scope: no_scope_key,
   isLeagueSetting: true,
-  maxFrequencyPerScope: null,
+  // maxFrequencyPerScope: null,
 }
 
 export default function LeaguePointSetting() {
@@ -70,9 +70,9 @@ export default function LeaguePointSetting() {
     setUpdatedPointSetting({
       ...updatedPointSetting,
       scope: updatedScope,
-      maxFrequencyPerScope: isNoScope
-        ? 1
-        : updatedPointSetting.maxFrequencyPerScope,
+      // maxFrequencyPerScope: isNoScope
+      //   ? 1
+      //   : updatedPointSetting.maxFrequencyPerScope,
     })
   }
 
@@ -83,7 +83,7 @@ export default function LeaguePointSetting() {
     const valueNum = +target.value
     setUpdatedPointSetting({
       ...updatedPointSetting,
-      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
+      // maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
     })
   }
 
@@ -113,7 +113,7 @@ export default function LeaguePointSetting() {
         selectedScope={updatedPointSettingScope}
       />
 
-      {updatedPointSettingScope !== no_scope_key && (
+      {/* {updatedPointSettingScope !== no_scope_key && (
         <BasicInput
           // disabled={updatedPointSetting.scope === no_scope_key}
           type="number"
@@ -124,7 +124,7 @@ export default function LeaguePointSetting() {
           onChange={handlePointMaxFrequencyInputChange}
           value={updatedPointSetting.maxFrequencyPerScope ?? ''}
         />
-      )}
+      )} */}
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal

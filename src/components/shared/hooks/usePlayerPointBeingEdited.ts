@@ -9,12 +9,12 @@ export interface PointBeingEdited {
   playerName: string
   originalHole?: number | string
   hole?: number | string
-  originalFrequency: number
-  frequency: number
+  originalQuantity: number
+  quantity: number
   value: number | string
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
-  maxFrequencyPerScope: number | null
+  // maxFrequencyPerScope: number | null
 }
 
 const defaultPointEarnedBeingEditedState: PointBeingEdited = {
@@ -25,11 +25,11 @@ const defaultPointEarnedBeingEditedState: PointBeingEdited = {
   originalHole: '',
   hole: '',
   // TODO: change these to `quantityEarned` and `originalQuantityEarned`
-  originalFrequency: 1,
-  frequency: 1,
+  originalQuantity: 1,
+  quantity: 1,
   value: '',
   scope: '',
-  maxFrequencyPerScope: null,
+  // maxFrequencyPerScope: null,
 }
 
 // TODO: type

@@ -17,7 +17,7 @@ export default function ScorecardHoleScoreTableRow({
               handleOpenEditScoreModal({ playerHoleId, hole, score })
             }
           >
-            {score ? score : ''}
+            {score ?? ''}
           </td>
         )
       })}

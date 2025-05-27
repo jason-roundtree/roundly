@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import {
   PlayerRoundPointsAndScoringSummary,
@@ -30,6 +32,7 @@ import usePlayerHoleScoreBeingEdited, {
   PlayerHoleScoreState,
 } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
 import styles from './PlayerRoundPointsAndScoring.module.css'
+import { NumberOrNull } from '../../types'
 
 // TODO: somehow combine with PlayerHole interface in types?
 interface PlayerHole {
@@ -57,10 +60,11 @@ export default function PlayerRoundPointsAndScoring() {
     PlayerHoleScoreState[]
   >([])
   const [showEditScoreModal, setShowEditScoreModal] = useState(false)
+  const [currentScore, setCurrentScore] = useState<NumberOrNull>(null)
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
-
+  console.log('************ roundHoleScores', roundHoleScores)
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
@@ -90,13 +94,7 @@ export default function PlayerRoundPointsAndScoring() {
   }
 
   function handleUpdateHoleScoreState(e) {
-    const inputValue = e.target.value
-    if (inputValue < 1) {
-      // setScoreBeingEdited({ ...scoreBeingEdited, score: null })
-      return
-    } else {
-      setScoreBeingEdited({ ...scoreBeingEdited, score: +e.target.value })
-    }
+    setScoreBeingEdited({ ...scoreBeingEdited, score: +e.target.value })
   }
 
   function handleOpenEditScoreModal({
@@ -104,21 +102,22 @@ export default function PlayerRoundPointsAndScoring() {
     hole,
     score,
   }: PlayerHoleScoreState) {
+    setCurrentScore(score)
     setScoreBeingEdited({ playerHoleId, hole, score: score ? +score : null })
     setShowEditScoreModal(true)
   }
 
   // TODO: a better way to handle this where I don't need to check both round scores and round PPE to find playerHoleId? (e.g. maybe add playerHoleId to scorecard even for holes without score?)
   async function updateHoleScore(): Promise<void> {
-    if (!score) {
+    if (score === null) {
       handleCloseModal()
       return
     }
 
     let scoreUpdateSuccessful = false
     let _playerHoleId = playerHoleId
-    if (!playerHoleId) {
-      /** A score doesn't exist for selected hole so check PlayerHole table in case any PlayerPointEarned exist for that hole */
+    if (currentScore === null) {
+      /** A score doesn't exist for the selected hole so check PlayerHole table in case any PlayerPointEarned exist for that hole */
       const getPlayerHoleRes = await getPlayerHole({ playerId, roundId, hole })
       const getPlayerHoleResJson = await getPlayerHoleRes.json()
       if (getPlayerHoleRes.ok) {
@@ -126,11 +125,15 @@ export default function PlayerRoundPointsAndScoring() {
       }
     }
 
+    let currentScoreWasUpdated = false
     if (_playerHoleId) {
-      /** PlayerHole exists so add score to it */
+      /** PlayerHole exists so add or update score to it */
       const res = await updatePlayerHole(_playerHoleId, { score })
       if (res.ok) {
         scoreUpdateSuccessful = true
+        if (currentScore !== score) {
+          currentScoreWasUpdated = true
+        }
       }
     } else {
       /** No PlayerHole exists for hole so create it and add score */
@@ -148,8 +151,9 @@ export default function PlayerRoundPointsAndScoring() {
     if (scoreUpdateSuccessful) {
       await getPlayerRoundHoleScoreData()
       handleCloseModal()
-      // TODO: handle logic and different messaging for if score was updated or created
-      toast.success('Score was successfully added')
+      toast.success(
+        `Score successfully ${currentScoreWasUpdated ? 'updated' : 'added'}`
+      )
     }
   }
 
@@ -182,8 +186,13 @@ export default function PlayerRoundPointsAndScoring() {
 
   return (
     <>
-      <h3 className="page-title">Player Round Points & Scorecard</h3>
+      {/* <h3 className="page-title">Player Round Points & Scorecard</h3> */}
       <h3 className="ta-center">{playerName}</h3>
+      <div className="ta-center">
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
+          Round Scoring Home <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
 
       <div className="centered-button">
         <Link
@@ -228,7 +237,7 @@ export default function PlayerRoundPointsAndScoring() {
           <h3 className={styles.playerName}>{playerName}</h3>
 
           <BasicInput
-            min="1"
+            min="0"
             type="number"
             label="Hole Score"
             name="score"

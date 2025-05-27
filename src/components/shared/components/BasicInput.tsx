@@ -40,9 +40,7 @@ export default function BasicInput({
 }: BasicInputProps<typeof type>): JSX.Element {
   return (
     <>
-      <label htmlFor={name} className={disabled ? 'isDisabled' : ''}>
-        {label}
-      </label>
+      <label htmlFor={name}>{label}</label>
       <input
         type={type}
         name={name}

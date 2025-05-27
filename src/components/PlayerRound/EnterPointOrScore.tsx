@@ -15,7 +15,6 @@ const defaultSelectedPlayerState: {
   name: string
 } = { id: '', name: '' }
 
-// TODO: re-implement validation similar to PlayerRoundEnterScoring
 // TODO: re-implement types (mostly in child components)
 // TODO: DRYify some of this with PlayerRoundScoring
 export default function EnterPointOrScore() {
@@ -51,7 +50,7 @@ export default function EnterPointOrScore() {
       </h3>
       <div className="ta-center">
         <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
-          Round Scoring <FontAwesomeIcon icon={faAnglesRight} />
+          Round Scoring Home <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>
 

@@ -65,7 +65,7 @@ export default function RoundPlayers(): JSX.Element {
           sortArrayOfObjects(roundPlayers, 'name')?.map(
             ({ id: playerId, name }) => {
               return (
-                <li key={playerId}>
+                <li key={playerId} className="editable-list-item">
                   <span>{name}</span>
                   <span className="list-edit-buttons">
                     <button
@@ -90,7 +90,7 @@ export default function RoundPlayers(): JSX.Element {
         {roundPlayers.length < leaguePlayers.length ? (
           getInactiveRoundPlayers().map((player) => {
             return (
-              <li key={player.id}>
+              <li key={player.id} className="editable-list-item">
                 <span>{player.name}</span>
                 <span className="list-edit-buttons non-round-player">
                   <button

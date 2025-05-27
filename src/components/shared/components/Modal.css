@@ -62,7 +62,3 @@
   /* justify-content: flex-end; */
   margin-top: 1em;
 }
-
-#modal-content button + button {
-  margin-left: 15px;
-}

@@ -3,9 +3,12 @@ import {
   useParams,
   useLocation,
   useSearchParams,
-  useNavigation,
   useNavigate,
+  Link,
 } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import BasicInput from '../shared/components/BasicInput'
@@ -15,19 +18,18 @@ import {
   usePlayerPointBeingEdited,
 } from '../shared/hooks'
 import {
-  getPlayerPointEarnedQuantity,
-  holeOrFrequencyHasChanged,
-  ppeQuantityExceedsMax,
-  quantityInputScopeManager,
+  holeOrQuantityHasChanged,
+  // quantityInputScopeManager,
 } from '../shared/utils'
-import { selectableHoles } from './PlayerRoundEnterScoring'
+import { selectableHoles } from '../Round/HoleSelectInput'
 import {
+  checkPlayerPointEarnedInRound,
+  checkPlayerPointEarnedOnHole,
   createOrFindPlayerHole,
   deletePlayerPointEarned,
   getPlayerHole,
   updatePlayerPointEarned,
 } from '../../data'
-import { toast } from 'react-toastify'
 
 export default function EditPointEarned() {
   const navigate = useNavigate()
@@ -44,11 +46,10 @@ export default function EditPointEarned() {
     playerName,
     originalHole,
     hole,
-    originalFrequency,
-    frequency,
+    originalQuantity,
+    quantity,
     value,
     scope,
-    maxFrequencyPerScope,
   } = location.state
 
   const [
@@ -62,77 +63,80 @@ export default function EditPointEarned() {
     playerName,
     originalHole,
     hole,
-    originalFrequency,
-    frequency,
+    originalQuantity,
+    quantity,
     value,
     scope,
-    maxFrequencyPerScope,
   })
   console.log('@@@@@ pointEarnedBeingEdited @@@@@@ ', pointEarnedBeingEdited)
-  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
-    quantityInputScopeManager(pointEarnedBeingEdited)
-  const [roundPointsEarned, getPlayerRoundPointsEarned] =
-    useGetPlayerRoundPointsEarned(playerId, roundId)
+  const [_, getPlayerRoundPointsEarned] = useGetPlayerRoundPointsEarned(
+    playerId,
+    roundId
+  )
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false)
+
+  function navigateToPlayerRoundPointsEarned() {
+    navigate(
+      `/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`,
+      {
+        replace: true,
+        state: { playerName, playerId },
+      }
+    )
+  }
 
   async function handleUpdatePointEarned(e) {
     e.preventDefault()
     const {
       pointEarnedId,
       pointSettingId,
-      originalFrequency,
-      frequency,
-      maxFrequencyPerScope,
+      originalQuantity,
+      quantity,
+      // maxFrequencyPerScope,
       originalHole,
       hole,
       scope,
     } = pointEarnedBeingEdited
 
-    const { anyValueHasChanged, holeHasChanged, frequencyHasChanged } =
-      holeOrFrequencyHasChanged(
-        originalFrequency,
-        frequency,
-        originalHole,
-        hole
-      )
+    const { anyValueHasChanged, holeHasChanged, quantityHasChanged } =
+      holeOrQuantityHasChanged(originalQuantity, quantity, originalHole, hole)
 
     if (!anyValueHasChanged) {
       navigate(-1)
       return
     }
 
-    // TODO: check this refactoring is working
-    if (maxFrequencyPerScope) {
-      const holeToValidateAgainst = scope === 'hole' ? +hole : null
-      const ppeTotal = getPlayerPointEarnedQuantity(
-        pointSettingId,
-        roundPointsEarned,
-        holeToValidateAgainst,
-        null
-      )
-      console.log('ppeTotal', ppeTotal)
-      if (ppeQuantityExceedsMax(frequency, ppeTotal, maxFrequencyPerScope)) {
-        // TODO: change this to not auto-remove?
-        toast.error(
-          'Quantity entered would exceed maximum. Please enter a lower quantity.'
-        )
-        return
-      }
-    }
-
     if (holeHasChanged) {
       const updatedholeData = {
-        playerId: playerId,
-        roundId: roundId,
         hole: hole ? +hole : null,
+        playerId,
+        roundId,
       }
 
       const getPlayerHoleRes = await getPlayerHole(updatedholeData)
       const getPlayerHoleResJson = await getPlayerHoleRes.json()
       let updatedPlayerHoleId = null
       if (getPlayerHoleRes.ok) {
-        /** PlayerHole exists, so update PlayerPointEarned to point to it */
+        // TODO: move to function
+        if (scope === 'hole') {
+          const checkPlayerPointEarnedOnHoleRes =
+            await checkPlayerPointEarnedOnHole({
+              playerId,
+              pointSettingId,
+              roundId,
+              hole,
+            })
+
+          if (checkPlayerPointEarnedOnHoleRes.status === 200) {
+            toast.error(
+              `Player has already earned ${pointName} for hole ${hole}`
+            )
+            return
+          }
+        }
+
+        /** update PlayerPointEarned to point to PlayerHole */
         updatedPlayerHoleId = getPlayerHoleResJson.id
       } else {
         /** PlayerHole doesn't exists, so create PlayerHole and update PlayerPointEarned to point to it */
@@ -151,22 +155,20 @@ export default function EditPointEarned() {
       )
       if (updatePlayerPointEarnedRes.ok) {
         getPlayerRoundPointsEarned()
-        // handleCloseModal()
-        // TODO: change message to say hole was updated?
-        toast.success('Point earned was successfully updated')
+        toast.success('Hole was successfully updated')
+        navigateToPlayerRoundPointsEarned()
       }
     }
 
-    if (frequencyHasChanged) {
+    if (quantityHasChanged) {
       const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
         pointEarnedId,
-        { frequency }
+        { quantity }
       )
       if (updatePlayerPointEarnedRes.ok) {
         getPlayerRoundPointsEarned()
-        // handleCloseModal()
-        // TODO: change message to say quantity was updated?
-        toast.success('Point earned was successfully updated')
+        toast.success('Quantity was successfully updated')
+        navigateToPlayerRoundPointsEarned()
       }
     }
   }
@@ -180,13 +182,7 @@ export default function EditPointEarned() {
       setShowDeleteConfirmationModal(false)
       setPointEarnedBeingEdited(defaultPointEarnedBeingEditedState)
       toast.success('Point was successfully deleted')
-      navigate(
-        `/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`,
-        {
-          replace: true,
-          state: { playerName, playerId },
-        }
-      )
+      navigateToPlayerRoundPointsEarned()
     }
   }
 
@@ -210,7 +206,7 @@ export default function EditPointEarned() {
             <b>Value:</b> {pointEarnedBeingEdited.value}
           </p>
           <p>
-            <b>Quantity:</b> {pointEarnedBeingEdited.frequency}
+            <b>Quantity:</b> {pointEarnedBeingEdited.quantity}
           </p>
         </div>
       </>
@@ -219,8 +215,22 @@ export default function EditPointEarned() {
 
   return (
     <>
-      <h3 className="page-title">Edit Player Point Earned</h3>
-      <h3 className="ta-center">{playerName}</h3>
+      <h3 className="decrease-bottom-margin page-title">
+        {playerName} - Edit Point Earned
+      </h3>
+      <div className="ta-center">
+        <Link
+          to={`/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`}
+        >
+          Back to {playerName}'s Round Scoring{' '}
+          <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
+      <div className="ta-center">
+        <Link to={`/league/${leagueId}/round/${roundId}/scoring`}>
+          Round Scoring Home <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
 
       <h4 className={styles.editPointEarnedStaticData}>
         Point:{' '}
@@ -229,25 +239,22 @@ export default function EditPointEarned() {
         </span>
       </h4>
       <form>
-        <BasicInput
-          type="number"
-          min="1"
-          max={
-            frequencyIsActive && maxFrequency ? maxFrequency.toString() : null
-          }
-          name="point-earned-quantity"
-          label={quantityInputLabel}
-          value={pointEarnedBeingEdited.frequency ?? ''}
-          onChange={(e) => {
-            const valueNum = +e.target.value
-            setPointEarnedBeingEdited({
-              ...pointEarnedBeingEdited,
-              frequency: valueNum > 0 ? valueNum : 1,
-            })
-          }}
-          // onBlur={validateInputFrequencyAgainstPointSetting}
-          disabled={!frequencyIsActive}
-        />
+        {scope === 'no_scope' && (
+          <BasicInput
+            type="number"
+            min="1"
+            name="point-earned-quantity"
+            label="Quantity"
+            value={pointEarnedBeingEdited.quantity ?? ''}
+            onChange={(e) => {
+              const valueNum = +e.target.value
+              setPointEarnedBeingEdited({
+                ...pointEarnedBeingEdited,
+                quantity: valueNum > 0 ? valueNum : 1,
+              })
+            }}
+          />
+        )}
 
         <label htmlFor="hole-select">Hole</label>
         <select

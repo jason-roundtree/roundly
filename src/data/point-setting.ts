@@ -3,6 +3,7 @@ export async function createLeaguePointSetting(
   newPointSetting: Record<string, any>,
   roundId?: string
 ): Promise<any> {
+  console.log('newPointSetting: ', newPointSetting)
   try {
     const res = await fetch(
       `http://localhost:3001/api/point-setting/${leagueId}?roundId=${roundId}`,
@@ -46,7 +47,6 @@ export async function deleteLeaguePointSetting(pointSettingId): Promise<any> {
         method: 'DELETE',
       }
     )
-    console.log('delete general point setting res: ', res.json())
     return res
   } catch (err) {
     console.log('delete general point setting error: ', err)

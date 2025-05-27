@@ -1,7 +1,6 @@
 export { default as PlayerHole } from './PlayerHole'
 export { default as PlayerRoundPointsEarnedTable } from './PlayerRoundPointsEarnedTable'
 export { default as PlayerRoundPointsEarnedTableRow } from './PlayerRoundPointsEarnedTableRow'
-export { default as PlayerRoundEnterScoring } from './PlayerRoundEnterScoring'
 export { default as EnterPointOrScore } from './EnterPointOrScore'
 export { default as EnterPointOrScoreRadios } from './EnterPointOrScoreRadios'
 export { default as EnterPointEarned } from './EnterPointEarned'

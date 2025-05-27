@@ -27,7 +27,6 @@ import {
   PlayerRoundScorecard,
   PlayerHole,
   PlayerRoundPointsAndScoring,
-  PlayerRoundEnterScoring,
   EditPointEarned,
   EnterPointOrScore,
 } from './components/PlayerRound'
@@ -109,10 +108,6 @@ export default function Router() {
           path="new-point"
           element={<AddPointSetting pointContext="round" />}
         />
-        {/* <Route
-          path="round-player-scoring"
-          element={<PlayerRoundEnterScoring />}
-        /> */}
         <Route path="round-player-scoring" element={<EnterPointOrScore />} />
         {/* <Route path="rounds/:id/:name/hole/:number" element={<PlayerHole />} /> */}
         {/* <Route path=":playerId/scorecard" element={<PlayerRoundScorecard />} /> */}

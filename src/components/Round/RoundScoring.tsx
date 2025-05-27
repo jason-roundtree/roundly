@@ -26,7 +26,7 @@ export default function RoundScoring() {
 
   const [playersWithPointTotals, generatePlayersWithPointTotals] =
     useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
-
+  console.log('playersWithPointTotals', playersWithPointTotals)
   useEffect(() => {
     generatePlayersWithPointTotals()
   }, [players])
@@ -149,7 +149,9 @@ export default function RoundScoring() {
               return (
                 <li
                   key={player.id}
-                  className={!playerMatchesSearch ? 'hidden' : ''}
+                  className={`editable-list-item ${
+                    !playerMatchesSearch ? 'hidden' : ''
+                  }`}
                 >
                   <span>{playerName}</span>
                   <span className="list-point-value">

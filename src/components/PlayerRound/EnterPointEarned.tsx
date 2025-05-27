@@ -4,15 +4,15 @@ import { toast } from 'react-toastify'
 import Select from '../shared/components/Select'
 import BasicInput from '../shared/components/BasicInput'
 import {
-  ppeQuantityExceedsMax,
-  getPlayerPointEarnedQuantity,
   getSelectableOptions,
-  quantityInputScopeManager,
+  // quantityInputScopeManager,
   selectAllInputText,
 } from '../shared/utils'
 import { PointScopes, PointSetting } from '../../types'
 import { no_scope_key } from '../PointSettings/PointScopeRadios'
 import {
+  checkPlayerPointEarnedInRound,
+  checkPlayerPointEarnedOnHole,
   createOrFindPlayerHole,
   createRoundPlayerPointEarned,
 } from '../../data'
@@ -20,7 +20,7 @@ import {
 interface PointSettingEarnedState {
   id: string
   name: string
-  maxFrequencyPerScope: number | null
+  // maxFrequencyPerScope: number | null
   value: string | number
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
@@ -29,7 +29,7 @@ interface PointSettingEarnedState {
 const defaultSelectedPointEarnedState: PointSettingEarnedState = {
   id: '',
   name: '',
-  maxFrequencyPerScope: null,
+  // maxFrequencyPerScope: null,
   value: '',
   scope: '',
 }
@@ -45,22 +45,17 @@ export default function EnterPointEarned({
   const [selectedPointEarned, setSelectedPointEarned] = useState(
     defaultSelectedPointEarnedState
   )
-  const [pointEarnedFrequency, setPointEarnedFrequency] = useState(1)
-  const playerId = selectedPlayer.id
+  const [pointEarnedQuantity, setPointEarnedQuantity] = useState(1)
+  const selectedPlayerId = selectedPlayer.id
   const {
-    id: pointSettingId,
+    id: selectedPointSettingId,
     scope,
-    maxFrequencyPerScope,
+    // maxFrequencyPerScope,
   } = selectedPointEarned
   console.log('selectedPointEarned >> ', selectedPointEarned)
-  const quantityRef = useRef<HTMLInputElement>(null)
-  // TODO: move this to be managed by state and useEffect?
-  const [frequencyIsActive, quantityInputLabel, maxFrequency] =
-    quantityInputScopeManager(selectedPointEarned)
+  // const quantityRef = useRef<HTMLInputElement>(null)
 
   function handleUpdatePointEarnedState(e) {
-    // TODO: reimplement
-    // setShowOneInputRequiredError(false)
     const pointName = e.target.value
     if (!pointName) {
       setSelectedPointEarned(defaultSelectedPointEarnedState)
@@ -71,62 +66,72 @@ export default function EnterPointEarned({
       setSelectedPointEarned({
         id: pointSetting.id,
         name: pointName,
-        maxFrequencyPerScope: pointSetting.maxFrequencyPerScope,
         value: pointSetting.value,
         scope: pointSetting.scope,
+        // maxFrequencyPerScope: pointSetting.maxFrequencyPerScope,
       })
     }
   }
 
   function clearState() {
     setSelectedPointEarned(defaultSelectedPointEarnedState)
-    setPointEarnedFrequency(1)
+    setPointEarnedQuantity(1)
   }
 
   async function handleSubmitPointEarned() {
-    console.log('handleSubmitPointEarned')
-
-    // TODO: move all validation to separate validation function? Just move max frequency stuff?
     if (!selectedPointEarned.name) {
       toast.error('Please select the point earned')
       return
     }
-    // TODO: Aside from type checking that maxFrequencyPerScope is not null when passing to max checked, does it matter if I check maxFrequencyPerScope or scope here?
-    // if (scope !== no_scope_key) {
-    // TODO: add something that shows or warns if same point has already been entered for hole??
-    if (maxFrequencyPerScope) {
-      const holeToValidateAgainst = scope === 'hole' ? +selectedHole : null
-      const ppeTotal = getPlayerPointEarnedQuantity(
-        pointSettingId,
-        roundPointsEarned,
-        holeToValidateAgainst,
-        null
-      )
-      if (
-        ppeQuantityExceedsMax(
-          pointEarnedFrequency,
-          ppeTotal,
-          maxFrequencyPerScope
-        )
-      ) {
-        // TODO: change this to not auto-remove?
+
+    if (scope === 'hole') {
+      console.log('scope hole', scope)
+      if (!selectedHole) {
+        toast.error('Please select a hole')
+        return
+      }
+      // TODO: move to function
+      const checkPlayerPointEarnedOnHoleRes =
+        await checkPlayerPointEarnedOnHole({
+          playerId: selectedPlayerId,
+          pointSettingId: selectedPointEarned.id,
+          roundId,
+          hole: selectedHole,
+        })
+      if (checkPlayerPointEarnedOnHoleRes.status === 200) {
         toast.error(
-          'Quantity entered would exceed maximum. Please enter a lower quantity.'
+          `Player has already earned ${selectedPointEarned.name} for hole ${selectedHole}`
+        )
+        return
+      }
+    }
+
+    // TODO: move to function
+    if (scope === 'round') {
+      const checkPlayerPointEarnedInRoundRes =
+        await checkPlayerPointEarnedInRound({
+          playerId: selectedPlayerId,
+          pointSettingId: selectedPointSettingId,
+          roundId,
+        })
+      if (checkPlayerPointEarnedInRoundRes.status === 200) {
+        toast.error(
+          `Player has already earned ${selectedPointEarned.name} for this round`
         )
         return
       }
     }
 
     const pointEarnedData = {
-      playerId: playerId,
-      pointSettingId: pointSettingId,
+      playerId: selectedPlayerId,
+      pointSettingId: selectedPointSettingId,
       roundId: roundId,
       playerHoleId: undefined,
-      frequency: pointEarnedFrequency,
+      quantity: pointEarnedQuantity,
     }
     if (selectedHole) {
       const holeData = {
-        playerId: playerId,
+        playerId: selectedPlayerId,
         hole: +selectedHole,
         roundId: roundId,
       }
@@ -170,17 +175,15 @@ export default function EnterPointEarned({
       <BasicInput
         type="number"
         min="1"
-        max={frequencyIsActive && maxFrequency ? maxFrequency.toString() : null}
         name="point-earned-quantity"
-        label={quantityInputLabel}
-        value={pointEarnedFrequency}
+        label="Quantity"
+        value={pointEarnedQuantity}
         onChange={(e) => {
           const valueNum = +e.target.value
-          setPointEarnedFrequency(valueNum > 0 ? valueNum : 1)
+          setPointEarnedQuantity(valueNum > 0 ? valueNum : 1)
         }}
         onFocus={selectAllInputText}
-        // onBlur={validateInputFrequencyAgainstPointSetting}
-        disabled={!frequencyIsActive}
+        disabled={scope === 'hole'}
       />
 
       <button onClick={handleSubmitPointEarned}>Add Point Earned</button>

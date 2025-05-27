@@ -22,7 +22,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
 
   return (
     <>
-      <li>
+      <li className="editable-list-item">
         <span>{name}</span>
         <span className="list-edit-buttons">
           <button

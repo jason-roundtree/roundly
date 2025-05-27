@@ -1,23 +1,23 @@
 import { PlayerHoleScoreState } from '../hooks/usePlayerHoleScoreBeingEdited'
 
 // TODO: is there a way to change to general purpose function or a small library that does something similar?
-export function holeOrFrequencyHasChanged(
-  originalFrequency,
-  frequency,
+export function holeOrQuantityHasChanged(
+  originalQuantity,
+  quantity,
   originalHole,
   hole
 ): {
-  frequencyHasChanged: boolean
+  quantityHasChanged: boolean
   holeHasChanged: boolean
   anyValueHasChanged: boolean
 } {
   const hasChanged = {
-    frequencyHasChanged: false,
+    quantityHasChanged: false,
     holeHasChanged: false,
     anyValueHasChanged: false,
   }
-  if (originalFrequency !== frequency) {
-    hasChanged.frequencyHasChanged = true
+  if (originalQuantity !== quantity) {
+    hasChanged.quantityHasChanged = true
     hasChanged.anyValueHasChanged = true
   }
   if (originalHole !== hole) {

@@ -38,6 +38,7 @@ export default function RoundContainer(): JSX.Element {
 
   async function refreshRoundState() {
     const roundData = await fetchRound(roundId)
+    console.log('refreshRoundState roundData', roundData)
     setRoundData(roundData)
   }
 

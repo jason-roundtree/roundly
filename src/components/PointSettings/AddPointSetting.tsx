@@ -14,7 +14,7 @@ import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import PointScopeRadios from './PointScopeRadios'
-import { no_scope_key } from './PointScopeRadios'
+import { hole_key } from './PointScopeRadios'
 import { RoundContext } from '../Round/RoundContainer'
 import { toast } from 'react-toastify'
 
@@ -23,8 +23,8 @@ type NewPointSettingState = Omit<PointSetting, 'id'>
 const defaultNewPointSettingState: NewPointSettingState = {
   name: '',
   value: 0,
-  scope: no_scope_key,
-  maxFrequencyPerScope: null,
+  scope: hole_key,
+  // maxFrequencyPerScope: null,
   isLeagueSetting: true,
 }
 
@@ -43,7 +43,6 @@ export default function AddPointSetting({
   const [newPointSetting, setNewPointSetting] = useState(
     getDefaultPointSettingState(pointContext)
   )
-  console.log('newPointSetting', newPointSetting)
   const inputRef = useRef<HTMLInputElement>(null)
   const { leagueId, roundId } = useParams() as {
     leagueId: string
@@ -64,12 +63,19 @@ export default function AddPointSetting({
         newPointSetting,
         roundId
       )
+
+      if (res.status === 409) {
+        toast.error(
+          `A point setting named "${newPointSetting.name}" already exists for this round`
+        )
+        return
+      }
+
       const leaguePointJson = await res.json()
       const { id: pointId } = leaguePointJson
-
       // TODO: should i just use roundId param instead?
       if (pointContext === 'round') {
-        const res = await createRoundPointSetting(pointId, roundId)
+        await createRoundPointSetting(pointId, roundId)
       }
 
       if (res.ok) {
@@ -88,15 +94,15 @@ export default function AddPointSetting({
     setNewPointSetting({ ...newPointSetting, value: +target.value })
   }
 
-  function handlePointMaxFrequencyInputChange({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>): void {
-    const valueNum = +target.value
-    setNewPointSetting({
-      ...newPointSetting,
-      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
-    })
-  }
+  // function handlePointMaxFrequencyInputChange({
+  //   target,
+  // }: React.ChangeEvent<HTMLInputElement>): void {
+  //   const valueNum = +target.value
+  //   setNewPointSetting({
+  //     ...newPointSetting,
+  //     maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
+  //   })
+  // }
 
   function handleInputChange({
     target,
@@ -117,13 +123,9 @@ export default function AddPointSetting({
         })
         break
       case 'pointScope-radios':
-        const isNoScope = value === no_scope_key
         setNewPointSetting({
           ...newPointSetting,
           scope: value,
-          maxFrequencyPerScope: isNoScope
-            ? null
-            : newPointSetting.maxFrequencyPerScope ?? 1,
         })
         break
       default:
@@ -140,6 +142,14 @@ export default function AddPointSetting({
         <Link to={`/league/${leagueId}/point-settings`}>
           League Point Settings <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
+      </div>
+
+      <div className="ta-center">
+        {pointContext === 'round' && (
+          <Link to={`/league/${leagueId}/round/${roundId}/point-settings`}>
+            Round Point Settings <FontAwesomeIcon icon={faAnglesRight} />
+          </Link>
+        )}
       </div>
 
       {pointContext === 'round' && (
@@ -189,7 +199,7 @@ export default function AddPointSetting({
         selectedScope={newPointSetting.scope}
       />
 
-      {newPointSetting.scope !== no_scope_key && (
+      {/* {newPointSetting.scope !== no_scope_key && (
         <BasicInput
           // disabled={newPointSetting.scope === no_scope_key}
           type="number"
@@ -200,7 +210,7 @@ export default function AddPointSetting({
           onChange={handlePointMaxFrequencyInputChange}
           value={newPointSetting.maxFrequencyPerScope ?? ''}
         />
-      )}
+      )} */}
 
       <div className="form-submit">
         <button onClick={handleCreatePointSetting}>Add Point</button>

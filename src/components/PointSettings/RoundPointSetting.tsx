@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { RoundContext } from '../Round/RoundContainer'
 import BasicInput from '../shared/components/BasicInput'
-import PointScopeRadios, { no_scope_key } from './PointScopeRadios'
+import PointScopeRadios, { round_key } from './PointScopeRadios'
 import Checkbox from '../shared/components/Checkbox'
 import {
   EditablePointSetting,
@@ -18,6 +18,8 @@ import {
   updatePointSetting,
 } from '../../data'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 type EditableRoundPointSetting = EditablePointSetting & {
   isLeagueSetting: boolean
@@ -36,11 +38,13 @@ export default function RoundPointSetting() {
   const { id, name, value, isLeagueSetting, scope } = pointSetting
   const pointContextDescription = isLeagueSetting
     ? 'This is a league-wide point setting that applies to all rounds'
-    : 'This is a one-off point setting that only applies to this round'
+    : 'This is a custom point setting that only applies to this round'
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
   const routeToNavigateToOnUpdate = `/league/${leagueId}/round/${roundId}/point-settings`
-  //   const { refreshRoundState } = useContext(RoundContext)
+  const { pointSettings: roundPointSettings, refreshRoundState } =
+    useContext(RoundContext)
+  const pointIsActiveInRound = roundPointSettings.some((p) => p.id === id)
 
   //   TODO: add ability to only update league points for the round (currently it updates it for league)
   async function handleUpdatePointSetting(): Promise<void> {
@@ -61,9 +65,7 @@ export default function RoundPointSetting() {
     const res = await deleteLeaguePointSetting(pointId)
     if (res.ok) {
       toast.success('Point setting was successfully deleted')
-      navigate(routeToNavigateToOnUpdate, {
-        replace: true,
-      })
+      refreshRoundState()
     }
   }
 
@@ -71,45 +73,50 @@ export default function RoundPointSetting() {
     const res = await removeRoundPointSetting(id, roundId)
     if (res.ok) {
       toast.success('League point deactivated for round')
-      navigate(routeToNavigateToOnUpdate, {
-        replace: true,
-      })
+      refreshRoundState()
+      navigate(-1)
     }
   }
 
   function handleInputChange({
-    target: { name: name, value: value },
+    target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
     setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
   }
 
   function handleRadioInputChange(e) {
     const updatedScope = e.target.value
-    const isNoScope = updatedScope === no_scope_key
+    // const isNoScope = updatedScope === round_key
     setUpdatedPointSetting({
       ...updatedPointSetting,
       scope: updatedScope,
-      maxFrequencyPerScope: isNoScope
-        ? 1
-        : updatedPointSetting.maxFrequencyPerScope,
+      // maxFrequencyPerScope: isNoScope
+      //   ? 1
+      //   : updatedPointSetting.maxFrequencyPerScope,
     })
   }
 
   // TODO: DRYify with other instances of nearly same function (e.g. AddPointSetting)
-  function handlePointMaxFrequencyInputChange({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>): void {
-    const valueNum = +target.value
-    setUpdatedPointSetting({
-      ...updatedPointSetting,
-      maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
-    })
-  }
+  // function handlePointMaxFrequencyInputChange({
+  //   target,
+  // }: React.ChangeEvent<HTMLInputElement>): void {
+  //   const valueNum = +target.value
+  //   setUpdatedPointSetting({
+  //     ...updatedPointSetting,
+  //     // maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
+  //   })
+  // }
 
   return (
     <div>
       <h3 className="page-title">Point Setting</h3>
-      <p className="ital">{pointContextDescription}</p>
+      <div className="ta-center">
+        <Link to={`/league/${leagueId}/round/${roundId}/point-settings`}>
+          Round Point Settings <FontAwesomeIcon icon={faAnglesRight} />
+        </Link>
+      </div>
+
+      <p className="ital mt-lg">{pointContextDescription}</p>
       {!isLeagueSetting && (
         <Checkbox
           id="updateRoundPointToLeague"
@@ -149,9 +156,9 @@ export default function RoundPointSetting() {
       />
 
       {/* TODO: make into component or fold into PointScopeRadios since it's currently used in 3 components */}
-      {updatedPointSettingScope !== no_scope_key && (
+      {/* {updatedPointSettingScope !== round_key && (
         <BasicInput
-          // disabled={updatedPointSetting.scope === no_scope_key}
+          // disabled={updatedPointSetting.scope === round_key}
           type="number"
           min="1"
           // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
@@ -160,7 +167,7 @@ export default function RoundPointSetting() {
           onChange={handlePointMaxFrequencyInputChange}
           value={updatedPointSetting.maxFrequencyPerScope ?? ''}
         />
-      )}
+      )} */}
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal
@@ -173,7 +180,7 @@ export default function RoundPointSetting() {
       )}
 
       <button onClick={handleUpdatePointSetting}>Save</button>
-      {isLeagueSetting ? (
+      {isLeagueSetting && pointIsActiveInRound ? (
         <button onClick={() => removePointSettingFromRound(id)}>
           Deactivate for round
         </button>

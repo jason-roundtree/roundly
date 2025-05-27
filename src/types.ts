@@ -61,7 +61,7 @@ export interface PointSetting {
   value: number
   scope: (typeof POINT_SCOPE_SETTINGS)[number]['key']
   // TODO: better to use null over string like 'unlimited'??
-  maxFrequencyPerScope: number | null
+  // maxFrequencyPerScope: number | null
   isLeagueSetting: boolean
 }
 export type PointScopes = PointSetting['scope']
@@ -71,12 +71,16 @@ export const POINT_SCOPE_DESCRIPTION =
 
 export const POINT_SCOPE_SETTINGS = [
   { key: 'no_scope', label: 'No limit' },
-  { key: 'hole', label: 'Earned by hole' },
-  { key: 'round', label: 'Earned by round' },
+  { key: 'hole', label: 'Once per hole' },
+  { key: 'round', label: 'Once per round' },
 ] as const
 
 // export type PointScopeKeys = (typeof POINT_SCOPE_SETTINGS)[number]['key']
 // export type PointScopeValues = (typeof POINT_SCOPE_SETTINGS)[number]['label']
+
+export function getPointScopeLabelFromKey(key: PointScopes): string {
+  return POINT_SCOPE_SETTINGS.find((p) => p.key === key)?.label ?? ''
+}
 
 // export function getPointScopeLabelFromKey(key: PointScopeKeys) {
 //   for (const p of POINT_SCOPE_SETTINGS) {

@@ -14,9 +14,9 @@ interface PlayerRoundPointsEarnedTableRow {
   name: string
   value: number
   hole?: number
-  frequency: number
+  quantity: number
   scope: PointSetting['scope']
-  maxFrequencyPerScope: number
+  // maxFrequencyPerScope: number
   playerId?: string
   playerName: string
   playerHoleId: string
@@ -28,9 +28,9 @@ export default function PlayerRoundPointsEarnedTableRow({
   name,
   value,
   hole,
-  frequency,
+  quantity,
   scope,
-  maxFrequencyPerScope,
+  // maxFrequencyPerScope,
   playerId,
   playerName,
   playerHoleId,
@@ -64,16 +64,17 @@ export default function PlayerRoundPointsEarnedTableRow({
               value,
               originalHole: hole ?? '',
               hole: hole ?? '',
-              originalFrequency: frequency,
-              frequency,
-              maxFrequencyPerScope,
+              originalQuantity: quantity,
+              quantity,
+              // maxFrequencyPerScope,
             },
+            replace: true,
           })
         }}
       >
         <td>{name}</td>
         <td>{value}</td>
-        <td>{frequency}</td>
+        <td>{quantity}</td>
         <td>{hole ?? ''}</td>
         {/* <td>
           <Link

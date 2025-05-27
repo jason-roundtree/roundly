@@ -11,18 +11,11 @@ export default function EnterHoleScore({
   roundId,
 }) {
   const [holeScore, setHoleScore] = useState<number | null>(null)
+  console.log('holeScore', holeScore)
   const playerId = selectedPlayer.id
 
   function handleUpdateHoleScoreState(e) {
-    // TODO: reimplement
-    // setShowOneInputRequiredError(false)
-    const inputValue = e.target.value
-    if (inputValue < 1) {
-      // setHoleScore(null)
-      return
-    } else {
-      setHoleScore(+inputValue)
-    }
+    setHoleScore(+e.target.value)
   }
 
   function clearState() {
@@ -34,7 +27,7 @@ export default function EnterHoleScore({
       toast.error('Please select a hole')
       return
     }
-    if (!holeScore) {
+    if (holeScore === null) {
       toast.error('Please enter a score for the hole')
       return
     }
@@ -52,33 +45,29 @@ export default function EnterHoleScore({
     const playerHoleRes = await createOrFindPlayerHole(holeData)
     if (playerHoleRes.ok) {
       const [playerHole, created] = await playerHoleRes.json()
-      console.log('playerHole: ', { playerHole, created })
       holeData.score = holeScore
-      let scoreSuccesfullyEnteredMessage = 'The hole score has been created'
+      let scoreIsBeingUpdated = false
+
       if (playerHole.score && playerHole.score !== holeScore) {
-        // TODO: show confirm to confirm user wants to update score
+        /* hole score already exists */
+        // TODO: update to a modal or something other than window.confirm
         const userConfirmsUpdate = window.confirm(
-          'This player already has a score for this hole. Are you sure you wan to update the score?'
+          'Player already has a score for this hole. Do you want to update it?'
         )
         if (userConfirmsUpdate) {
-          console.log('this is where the update score call would be 👻')
-          // TODO: ultimately add check for score is was actually updated
-          scoreSuccesfullyEnteredMessage = 'The hole score has been updated'
+          scoreIsBeingUpdated = true
+        } else {
+          return
         }
       }
-      console.log('holeData with score', holeData)
       const updatedPlayerHoleScoreRes = await updatePlayerHole(
         playerHole.id,
         holeData
       )
-      console.log('updatedPlayerHoleScoreRes', updatedPlayerHoleScoreRes)
       if (updatedPlayerHoleScoreRes.ok) {
-        // TODO: show confirmation
-        console.log(
-          'scoreSuccesfullyEnteredMessage: ',
-          scoreSuccesfullyEnteredMessage
+        toast.success(
+          `Score successfully ${scoreIsBeingUpdated ? 'updated' : 'added'}`
         )
-        toast.success(scoreSuccesfullyEnteredMessage)
         clearState()
       }
     }
@@ -88,10 +77,10 @@ export default function EnterHoleScore({
     <>
       <BasicInput
         type="number"
-        min="1"
+        min="0"
         name="hole-score"
         label="Hole Score"
-        value={holeScore ? holeScore : ''}
+        value={holeScore ?? ''}
         onChange={handleUpdateHoleScoreState}
       />
 

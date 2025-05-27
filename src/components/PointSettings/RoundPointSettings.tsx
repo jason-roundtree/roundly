@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { faAnglesRight, faSnowflake } from '@fortawesome/free-solid-svg-icons'
 
 import { RoundContext } from '../Round/RoundContainer'
 import {
@@ -10,7 +10,7 @@ import {
   fetchLeaguePointSettings,
 } from '../../data'
 import RoundPointSettingsListItem from './RoundPointSettingsListItem'
-import { PointSetting } from '../../types'
+import { getPointScopeLabelFromKey, PointSetting } from '../../types'
 import { sortArrayOfObjects } from '../shared/utils'
 
 export default function RoundPointSettings(): JSX.Element {
@@ -20,7 +20,6 @@ export default function RoundPointSettings(): JSX.Element {
   const [inactivePointSettings, setInactivePointSettings] = useState<
     PointSetting[]
   >([])
-  const [detailsAreBulkToggledOn, setDetailsAreBulkToggledOn] = useState(false)
 
   const params = useParams()
   // TODO: why can't i destructure params above without TS complaining?
@@ -42,13 +41,6 @@ export default function RoundPointSettings(): JSX.Element {
   useEffect(() => {
     getInactiveRoundPointSettings()
   }, [leaguePointSettings])
-
-  useEffect(() => {
-    const detailsToggles = Array.from(document.querySelectorAll('details'))
-    for (const t of detailsToggles) {
-      t.open = detailsAreBulkToggledOn
-    }
-  }, [detailsAreBulkToggledOn])
 
   async function getLeaguePointSettings() {
     const leaguePointSettings = await fetchLeaguePointSettings(leagueId)
@@ -85,23 +77,16 @@ export default function RoundPointSettings(): JSX.Element {
           <FontAwesomeIcon icon={faAnglesRight} />
         </Link>
       </div>
-
       {/* TODO: make this round/league agnostic? */}
       <div className="centered-button">
         <Link to={`/league/${leagueId}/round/${roundId}/new-point`}>
           <button>Create New Round Point</button>
         </Link>
       </div>
-
-      <button
-        className="toggle-button"
-        onClick={() => setDetailsAreBulkToggledOn((s) => !s)}
-      >
-        {/* {detailsAreBulkToggledOn ? 'Collapse' : 'Expand'} All Point Details */}
-        Toggle all point details
-      </button>
-
-      <p className="non-input-label">Active Round Points</p>
+      <p className="non-input-label">Active</p>
+      <p style={{ fontSize: '0.8rem' }}>
+        <FontAwesomeIcon icon={faSnowflake} /> = Custom round point
+      </p>
       <ul className="editable-list--points">
         {roundPointSettings.length ? (
           sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
@@ -110,6 +95,7 @@ export default function RoundPointSettings(): JSX.Element {
                 key={pointSetting.id}
                 pointSetting={pointSetting}
                 removePointSettingFromRound={removePointSettingFromRound}
+                refreshState={refreshRoundState}
               />
             )
           })
@@ -117,8 +103,7 @@ export default function RoundPointSettings(): JSX.Element {
           <p className="indented-text-small">No active points</p>
         )}
       </ul>
-
-      <p className="non-input-label">Inactive League Points</p>
+      <p className="non-input-label">Inactive</p>
       {/* TODO: add edit button to inactive points? If not then probably change this className */}
       <ul className="editable-list--points">
         {inactivePointSettings.length ? (
@@ -126,36 +111,30 @@ export default function RoundPointSettings(): JSX.Element {
             {
               /* TODO: make this into component/incorporate it with RoundPointSettingsListItem? */
             }
-            const { scope, maxFrequencyPerScope, isLeagueSetting } =
-              pointSetting
-            const scopeAndMax =
-              scope === 'no_scope'
-                ? 'No limit'
-                : `${maxFrequencyPerScope}x max per ${scope}`
+            const {
+              scope,
+              // maxFrequencyPerScope,
+            } = pointSetting
 
-            const oneOffRoundPoint = !isLeagueSetting && 'One-off round point'
             return (
-              <details key={pointSetting.id}>
-                <summary>
-                  <span className="list-point-name">{pointSetting.name}</span>
-                  <span className="list-point-value">{pointSetting.value}</span>
-                  <span className="list-edit-buttons non-round-point-setting">
-                    <button
-                      onClick={() => addPointSettingToRound(pointSetting.id)}
-                    >
-                      Activate
-                    </button>
-                  </span>
-                </summary>
-                <div className="details-body">
-                  <span className="list-point-round-point">
-                    {oneOffRoundPoint}
-                  </span>
-                  <span className="list-point-scope-and-frequency">
-                    {scopeAndMax}
-                  </span>
-                </div>
-              </details>
+              <div
+                key={pointSetting.id}
+                className="editable-list-item point-setting-item"
+              >
+                <span className="list-point-name">{pointSetting.name}</span>
+                <span className="list-point-value">{pointSetting.value}</span>
+                <span className="list-point-scope">
+                  {getPointScopeLabelFromKey(scope)}
+                </span>
+
+                <span className="list-edit-buttons non-round-point-setting">
+                  <button
+                    onClick={() => addPointSettingToRound(pointSetting.id)}
+                  >
+                    Activate
+                  </button>
+                </span>
+              </div>
             )
           })
         ) : (

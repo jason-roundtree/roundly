@@ -1,14 +1,7 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
-import {
-  EditablePointSettingDetailsItem,
-  EditablePointSettingListItem,
-  PointScopeRadios,
-} from '.'
-import { PointSetting } from '../../types'
-import { no_scope_key } from './PointScopeRadios'
+import { EditablePointSettingDetailsItem } from '.'
 import { toast } from 'react-toastify'
 
 // TODO: add same defaultState typing for LeaguePlayers?
@@ -20,7 +13,7 @@ export default function LeaguePointSettingsListItem({
   leagueId,
 }): JSX.Element {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const { id, name, value, scope } = pointSetting
+  const { id, name, value } = pointSetting
 
   return (
     <>

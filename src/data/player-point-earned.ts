@@ -3,7 +3,7 @@ export interface PointEarnedAPI {
   pointSettingId: string
   roundId?: string
   playerHoleId?: string
-  frequency: number
+  quantity: number
 }
 
 export async function createRoundPlayerPointEarned({
@@ -11,7 +11,7 @@ export async function createRoundPlayerPointEarned({
   pointSettingId,
   roundId,
   playerHoleId,
-  frequency,
+  quantity,
 }: PointEarnedAPI): Promise<any> {
   try {
     const res = await fetch('http://localhost:3001/api/player-point-earned', {
@@ -22,7 +22,7 @@ export async function createRoundPlayerPointEarned({
         pointSettingId,
         roundId,
         playerHoleId,
-        frequency,
+        quantity,
       }),
     })
     console.log('createRoundPlayerPointEarned res', res)
@@ -66,5 +66,85 @@ export async function deletePlayerPointEarned(pointEarnedId): Promise<any> {
     return res
   } catch (err) {
     console.log('deletePlayerPointEarned error: ', err)
+  }
+}
+
+export async function checkPlayerPointEarnedOnHole({
+  playerId,
+  pointSettingId,
+  roundId,
+  hole,
+}: {
+  playerId: string
+  pointSettingId: string
+  roundId: string
+  hole: string
+}): Promise<any> {
+  try {
+    const queryParams = new URLSearchParams({
+      playerId,
+      pointSettingId,
+      roundId,
+      hole,
+    }).toString()
+    const res = await fetch(
+      `http://localhost:3001/api/player-point-earned/hole-point-earned?${queryParams}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    console.log('checkPlayerPointEarned res: ', res)
+    if (res.status === 200) {
+      return {
+        status: res.status,
+        data: await res.json(),
+      }
+    } else {
+      return {
+        status: res.status,
+        message: 'Point not earned on hole',
+      }
+    }
+  } catch (err) {
+    console.log('checkPlayerPointEarned error: ', err)
+  }
+}
+
+export async function checkPlayerPointEarnedInRound({
+  playerId,
+  pointSettingId,
+  roundId,
+}: {
+  playerId: string
+  pointSettingId: string
+  roundId: string
+}): Promise<any> {
+  try {
+    const queryParams = new URLSearchParams({
+      playerId,
+      pointSettingId,
+      roundId,
+    }).toString()
+    const res = await fetch(
+      `http://localhost:3001/api/player-point-earned/round-point-earned?${queryParams}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    if (res.status === 200) {
+      return {
+        status: res.status,
+        data: await res.json(),
+      }
+    } else {
+      return {
+        status: res.status,
+        message: 'Point not earned in round',
+      }
+    }
+  } catch (err) {
+    console.log('checkPlayerPointEarned in round error: ', err)
   }
 }
