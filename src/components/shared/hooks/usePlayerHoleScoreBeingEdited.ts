@@ -3,14 +3,14 @@ import { NumberOrNull } from '../../../types'
 
 export interface PlayerHoleScoreState {
   playerHoleId: string | ''
-  score: NumberOrNull
+  score: number | ''
   hole: NumberOrNull
 }
 
 // TODO: change null to string here and in type?
 const defaultScoreBeingEditedState: PlayerHoleScoreState = {
   playerHoleId: '',
-  score: null,
+  score: '',
   hole: null,
 }
 

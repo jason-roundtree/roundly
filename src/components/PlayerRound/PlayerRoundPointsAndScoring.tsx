@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect, useState } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -32,7 +33,6 @@ import usePlayerHoleScoreBeingEdited, {
   PlayerHoleScoreState,
 } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
 import styles from './PlayerRoundPointsAndScoring.module.css'
-import { NumberOrNull } from '../../types'
 
 // TODO: somehow combine with PlayerHole interface in types?
 interface PlayerHole {
@@ -60,7 +60,7 @@ export default function PlayerRoundPointsAndScoring() {
     PlayerHoleScoreState[]
   >([])
   const [showEditScoreModal, setShowEditScoreModal] = useState(false)
-  const [currentScore, setCurrentScore] = useState<NumberOrNull>(null)
+  const [currentScore, setCurrentScore] = useState<number | ''>('')
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
@@ -82,6 +82,16 @@ export default function PlayerRoundPointsAndScoring() {
     setRoundHoleScores(mapScoresToState(holesInRound, roundHoleScoreData))
   }, [roundHoleScoreData])
 
+  // useCallback needed to get ref because input is rendered in modal
+  const inputRef = React.useCallback(
+    (node: HTMLInputElement | null) => {
+      if (showEditScoreModal && node) {
+        node.focus()
+      }
+    },
+    [showEditScoreModal]
+  )
+
   async function getPlayerRoundHoleScoreData() {
     const res = await getPlayerHoleScores(playerId, roundId, true)
     if (res.status === 200) {
@@ -94,7 +104,8 @@ export default function PlayerRoundPointsAndScoring() {
   }
 
   function handleUpdateHoleScoreState(e) {
-    setScoreBeingEdited({ ...scoreBeingEdited, score: +e.target.value })
+    const value = e.target.value
+    setScoreBeingEdited({ ...scoreBeingEdited, score: value ? value : '' })
   }
 
   function handleOpenEditScoreModal({
@@ -103,13 +114,17 @@ export default function PlayerRoundPointsAndScoring() {
     score,
   }: PlayerHoleScoreState) {
     setCurrentScore(score)
-    setScoreBeingEdited({ playerHoleId, hole, score: score ? +score : null })
+    setScoreBeingEdited({
+      playerHoleId,
+      hole,
+      score: score ?? '',
+    })
     setShowEditScoreModal(true)
   }
 
   // TODO: a better way to handle this where I don't need to check both round scores and round PPE to find playerHoleId? (e.g. maybe add playerHoleId to scorecard even for holes without score?)
   async function updateHoleScore(): Promise<void> {
-    if (score === null) {
+    if (score === '') {
       handleCloseModal()
       return
     }
@@ -128,7 +143,9 @@ export default function PlayerRoundPointsAndScoring() {
     let currentScoreWasUpdated = false
     if (_playerHoleId) {
       /** PlayerHole exists so add or update score to it */
-      const res = await updatePlayerHole(_playerHoleId, { score })
+      const res = await updatePlayerHole(_playerHoleId, {
+        score: score ? +score : null,
+      })
       if (res.ok) {
         scoreUpdateSuccessful = true
         if (currentScore !== score) {
@@ -141,7 +158,7 @@ export default function PlayerRoundPointsAndScoring() {
         playerId,
         roundId,
         hole,
-        score,
+        score: score ? +score : null,
       })
       if (playerHoleRes.ok) {
         scoreUpdateSuccessful = true
@@ -241,9 +258,10 @@ export default function PlayerRoundPointsAndScoring() {
             type="number"
             label="Hole Score"
             name="score"
-            value={scoreBeingEdited.score ?? ''}
+            value={scoreBeingEdited.score}
             onChange={handleUpdateHoleScoreState}
             onFocus={selectAllInputText}
+            ref={inputRef}
           />
         </Modal>
       )}

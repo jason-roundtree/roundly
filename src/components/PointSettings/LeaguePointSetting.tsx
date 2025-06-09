@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import BasicInput from '../shared/components/BasicInput'
@@ -18,7 +18,6 @@ export const defaultEditablePointSettingState: EditablePointSetting = {
   value: '',
   scope: no_scope_key,
   isLeagueSetting: true,
-  // maxFrequencyPerScope: null,
 }
 
 export default function LeaguePointSetting() {
@@ -59,31 +58,17 @@ export default function LeaguePointSetting() {
   }
 
   function handleInputChange({
-    target: { name: name, value: value },
+    target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
     setUpdatedPointSetting({ ...updatedPointSetting, [name]: value })
   }
 
   function handleRadioInputChange(e) {
     const updatedScope = e.target.value
-    const isNoScope = updatedScope === no_scope_key
+    // const isNoScope = updatedScope === no_scope_key
     setUpdatedPointSetting({
       ...updatedPointSetting,
       scope: updatedScope,
-      // maxFrequencyPerScope: isNoScope
-      //   ? 1
-      //   : updatedPointSetting.maxFrequencyPerScope,
-    })
-  }
-
-  // TODO: DRYify with other instances of nearly same function (e.g. AddPointSetting)
-  function handlePointMaxFrequencyInputChange({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>): void {
-    const valueNum = +target.value
-    setUpdatedPointSetting({
-      ...updatedPointSetting,
-      // maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
     })
   }
 

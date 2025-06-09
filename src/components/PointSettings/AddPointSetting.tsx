@@ -5,24 +5,22 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
-import {
-  capitalizeFirstLetter,
-  selectAllInputText,
-  validateStringInput,
-} from '../shared/utils'
+import { capitalizeFirstLetter, selectAllInputText } from '../shared/utils'
 import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import PointScopeRadios from './PointScopeRadios'
 import { hole_key } from './PointScopeRadios'
-import { RoundContext } from '../Round/RoundContainer'
+// import { RoundContext } from '../Round/RoundContainer'
 import { toast } from 'react-toastify'
 
-type NewPointSettingState = Omit<PointSetting, 'id'>
+type NewPointSettingState = Omit<PointSetting, 'id' | 'value'> & {
+  value: string
+}
 
 const defaultNewPointSettingState: NewPointSettingState = {
   name: '',
-  value: 0,
+  value: '',
   scope: hole_key,
   // maxFrequencyPerScope: null,
   isLeagueSetting: true,
@@ -48,7 +46,7 @@ export default function AddPointSetting({
     leagueId: string
     roundId: string
   }
-  const { refreshRoundState } = useContext(RoundContext)
+  // const { refreshRoundState } = useContext(RoundContext)
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
@@ -91,18 +89,8 @@ export default function AddPointSetting({
   function handlePointValueInputChange({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setNewPointSetting({ ...newPointSetting, value: +target.value })
+    setNewPointSetting({ ...newPointSetting, value: target.value })
   }
-
-  // function handlePointMaxFrequencyInputChange({
-  //   target,
-  // }: React.ChangeEvent<HTMLInputElement>): void {
-  //   const valueNum = +target.value
-  //   setNewPointSetting({
-  //     ...newPointSetting,
-  //     maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
-  //   })
-  // }
 
   function handleInputChange({
     target,
@@ -181,7 +169,7 @@ export default function AddPointSetting({
         name="name"
         onChange={handleInputChange}
         value={newPointSetting.name}
-        inputRef={inputRef}
+        ref={inputRef}
       />
 
       <BasicInput
@@ -198,19 +186,6 @@ export default function AddPointSetting({
         onChange={handleRadioInputChange}
         selectedScope={newPointSetting.scope}
       />
-
-      {/* {newPointSetting.scope !== no_scope_key && (
-        <BasicInput
-          // disabled={newPointSetting.scope === no_scope_key}
-          type="number"
-          min="1"
-          // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-          label="Max Frequency Per Scope"
-          name="maxFrequencyPerScope"
-          onChange={handlePointMaxFrequencyInputChange}
-          value={newPointSetting.maxFrequencyPerScope ?? ''}
-        />
-      )} */}
 
       <div className="form-submit">
         <button onClick={handleCreatePointSetting}>Add Point</button>

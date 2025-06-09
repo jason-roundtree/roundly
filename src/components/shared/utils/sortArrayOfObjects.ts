@@ -11,7 +11,7 @@ export default function sortArrayOfObjects(
   property: string,
   order: 'ASC' | 'DESC' = 'ASC'
 ): Array<any> {
-  return arr.toSorted((a, b) => {
+  return arr?.toSorted((a, b) => {
     const aIsString = typeof a[property] === 'string'
     const bIsString = typeof b[property] === 'string'
     const itemA = aIsString ? a[property].toUpperCase() : a[property]

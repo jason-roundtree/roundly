@@ -24,7 +24,6 @@ export function holeOrQuantityHasChanged(
     hasChanged.holeHasChanged = true
     hasChanged.anyValueHasChanged = true
   }
-  console.log('$$$$$ hasChanged ^^^^^', hasChanged)
   return hasChanged
 }
 
@@ -34,7 +33,7 @@ export function mapScoresToState(holesInRound, roundHoleScoreData) {
     (_, i) => ({
       playerHoleId: '',
       hole: i + 1,
-      score: null,
+      score: '',
     })
   )
   for (const playerHole of roundHoleScoreData) {

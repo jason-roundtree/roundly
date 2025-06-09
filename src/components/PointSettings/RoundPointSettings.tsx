@@ -84,9 +84,14 @@ export default function RoundPointSettings(): JSX.Element {
         </Link>
       </div>
       <p className="non-input-label">Active</p>
-      <p style={{ fontSize: '0.8rem' }}>
-        <FontAwesomeIcon icon={faSnowflake} /> = Custom round point
-      </p>
+      {roundPointSettings.length ? (
+        <p style={{ fontSize: '0.8rem' }}>
+          <FontAwesomeIcon icon={faSnowflake} /> = Custom round point
+        </p>
+      ) : (
+        ''
+      )}
+
       <ul className="editable-list--points">
         {roundPointSettings.length ? (
           sortArrayOfObjects(roundPointSettings, 'name').map((pointSetting) => {
