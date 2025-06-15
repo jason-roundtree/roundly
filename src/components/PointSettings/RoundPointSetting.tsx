@@ -1,10 +1,11 @@
-import { useState, useContext } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState, useContext, useEffect } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useQuery } from '@tanstack/react-query'
 
 import { RoundContext } from '../Round/RoundContainer'
 import BasicInput from '../shared/components/BasicInput'
-import PointScopeRadios, { round_key } from './PointScopeRadios'
+import PointScopeRadios from './PointScopeRadios'
 import Checkbox from '../shared/components/Checkbox'
 import {
   EditablePointSetting,
@@ -30,18 +31,29 @@ const defaultState: EditableRoundPointSetting = {
 }
 
 export default function RoundPointSetting() {
+  const { leagueId, roundId, pointSettingName } = useParams()
   const location = useLocation()
-  const { leagueId, roundId, pointSetting } = location.state
+  const { pointSettingId } = location.state
+
+  const {
+    data: pointSetting,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['pointSetting', pointSettingId],
+    queryFn: () => getPointSetting(pointSettingId).then((res) => res.json()),
+    enabled: Boolean(pointSettingId),
+  })
+
   const [updatedPointSetting, setUpdatedPointSetting] =
     useState<EditableRoundPointSetting>(() => pointSetting || defaultState)
-  const updatedPointSettingScope = updatedPointSetting.scope
-  const { id, name, value, isLeagueSetting, scope } = pointSetting
+  const { id, name, isLeagueSetting } = pointSetting || {}
+
   const pointContextDescription = isLeagueSetting
     ? 'This is a league-wide point setting that applies to all rounds'
     : 'This is a custom point setting that only applies to this round'
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
-  const routeToNavigateToOnUpdate = `/league/${leagueId}/round/${roundId}/point-settings`
   const { pointSettings: roundPointSettings, refreshRoundState } =
     useContext(RoundContext)
   const pointIsActiveInRound = roundPointSettings.some((p) => p.id === id)
@@ -55,9 +67,7 @@ export default function RoundPointSetting() {
     const res = await updatePointSetting(id, updatedPointSetting)
     if (res.ok) {
       toast.success('Point setting was successfully updated')
-      navigate(routeToNavigateToOnUpdate, {
-        replace: true,
-      })
+      navigate(-1)
     }
   }
 
@@ -90,22 +100,14 @@ export default function RoundPointSetting() {
     setUpdatedPointSetting({
       ...updatedPointSetting,
       scope: updatedScope,
-      // maxFrequencyPerScope: isNoScope
-      //   ? 1
-      //   : updatedPointSetting.maxFrequencyPerScope,
     })
   }
 
-  // TODO: DRYify with other instances of nearly same function (e.g. AddPointSetting)
-  // function handlePointMaxFrequencyInputChange({
-  //   target,
-  // }: React.ChangeEvent<HTMLInputElement>): void {
-  //   const valueNum = +target.value
-  //   setUpdatedPointSetting({
-  //     ...updatedPointSetting,
-  //     // maxFrequencyPerScope: valueNum > 0 ? valueNum : 1,
-  //   })
-  // }
+  useEffect(() => {
+    if (pointSetting) {
+      setUpdatedPointSetting(pointSetting)
+    }
+  }, [pointSetting])
 
   return (
     <div>
@@ -154,20 +156,6 @@ export default function RoundPointSetting() {
         onChange={handleRadioInputChange}
         selectedScope={updatedPointSetting.scope}
       />
-
-      {/* TODO: make into component or fold into PointScopeRadios since it's currently used in 3 components */}
-      {/* {updatedPointSettingScope !== round_key && (
-        <BasicInput
-          // disabled={updatedPointSetting.scope === round_key}
-          type="number"
-          min="1"
-          // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-          label="Max Frequency Per Scope"
-          name="maxFrequencyPerScope"
-          onChange={handlePointMaxFrequencyInputChange}
-          value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-        />
-      )} */}
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal

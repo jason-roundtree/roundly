@@ -23,17 +23,7 @@ export default function EditablePointSettingDetailsItem({
   removeButtonText,
 }: EditablePointSettingItemProps): JSX.Element {
   const { leagueId, roundId } = useParams()
-  const {
-    name,
-    value,
-    scope,
-    // maxFrequencyPerScope,
-    isLeagueSetting,
-  } = pointSetting
-  // const scopeAndMax =
-  //   scope === 'no_scope'
-  //     ? 'No limit'
-  //     : `${maxFrequencyPerScope}x max per ${scope}`
+  const { name, value, scope, isLeagueSetting, id } = pointSetting
 
   // const oneOffRoundPoint = !isLeagueSetting && 'One-off round point'
 
@@ -52,8 +42,7 @@ export default function EditablePointSettingDetailsItem({
       <span className="list-edit-buttons">
         <Link
           to={pointEditRoute}
-          // replace
-          state={{ leagueId, roundId, pointSetting }}
+          state={{ leagueId, roundId, pointSettingId: pointSetting.id }}
         >
           <button>Edit</button>
         </Link>

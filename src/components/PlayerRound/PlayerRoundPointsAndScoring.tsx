@@ -4,6 +4,7 @@ import { Link, useParams, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { useQuery } from '@tanstack/react-query'
 
 import {
   PlayerRoundPointsAndScoringSummary,
@@ -34,14 +35,14 @@ import usePlayerHoleScoreBeingEdited, {
 } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
 import styles from './PlayerRoundPointsAndScoring.module.css'
 
-// TODO: somehow combine with PlayerHole interface in types?
-interface PlayerHole {
-  id: string
-  playerId: string
-  roundId: string
-  hole: number
-  score?: number
-}
+// TODO: what was i using this for? If still needed, somehow combine with PlayerHole interface in types?
+// interface PlayerHole {
+//   id: string
+//   playerId: string
+//   roundId: string
+//   hole: number
+//   score?: number
+// }
 
 export default function PlayerRoundPointsAndScoring() {
   const params = useParams()
@@ -51,36 +52,38 @@ export default function PlayerRoundPointsAndScoring() {
   const {
     state: { playerName, playerId },
   } = useLocation()
+  // TODO: remove once model is updated
+  const holesInRound = 18
 
   const [roundPointsEarned] = useGetPlayerRoundPointsEarned(playerId, roundId)
   const [totalPoints] = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
-
-  const [roundHoleScoreData, setRoundHoleScoreData] = useState<PlayerHole[]>([])
-  const [roundHoleScores, setRoundHoleScores] = useState<
-    PlayerHoleScoreState[]
-  >([])
   const [showEditScoreModal, setShowEditScoreModal] = useState(false)
   const [currentScore, setCurrentScore] = useState<number | ''>('')
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
+
+  const {
+    data: roundHoleScoreData = [],
+    isLoading: isHoleScoresLoading,
+    isError: isHoleScoresError,
+    refetch: refetchHoleScores,
+  } = useQuery({
+    queryKey: ['playerHoleScores', playerId, roundId],
+    queryFn: () =>
+      getPlayerHoleScores(playerId, roundId, true).then(
+        (res) => res?.json?.() ?? []
+      ),
+    enabled: !!playerId && !!roundId,
+  })
+
+  const roundHoleScores = mapScoresToState(holesInRound, roundHoleScoreData)
   console.log('************ roundHoleScores', roundHoleScores)
   const frontNineScores = roundHoleScores.slice(0, 9)
   const frontNineTotal = getScoreTotal(frontNineScores)
   const backNineScores = roundHoleScores.slice(9)
   const backNineTotal = getScoreTotal(backNineScores)
   const totalScoresEntered = getTotalHoleScores(roundHoleScores)
-
-  // TODO: remove once model is updated
-  const holesInRound = 18
-
-  useEffect(() => {
-    getPlayerRoundHoleScoreData()
-  }, [playerId])
-
-  useEffect(() => {
-    setRoundHoleScores(mapScoresToState(holesInRound, roundHoleScoreData))
-  }, [roundHoleScoreData])
 
   // useCallback needed to get ref because input is rendered in modal
   const inputRef = React.useCallback(
@@ -91,17 +94,6 @@ export default function PlayerRoundPointsAndScoring() {
     },
     [showEditScoreModal]
   )
-
-  async function getPlayerRoundHoleScoreData() {
-    const res = await getPlayerHoleScores(playerId, roundId, true)
-    if (res.status === 200) {
-      const holeScores = await res.json()
-      setRoundHoleScoreData(holeScores)
-    }
-    if (res.status === 204) {
-      setRoundHoleScoreData([])
-    }
-  }
 
   function handleUpdateHoleScoreState(e) {
     const value = e.target.value
@@ -166,7 +158,7 @@ export default function PlayerRoundPointsAndScoring() {
     }
 
     if (scoreUpdateSuccessful) {
-      await getPlayerRoundHoleScoreData()
+      await refetchHoleScores()
       handleCloseModal()
       toast.success(
         `Score successfully ${currentScoreWasUpdated ? 'updated' : 'added'}`
@@ -177,7 +169,7 @@ export default function PlayerRoundPointsAndScoring() {
   async function deleteHoleScore() {
     const res = await updatePlayerHole(playerHoleId, { score: null })
     if (res.ok) {
-      await getPlayerRoundHoleScoreData()
+      await refetchHoleScores()
       handleCloseModal()
       toast.success('Score was successfully deleted')
     }

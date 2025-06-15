@@ -11,6 +11,7 @@ export default function RoundPointSettingsListItem({
   removePointSettingFromRound,
   refreshState,
 }): JSX.Element {
+  console.log('RoundPointSettingsListItem pointSetting', pointSetting)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const { id, value, name, isLeagueSetting } = pointSetting
   const { leagueId, roundId } = useParams()

@@ -114,7 +114,7 @@ export default function Router() {
         <Route path="point-settings" element={<RoundPointSettings />} />
         {/* TODO: add component */}
         <Route
-          path="point-settings/:pointSetting"
+          path="point-settings/:pointSettingName"
           element={<RoundPointSetting />}
         />
         <Route

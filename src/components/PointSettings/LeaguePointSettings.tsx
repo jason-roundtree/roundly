@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { EditablePointSettingDetailsItem, LeaguePointSettingsListItem } from '.'
+import { LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
 import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
 import { toast } from 'react-toastify'
