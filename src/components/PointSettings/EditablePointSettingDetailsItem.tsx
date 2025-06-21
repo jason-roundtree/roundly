@@ -18,7 +18,6 @@ interface EditablePointSettingItemProps {
 export default function EditablePointSettingDetailsItem({
   pointSetting,
   pointEditRoute,
-  // TODO: remove these if still unused
   onRemove,
   removeButtonText,
 }: EditablePointSettingItemProps): JSX.Element {

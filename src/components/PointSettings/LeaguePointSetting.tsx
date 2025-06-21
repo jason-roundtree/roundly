@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
@@ -8,7 +9,9 @@ import { selectAllInputText } from '../shared/utils'
 import { deleteLeaguePointSetting, updatePointSetting } from '../../data'
 import { toast } from 'react-toastify'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
+import { usePointSetting } from '../shared/hooks/usePointSetting'
 
+// TODO: move this to types.ts and use it in round point setting
 export type EditablePointSetting = Omit<PointSetting, 'value'> & {
   value: string
 }
@@ -22,14 +25,31 @@ export const defaultEditablePointSettingState: EditablePointSetting = {
 
 export default function LeaguePointSetting() {
   const location = useLocation()
-  const { leagueId, pointSetting } = location.state
+  const { leagueId, pointSettingId } = location.state
+
+  const {
+    data: pointSetting,
+    isLoading,
+    isError,
+  } = usePointSetting(pointSettingId)
+
   const [updatedPointSetting, setUpdatedPointSetting] =
     useState<EditablePointSetting>(
       () => pointSetting || defaultEditablePointSettingState
     )
+
+  useEffect(() => {
+    if (pointSetting) {
+      setUpdatedPointSetting(pointSetting)
+    }
+  }, [pointSetting])
+
+  console.log('updatedPointSetting: $$$', updatedPointSetting)
+
   const { scope: updatedPointSettingScope, id } = updatedPointSetting
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   async function handleUpdatePointSetting(e): Promise<void> {
     e.preventDefault()
@@ -41,9 +61,7 @@ export default function LeaguePointSetting() {
     const res = await updatePointSetting(id, updatedPointSetting)
     if (res.ok) {
       toast.success('Point setting was successfully updated')
-      navigate(`/league/${leagueId}/point-settings`, {
-        replace: true,
-      })
+      navigate(-1)
     }
   }
 
@@ -51,9 +69,10 @@ export default function LeaguePointSetting() {
     const res = await deleteLeaguePointSetting(pointId)
     if (res.ok) {
       toast.success('Point setting was successfully deleted')
-      navigate(`/league/${leagueId}/point-settings`, {
-        replace: true,
+      queryClient.invalidateQueries({
+        queryKey: ['leaguePointSettings', leagueId],
       })
+      navigate(-1)
     }
   }
 
@@ -72,6 +91,9 @@ export default function LeaguePointSetting() {
     })
   }
 
+  if (isError) {
+    return <p>Point setting does not exist</p>
+  }
   return (
     <div>
       <h2 className="page-title">League Point Setting</h2>
@@ -97,19 +119,6 @@ export default function LeaguePointSetting() {
         onChange={handleRadioInputChange}
         selectedScope={updatedPointSettingScope}
       />
-
-      {/* {updatedPointSettingScope !== no_scope_key && (
-        <BasicInput
-          // disabled={updatedPointSetting.scope === no_scope_key}
-          type="number"
-          min="1"
-          // TODO: edit "Scope" to be Round or Hole depending on which option is selected?
-          label="Max Frequency Per Scope"
-          name="maxFrequencyPerScope"
-          onChange={handlePointMaxFrequencyInputChange}
-          value={updatedPointSetting.maxFrequencyPerScope ?? ''}
-        />
-      )} */}
 
       {showDeleteConfirmation && (
         <DeleteConfirmationModal

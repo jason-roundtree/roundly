@@ -30,7 +30,10 @@ export {
   getPlayerHoleScores,
   getPlayerHole,
 } from './player-hole'
-export { fetchLeaguePointSettings } from './point-settings'
+export {
+  fetchLeaguePointSettings,
+  fetchRoundPointSettings,
+} from './point-settings'
 export { fetchBasicLeagueData } from './league'
 export { fetchRound, deleteRound } from './round'
 export { fetchLeagueRounds } from './rounds'

@@ -10,10 +10,13 @@ import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModa
 import { deleteRound } from '../../data'
 
 export default function EditRoundInfo() {
+  const { leagueId, roundId } = useParams()
+  const navigate = useNavigate()
   const routerLocation = useLocation()
   const { name, location, date } = routerLocation.state || {}
   const [roundState, setRoundState] = useState<RoundState>(
     () =>
+      // TODO: why did this seem necessary when the object is always truthy?
       ({ name, location, date } || {
         name: '',
         location: '',
@@ -21,8 +24,6 @@ export default function EditRoundInfo() {
       })
   )
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const { leagueId, roundId } = useParams()
-  const navigate = useNavigate()
 
   async function updateRound(e) {
     e.preventDefault()
@@ -59,7 +60,7 @@ export default function EditRoundInfo() {
   }
 
   function handleInputChange({
-    target: { name: name, value: value },
+    target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>): void {
     console.log('value', value)
     setRoundState({ ...roundState, [name]: value })

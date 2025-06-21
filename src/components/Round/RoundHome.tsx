@@ -1,23 +1,27 @@
-import { useContext, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 
-import { RoundContext } from './RoundContainer'
-import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
+import { useRound } from '../shared/hooks/useRound'
+import useGetAllPlayersRoundPointsEarnedTotals from '../shared/hooks/useGetAllPlayersRoundPointsEarnedTotals'
 
 import styles from './RoundHome.module.css'
 import { sortArrayOfObjects } from '../shared/utils'
 
 export default function RoundHome() {
-  const { leagueId } = useParams()
-  const { id: roundId, players, pointSettings } = useContext(RoundContext)
+  const { leagueId, roundId } = useParams()
+  const { data: round, isLoading, isError } = useRound(roundId)
+  const players = round?.players || []
+  const pointSettings = round?.pointSettings || []
 
-  // TODO: sort
-  const [playersWithPointTotals] = useGetAllPlayersRoundPointsEarnedTotals(
-    players,
-    roundId
-  )
+  const {
+    data: playersWithPointTotals = [],
+    isLoading: isTotalsLoading,
+    isError: isTotalsError,
+  } = useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
+
+  if (isLoading || isTotalsLoading) return <div>Loading...</div>
+  if (isError || isTotalsError) return <div>Error loading round data.</div>
 
   return (
     <>

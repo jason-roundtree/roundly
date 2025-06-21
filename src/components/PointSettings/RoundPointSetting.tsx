@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { RoundContext } from '../Round/RoundContainer'
 import BasicInput from '../shared/components/BasicInput'
@@ -21,6 +21,7 @@ import {
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { usePointSetting } from '../shared/hooks/usePointSetting'
 
 type EditableRoundPointSetting = EditablePointSetting & {
   isLeagueSetting: boolean
@@ -39,24 +40,32 @@ export default function RoundPointSetting() {
     data: pointSetting,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['pointSetting', pointSettingId],
-    queryFn: () => getPointSetting(pointSettingId).then((res) => res.json()),
-    enabled: Boolean(pointSettingId),
-  })
+  } = usePointSetting(pointSettingId)
+  console.log('isLoading', isLoading)
+  console.log('isError', isError)
 
   const [updatedPointSetting, setUpdatedPointSetting] =
     useState<EditableRoundPointSetting>(() => pointSetting || defaultState)
   const { id, name, isLeagueSetting } = pointSetting || {}
 
+  // TODO: find out if this is totally necessary
+  useEffect(() => {
+    if (pointSetting) {
+      setUpdatedPointSetting(pointSetting)
+    }
+  }, [pointSetting])
+
   const pointContextDescription = isLeagueSetting
     ? 'This is a league-wide point setting that applies to all rounds'
     : 'This is a custom point setting that only applies to this round'
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false)
   const navigate = useNavigate()
   const { pointSettings: roundPointSettings, refreshRoundState } =
     useContext(RoundContext)
   const pointIsActiveInRound = roundPointSettings.some((p) => p.id === id)
+
+  const queryClient = useQueryClient()
 
   //   TODO: add ability to only update league points for the round (currently it updates it for league)
   async function handleUpdatePointSetting(): Promise<void> {
@@ -75,7 +84,8 @@ export default function RoundPointSetting() {
     const res = await deleteLeaguePointSetting(pointId)
     if (res.ok) {
       toast.success('Point setting was successfully deleted')
-      refreshRoundState()
+      queryClient.invalidateQueries({ queryKey: ['pointSetting', pointId] })
+      navigate(`/league/${leagueId}/round/${roundId}/point-settings`)
     }
   }
 
@@ -103,12 +113,9 @@ export default function RoundPointSetting() {
     })
   }
 
-  useEffect(() => {
-    if (pointSetting) {
-      setUpdatedPointSetting(pointSetting)
-    }
-  }, [pointSetting])
-
+  if (isError) {
+    return <p>Point setting does not exist</p>
+  }
   return (
     <div>
       <h3 className="page-title">Point Setting</h3>
@@ -157,13 +164,13 @@ export default function RoundPointSetting() {
         selectedScope={updatedPointSetting.scope}
       />
 
-      {showDeleteConfirmation && (
+      {showDeleteConfirmationModal && (
         <DeleteConfirmationModal
           modalTitle="Confirm Point Deletion"
           confirmationText={`Are you sure you want to delete ${name} from the league?`}
           buttonText="Delete"
           onConfirmDelete={() => handleDeletePointSetting(id)}
-          toggleModalActive={() => setShowDeleteConfirmation(false)}
+          toggleModalActive={() => setShowDeleteConfirmationModal(false)}
         />
       )}
 
@@ -174,7 +181,7 @@ export default function RoundPointSetting() {
         </button>
       ) : (
         <button
-          onClick={() => setShowDeleteConfirmation(true)}
+          onClick={() => setShowDeleteConfirmationModal(true)}
           className="delete-button"
         >
           Delete

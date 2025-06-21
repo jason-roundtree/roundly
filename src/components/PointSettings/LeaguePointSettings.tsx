@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { useQuery } from '@tanstack/react-query'
 
 import { LeaguePointSettingsListItem } from '.'
 import { PointSetting } from '../../types'
@@ -9,26 +9,30 @@ import { fetchLeaguePointSettings, deleteLeaguePointSetting } from '../../data'
 import { toast } from 'react-toastify'
 
 export default function LeaguePointSettings(): JSX.Element {
-  const [pointSettings, setPointSettings] = useState<PointSetting[]>([])
-
   const { leagueId } = useParams()
 
-  useEffect(() => {
-    refreshPointSettingsState()
-  }, [])
-
-  async function refreshPointSettingsState(): Promise<void> {
-    const pointSettings = await fetchLeaguePointSettings(leagueId)
-    setPointSettings(pointSettings)
-  }
+  const {
+    data: pointSettings = [],
+    isLoading,
+    isError,
+    refetch: refetchLeaguePointSettings,
+  } = useQuery({
+    queryKey: ['leaguePointSettings', leagueId],
+    queryFn: () => fetchLeaguePointSettings(leagueId),
+    enabled: !!leagueId,
+  })
 
   async function handleDeletePointSetting(pointId) {
+    console.log('sdfdsfsd')
     const res = await deleteLeaguePointSetting(pointId)
     if (res.ok) {
       toast.success('Point setting was successfully deleted')
-      refreshPointSettingsState()
+      refetchLeaguePointSettings()
     }
   }
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error loading league point settings.</div>
 
   return (
     <>

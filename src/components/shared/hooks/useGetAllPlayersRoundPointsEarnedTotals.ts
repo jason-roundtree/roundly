@@ -1,25 +1,18 @@
-import { useState, useEffect } from 'react'
-import { PlayersWithPointTotals } from '../../Round/RoundScoring'
+import { useQuery } from '@tanstack/react-query'
 import { getRoundPlayerPointsEarnedTotal } from '../../../data'
 
 export default function useGetAllPlayersRoundPointsEarnedTotals(
   players,
   roundId
 ): any {
-  const [playersWithPointTotals, setPlayersWithPointTotals] = useState<
-    Array<PlayersWithPointTotals>
-  >([])
-
-  useEffect(() => {
-    generatePlayersWithPointTotals(players, roundId)
-  }, [players, roundId])
-
-  async function generatePlayersWithPointTotals(
-    players,
-    roundId
-  ): Promise<void> {
-    console.log('generatePlayersWithPointTotals players', players)
-    if (players && roundId) {
+  return useQuery({
+    queryKey: [
+      'playersWithPointTotals',
+      roundId,
+      players?.map((p) => p.id).join(','),
+    ],
+    queryFn: async () => {
+      if (!players || !roundId) return []
       const playersWithPointTotals = await Promise.all(
         players.map(async (p) => {
           const res = await getRoundPlayerPointsEarnedTotal(p.id, roundId)
@@ -37,9 +30,8 @@ export default function useGetAllPlayersRoundPointsEarnedTotals(
           }
         })
       )
-      setPlayersWithPointTotals(playersWithPointTotals)
-    }
-  }
-
-  return [playersWithPointTotals, generatePlayersWithPointTotals]
+      return playersWithPointTotals
+    },
+    enabled: !!players?.length && !!roundId,
+  })
 }
