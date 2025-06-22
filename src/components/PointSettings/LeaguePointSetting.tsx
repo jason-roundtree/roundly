@@ -44,8 +44,6 @@ export default function LeaguePointSetting() {
     }
   }, [pointSetting])
 
-  console.log('updatedPointSetting: $$$', updatedPointSetting)
-
   const { scope: updatedPointSettingScope, id } = updatedPointSetting
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const navigate = useNavigate()
@@ -72,6 +70,9 @@ export default function LeaguePointSetting() {
       queryClient.invalidateQueries({
         queryKey: ['leaguePointSettings', leagueId],
       })
+      queryClient.removeQueries({
+        queryKey: ['pointSetting', pointId],
+      })
       navigate(-1)
     }
   }
@@ -91,7 +92,7 @@ export default function LeaguePointSetting() {
     })
   }
 
-  if (isError) {
+  if (isError || !pointSetting) {
     return <p>Point setting does not exist</p>
   }
   return (

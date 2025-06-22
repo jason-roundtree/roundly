@@ -8,6 +8,7 @@ import Radio from '../shared/components/Radio'
 import { getRoundPlayerPointsEarnedTotal } from '../../data'
 import { simpleTextSearchMatch, sortArrayOfObjects } from '../shared/utils'
 import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
+import { useRound } from '../shared/hooks/useRound'
 
 type RoundScoringSortBy = 'a-z' | 'z-a' | 'high-low' | 'low-high'
 export interface PlayersWithPointTotals {
@@ -21,15 +22,18 @@ export default function RoundScoring() {
   const [sortBy, setSortBy] = useState<RoundScoringSortBy>('high-low')
   const [sortedPlayersWithPointTotals, setSortedPlayersWithPointTotals] =
     useState<Array<any>>([])
-  const { leagueId } = useParams()
-  const { id: roundId, players } = useContext(RoundContext)
+  const { leagueId, roundId } = useParams()
+  // const { id: roundId, players } = useContext(RoundContext)
+  const { data: round, isLoading, isError } = useRound(roundId)
+  const players = round?.players || []
 
-  const [playersWithPointTotals, generatePlayersWithPointTotals] =
-    useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
+  const {
+    data: playersWithPointTotals = [],
+    isLoading: isTotalsLoading,
+    isError: isTotalsError,
+  } = useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
+
   console.log('playersWithPointTotals', playersWithPointTotals)
-  useEffect(() => {
-    generatePlayersWithPointTotals()
-  }, [players])
 
   useEffect(() => {
     sortPlayersByView()
@@ -67,6 +71,9 @@ export default function RoundScoring() {
     }
     setSortedPlayersWithPointTotals(sortedArray)
   }
+
+  if (isLoading || isTotalsLoading) return <div>Loading...</div>
+  if (isError || isTotalsError) return <div>Error loading round data.</div>
 
   return (
     <>

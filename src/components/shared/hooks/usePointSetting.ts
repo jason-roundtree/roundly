@@ -13,5 +13,6 @@ export function usePointSetting(pointSettingId?: string) {
       return res.json()
     },
     enabled: !!pointSettingId,
+    retry: 1,
   })
 }

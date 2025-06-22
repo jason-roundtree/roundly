@@ -55,6 +55,11 @@ export default function AddPointSetting({
       return
     }
 
+    if (!newPointSetting.value) {
+      toast.error('Point value is required')
+      return
+    }
+
     try {
       const res = await createLeaguePointSetting(
         leagueId,
