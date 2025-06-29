@@ -51,24 +51,23 @@ export default function PlayerRoundPointsEarnedTableRow({
       <tr
         id={id}
         onClick={() => {
-          console.log('navigate')
           navigate('edit-point-earned', {
             state: {
               pointEarnedId: id,
-              pointName: name,
-              pointSettingId,
-              scope,
-              // playerHoleId,
-              playerId,
-              playerName,
-              value,
-              originalHole: hole ?? '',
-              hole: hole ?? '',
-              originalQuantity: quantity,
-              quantity,
+              // pointName: name,
+              // pointSettingId,
+              // scope,
+              // // playerHoleId,
+              // playerId,
+              // playerName,
+              // value,
+              // originalHole: hole ?? '',
+              // hole: hole ?? '',
+              // originalQuantity: quantity,
+              // quantity,
               // maxFrequencyPerScope,
             },
-            replace: true,
+            // replace: true,
           })
         }}
       >

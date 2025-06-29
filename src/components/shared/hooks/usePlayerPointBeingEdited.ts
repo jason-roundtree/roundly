@@ -1,48 +1,57 @@
-import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getPlayerPointEarnedById } from '../../../data/player-point-earned'
 import { PointScopes } from '../../../types'
 
 export interface PointBeingEdited {
-  // playerId: string
   pointEarnedId: string
   pointSettingId: string
   pointName: string
-  playerName: string
+  // playerName: string
   originalHole?: number | string
   hole?: number | string
   originalQuantity: number
   quantity: number
   value: number | string
-  // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
-  // maxFrequencyPerScope: number | null
 }
 
 const defaultPointEarnedBeingEditedState: PointBeingEdited = {
   pointEarnedId: '',
   pointSettingId: '',
   pointName: '',
-  playerName: '',
+  // playerName: '',
   originalHole: '',
   hole: '',
-  // TODO: change these to `quantityEarned` and `originalQuantityEarned`
   originalQuantity: 1,
   quantity: 1,
   value: '',
   scope: '',
-  // maxFrequencyPerScope: null,
 }
 
 // TODO: type
 // TOTO: change name to usePlayerPointEarnedBeingEdited
-export default function usePlayerPointBeingEdited(
-  initialState = defaultPointEarnedBeingEditedState
-): any {
-  const [pointEarnedBeingEdited, setPointEarnedBeingEdited] =
-    useState<PointBeingEdited>(initialState)
-
+export default function usePlayerPointBeingEdited(pointEarnedId?: string) {
+  const {
+    data: originalPointEarned = defaultPointEarnedBeingEditedState,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ['playerPointEarned', pointEarnedId],
+    queryFn: () =>
+      pointEarnedId
+        ? getPlayerPointEarnedById(pointEarnedId)
+        : defaultPointEarnedBeingEditedState,
+    enabled: !!pointEarnedId,
+    // retry: false,
+    // staleTime: 0,
+  })
+  console.log('originalPointEarned', originalPointEarned)
   return [
-    pointEarnedBeingEdited,
-    setPointEarnedBeingEdited,
+    originalPointEarned,
+    isLoading,
+    isError,
+    refetch,
     defaultPointEarnedBeingEditedState,
   ]
 }

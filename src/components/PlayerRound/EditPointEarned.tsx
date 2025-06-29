@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  useParams,
-  useLocation,
-  useSearchParams,
-  useNavigate,
-  Link,
-} from 'react-router-dom'
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
@@ -17,90 +11,90 @@ import {
   useGetPlayerRoundPointsEarned,
   usePlayerPointBeingEdited,
 } from '../shared/hooks'
-import {
-  holeOrQuantityHasChanged,
-  // quantityInputScopeManager,
-} from '../shared/utils'
+import { holeOrQuantityHasChanged } from '../shared/utils'
 import { selectableHoles } from '../Round/HoleSelectInput'
 import {
-  checkPlayerPointEarnedInRound,
   checkPlayerPointEarnedOnHole,
   createOrFindPlayerHole,
   deletePlayerPointEarned,
   getPlayerHole,
   updatePlayerPointEarned,
 } from '../../data'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function EditPointEarned() {
   const navigate = useNavigate()
   const params = useParams()
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string
+  const playerName = params.player as string
   const location = useLocation()
-  console.log('location *****', location)
-  const {
-    pointEarnedId,
-    pointSettingId,
-    pointName,
-    playerId,
-    playerName,
-    originalHole,
-    hole,
-    originalQuantity,
-    quantity,
-    value,
-    scope,
-  } = location.state
+  const { pointEarnedId } = location.state
 
   const [
-    pointEarnedBeingEdited,
-    setPointEarnedBeingEdited,
-    defaultPointEarnedBeingEditedState,
-  ] = usePlayerPointBeingEdited({
-    pointEarnedId,
-    pointSettingId,
-    pointName,
-    playerName,
-    originalHole,
-    hole,
-    originalQuantity,
-    quantity,
-    value,
+    originalPointEarned,
+    isPointEarnedLoading,
+    isPointEarnedError,
+    refetchPointEarned,
+  ] = usePlayerPointBeingEdited(pointEarnedId)
+  console.log('RRRRR originalPointEarned', originalPointEarned)
+
+  const { playerId, quantity } = originalPointEarned || {}
+  const { hole } = originalPointEarned?.hole || {}
+  const {
+    name: pointName,
     scope,
-  })
-  console.log('@@@@@ pointEarnedBeingEdited @@@@@@ ', pointEarnedBeingEdited)
-  const [_, getPlayerRoundPointsEarned] = useGetPlayerRoundPointsEarned(
-    playerId,
-    roundId
-  )
+    value,
+    id: pointSettingId,
+    isLeagueSetting,
+  } = originalPointEarned?.pointSetting || {}
+
+  // TODO: is this needed?
+  // const {
+  //   data: playerRoundPointsEarned = [],
+  //   refetch: refetchPlayerRoundPointsEarned,
+  //   isLoading: isPlayerRoundPointsEarnedLoading,
+  //   isError: isPlayerRoundPointsEarnedError,
+  // } = useGetPlayerRoundPointsEarned(playerId, roundId)
+
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false)
+  const queryClient = useQueryClient()
+
+  // Local state for editing fields
+  const [editedPoint, setEditedPoint] = useState(() => ({
+    quantity: quantity,
+    hole: hole,
+  }))
+
+  // Sync local state when fetched data changes
+  useEffect(() => {
+    setEditedPoint({
+      quantity: quantity,
+      hole: hole,
+    })
+  }, [originalPointEarned, hole, quantity])
 
   function navigateToPlayerRoundPointsEarned() {
     navigate(
       `/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`,
       {
-        replace: true,
         state: { playerName, playerId },
       }
     )
+    // navigate(-1)
   }
 
   async function handleUpdatePointEarned(e) {
     e.preventDefault()
-    const {
-      pointEarnedId,
-      pointSettingId,
-      originalQuantity,
-      quantity,
-      // maxFrequencyPerScope,
-      originalHole,
-      hole,
-      scope,
-    } = pointEarnedBeingEdited
 
     const { anyValueHasChanged, holeHasChanged, quantityHasChanged } =
-      holeOrQuantityHasChanged(originalQuantity, quantity, originalHole, hole)
+      holeOrQuantityHasChanged(
+        quantity,
+        editedPoint.quantity,
+        hole,
+        editedPoint.hole
+      )
 
     if (!anyValueHasChanged) {
       navigate(-1)
@@ -109,7 +103,7 @@ export default function EditPointEarned() {
 
     if (holeHasChanged) {
       const updatedholeData = {
-        hole: hole ? +hole : null,
+        hole: editedPoint.hole ? +editedPoint.hole : null,
         playerId,
         roundId,
       }
@@ -154,7 +148,9 @@ export default function EditPointEarned() {
         { playerHoleId: updatedPlayerHoleId }
       )
       if (updatePlayerPointEarnedRes.ok) {
-        getPlayerRoundPointsEarned()
+        await queryClient.invalidateQueries({
+          queryKey: ['playerRoundPointsEarned', playerId, roundId],
+        })
         toast.success('Hole was successfully updated')
         navigateToPlayerRoundPointsEarned()
       }
@@ -163,10 +159,12 @@ export default function EditPointEarned() {
     if (quantityHasChanged) {
       const updatePlayerPointEarnedRes = await updatePlayerPointEarned(
         pointEarnedId,
-        { quantity }
+        { quantity: editedPoint.quantity }
       )
       if (updatePlayerPointEarnedRes.ok) {
-        getPlayerRoundPointsEarned()
+        await queryClient.invalidateQueries({
+          queryKey: ['playerRoundPointsEarned', playerId, roundId],
+        })
         toast.success('Quantity was successfully updated')
         navigateToPlayerRoundPointsEarned()
       }
@@ -174,13 +172,10 @@ export default function EditPointEarned() {
   }
 
   async function deletePointEarned() {
-    const res = await deletePlayerPointEarned(
-      pointEarnedBeingEdited.pointEarnedId
-    )
+    const res = await deletePlayerPointEarned(pointEarnedId)
     if (res.ok) {
-      getPlayerRoundPointsEarned()
+      // await refetchPlayerRoundPointsEarned()
       setShowDeleteConfirmationModal(false)
-      setPointEarnedBeingEdited(defaultPointEarnedBeingEditedState)
       toast.success('Point was successfully deleted')
       navigateToPlayerRoundPointsEarned()
     }
@@ -197,16 +192,16 @@ export default function EditPointEarned() {
             <b>Player:</b> {playerName}
           </p>
           <p>
-            <b>Point:</b> {pointEarnedBeingEdited.pointName}
+            <b>Point:</b> {pointName}
           </p>
           <p>
             <b>Hole:</b> {hole ? hole : 'No associated hole'}
           </p>
           <p>
-            <b>Value:</b> {pointEarnedBeingEdited.value}
+            <b>Value:</b> {value}
           </p>
           <p>
-            <b>Quantity:</b> {pointEarnedBeingEdited.quantity}
+            <b>Quantity:</b> {quantity}
           </p>
         </div>
       </>
@@ -235,7 +230,7 @@ export default function EditPointEarned() {
       <h4 className={styles.editPointEarnedStaticData}>
         Point:{' '}
         <span>
-          {pointEarnedBeingEdited.pointName} {pointEarnedBeingEdited.value}
+          {pointName} {value}
         </span>
       </h4>
       <form>
@@ -245,13 +240,13 @@ export default function EditPointEarned() {
             min="1"
             name="point-earned-quantity"
             label="Quantity"
-            value={pointEarnedBeingEdited.quantity ?? ''}
+            value={editedPoint.quantity ?? ''}
             onChange={(e) => {
               const valueNum = +e.target.value
-              setPointEarnedBeingEdited({
-                ...pointEarnedBeingEdited,
+              setEditedPoint((prev) => ({
+                ...prev,
                 quantity: valueNum > 0 ? valueNum : 1,
-              })
+              }))
             }}
           />
         )}
@@ -259,14 +254,14 @@ export default function EditPointEarned() {
         <label htmlFor="hole-select">Hole</label>
         <select
           id="hole-select"
-          value={pointEarnedBeingEdited.hole}
+          value={editedPoint.hole}
           onChange={(e) => {
             const val = e.target.value
             const holeIsSelected = val !== ''
-            setPointEarnedBeingEdited({
-              ...pointEarnedBeingEdited,
+            setEditedPoint((prev) => ({
+              ...prev,
               hole: holeIsSelected ? +val : val,
-            })
+            }))
           }}
         >
           {selectableHoles()}

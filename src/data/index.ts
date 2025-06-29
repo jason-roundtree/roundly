@@ -19,6 +19,7 @@ export {
   updatePlayerPointEarned,
   checkPlayerPointEarnedOnHole,
   checkPlayerPointEarnedInRound,
+  getPlayerPointEarnedById,
 } from './player-point-earned'
 export {
   getRoundPlayerPointsEarnedByPlayer,

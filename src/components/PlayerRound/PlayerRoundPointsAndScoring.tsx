@@ -55,8 +55,20 @@ export default function PlayerRoundPointsAndScoring() {
   // TODO: remove once model is updated
   const holesInRound = 18
 
-  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(playerId, roundId)
-  const [totalPoints] = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
+  const {
+    data: roundPointsEarned = [],
+    isLoading: isPlayerRoundPointsEarnedLoading,
+    isError: isPlayerRoundPointsEarnedError,
+    refetch: refetchPlayerRoundPointsEarned,
+  } = useGetPlayerRoundPointsEarned(playerId, roundId)
+
+  const {
+    data: totalPoints = 0,
+    isLoading: isTotalPointsLoading,
+    isError: isTotalPointsError,
+    refetch: refetchTotalPoints,
+  } = useGetPlayerRoundPointsEarnedTotal(playerId, roundId)
+
   const [showEditScoreModal, setShowEditScoreModal] = useState(false)
   const [currentScore, setCurrentScore] = useState<number | ''>('')
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =

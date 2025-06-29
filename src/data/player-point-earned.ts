@@ -148,3 +148,25 @@ export async function checkPlayerPointEarnedInRound({
     console.log('checkPlayerPointEarned in round error: ', err)
   }
 }
+
+export async function getPlayerPointEarnedById(
+  pointEarnedId: string
+): Promise<any> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/player-point-earned/${pointEarnedId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    if (res.status === 200) {
+      return await res.json()
+    } else {
+      return null
+    }
+  } catch (err) {
+    console.log('getPlayerPointEarnedById error: ', err)
+    return null
+  }
+}

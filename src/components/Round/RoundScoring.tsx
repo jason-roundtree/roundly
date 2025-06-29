@@ -1,11 +1,9 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { RoundContext } from './RoundContainer'
 import styles from './RoundScoring.module.css'
 import BasicInput from '../shared/components/BasicInput'
 import Radio from '../shared/components/Radio'
-import { getRoundPlayerPointsEarnedTotal } from '../../data'
 import { simpleTextSearchMatch, sortArrayOfObjects } from '../shared/utils'
 import { useGetAllPlayersRoundPointsEarnedTotals } from '../shared/hooks'
 import { useRound } from '../shared/hooks/useRound'
@@ -18,12 +16,11 @@ export interface PlayersWithPointTotals {
 }
 
 export default function RoundScoring() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [playerSearchQuery, setPlayerSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<RoundScoringSortBy>('high-low')
   const [sortedPlayersWithPointTotals, setSortedPlayersWithPointTotals] =
     useState<Array<any>>([])
   const { leagueId, roundId } = useParams()
-  // const { id: roundId, players } = useContext(RoundContext)
   const { data: round, isLoading, isError } = useRound(roundId)
   const players = round?.players || []
 
@@ -33,17 +30,7 @@ export default function RoundScoring() {
     isError: isTotalsError,
   } = useGetAllPlayersRoundPointsEarnedTotals(players, roundId)
 
-  console.log('playersWithPointTotals', playersWithPointTotals)
-
-  useEffect(() => {
-    sortPlayersByView()
-  }, [sortBy, playersWithPointTotals])
-
-  function handleUpdateSortBy(e) {
-    setSortBy(e.target.id)
-  }
-
-  function sortPlayersByView() {
+  const sortPlayersByView = useCallback(() => {
     let sortedArray: Array<any> = []
     switch (sortBy) {
       case 'a-z':
@@ -70,6 +57,14 @@ export default function RoundScoring() {
         console.log('DEFAULT!!!!')
     }
     setSortedPlayersWithPointTotals(sortedArray)
+  }, [sortBy, playersWithPointTotals])
+
+  useEffect(() => {
+    sortPlayersByView()
+  }, [sortBy, playersWithPointTotals, sortPlayersByView])
+
+  function handleUpdateSortBy(e) {
+    setSortBy(e.target.id)
   }
 
   if (isLoading || isTotalsLoading) return <div>Loading...</div>
@@ -93,8 +88,8 @@ export default function RoundScoring() {
             type="text"
             name="player-search"
             label="Search Players"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            value={searchQuery}
+            onChange={(e) => setPlayerSearchQuery(e.target.value)}
+            value={playerSearchQuery}
           />
 
           <form>
@@ -149,8 +144,8 @@ export default function RoundScoring() {
           >
             {sortedPlayersWithPointTotals.map((player) => {
               const playerName = player.name
-              const playerMatchesSearch = searchQuery
-                ? simpleTextSearchMatch(searchQuery, playerName)
+              const playerMatchesSearch = playerSearchQuery
+                ? simpleTextSearchMatch(playerSearchQuery, playerName)
                 : true
 
               return (

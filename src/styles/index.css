@@ -247,7 +247,7 @@ input::-webkit-calendar-picker-indicator:hover {
 }
 
 @media (max-width: 500px) {
-  .editable-list-item {
+  .point-setting-item.editable-list-item {
     align-items: initial;
   }
   .point-setting-item {

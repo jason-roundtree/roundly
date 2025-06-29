@@ -36,10 +36,12 @@ export default function EnterPointOrScore() {
   console.log('players from context', playersFromContext)
   console.log('pointSettings from context', pointSettings)
 
-  const [roundPointsEarned] = useGetPlayerRoundPointsEarned(
-    selectedPlayer.id,
-    roundId
-  )
+  const {
+    data: roundPointsEarned = [],
+    isLoading: isPlayerRoundPointsEarnedLoading,
+    isError: isPlayerRoundPointsEarnedError,
+    refetch: refetchPlayerRoundPointsEarned,
+  } = useGetPlayerRoundPointsEarned(selectedPlayer.id, roundId)
 
   return (
     // TODO: make into form?
