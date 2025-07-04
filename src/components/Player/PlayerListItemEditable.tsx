@@ -5,9 +5,13 @@ import { toast } from 'react-toastify'
 import { deletePlayerFromLeague } from '../../data'
 import DeleteConfirmationModal from '../shared/components/DeleteConfirmationModal'
 
-export default function PlayerEditableListItem({ player, refreshPlayerState }) {
+export default function PlayerEditableListItem({
+  player,
+  refreshLeaguePlayersState,
+}) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const { id: playerId, name } = player
+  console.log('PlayerEditableListItem player', player)
   const { leagueId } = useParams()
   const navigate = useNavigate()
 
@@ -16,7 +20,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
     if (deletePlayerRes.ok) {
       setShowDeleteConfirmation(false)
       toast.success('Player was successfully deleted')
-      refreshPlayerState()
+      refreshLeaguePlayersState()
     }
   }
 
@@ -31,7 +35,7 @@ export default function PlayerEditableListItem({ player, refreshPlayerState }) {
                 state: {
                   name,
                   playerId,
-                  navigateBackTo: `/league/${leagueId}/players/`,
+                  navigateTo: `/league/${leagueId}/players/`,
                 },
               })
             }

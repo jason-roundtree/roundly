@@ -1,5 +1,7 @@
 import { PlayerHole } from '../types'
 
+// TODO: should I update these and all data fetchers to return json if available??
+
 // TODO: somehow make this distinct so it's clear that it gets PlayerHole by hole and not playerHoleId
 export async function getPlayerHole({ playerId, roundId, hole }): Promise<any> {
   try {

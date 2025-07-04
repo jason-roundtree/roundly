@@ -4,12 +4,12 @@ import { PlayerListItemEditable } from './'
 
 export interface PlayerProps extends ListEditProps {
   players: Player[]
-  refreshPlayerState?(): void
+  refreshLeaguePlayersState?(): void
 }
 
 export default function PlayersListEditable({
   players,
-  refreshPlayerState,
+  refreshLeaguePlayersState,
 }: PlayerProps) {
   return (
     <ul className="editable-list--players">
@@ -18,7 +18,7 @@ export default function PlayersListEditable({
           <PlayerListItemEditable
             player={player}
             key={player.id}
-            refreshPlayerState={refreshPlayerState}
+            refreshLeaguePlayersState={refreshLeaguePlayersState}
           />
         )
       })}

@@ -33,6 +33,8 @@ import {
 import usePlayerHoleScoreBeingEdited, {
   PlayerHoleScoreState,
 } from '../shared/hooks/usePlayerHoleScoreBeingEdited'
+import usePlayerById from '../shared/hooks/usePlayerById'
+
 import styles from './PlayerRoundPointsAndScoring.module.css'
 
 // TODO: what was i using this for? If still needed, somehow combine with PlayerHole interface in types?
@@ -49,9 +51,10 @@ export default function PlayerRoundPointsAndScoring() {
   // TODO: why can't i destructure params above without TS complaining?
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string
-  const {
-    state: { playerName, playerId },
-  } = useLocation()
+  const playerId = params.playerId as string
+  const { data: player } = usePlayerById(playerId)
+  const playerName = player?.name || ''
+
   // TODO: remove once model is updated
   const holesInRound = 18
 
@@ -73,6 +76,8 @@ export default function PlayerRoundPointsAndScoring() {
   const [currentScore, setCurrentScore] = useState<number | ''>('')
   const [scoreBeingEdited, setScoreBeingEdited, defaultScoreBeingEditedState] =
     usePlayerHoleScoreBeingEdited()
+  console.log('currentScore', currentScore)
+  console.log('scoreBeingEdited', scoreBeingEdited)
   const { playerHoleId, hole, score } = scoreBeingEdited || {}
 
   const {
@@ -135,7 +140,7 @@ export default function PlayerRoundPointsAndScoring() {
 
     let scoreUpdateSuccessful = false
     let _playerHoleId = playerHoleId
-    if (currentScore === null) {
+    if (!currentScore) {
       /** A score doesn't exist for the selected hole so check PlayerHole table in case any PlayerPointEarned exist for that hole */
       const getPlayerHoleRes = await getPlayerHole({ playerId, roundId, hole })
       const getPlayerHoleResJson = await getPlayerHoleRes.json()

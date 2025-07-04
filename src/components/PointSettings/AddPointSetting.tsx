@@ -2,27 +2,31 @@ import { useRef, useState, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'
 
 import BasicInput from '../shared/components/BasicInput'
 import { PointSetting } from '../../types'
 import { capitalizeFirstLetter, selectAllInputText } from '../shared/utils'
-import { createLeaguePointSetting, createRoundPointSetting } from '../../data'
+import {
+  createLeaguePointSetting,
+  createRoundPointSetting,
+  leaguePointSettingExists,
+  roundPointSettingExists,
+} from '../../data'
 import Radio from '../shared/components/Radio'
 import styles from './AddPointSetting.module.css'
 import PointScopeRadios from './PointScopeRadios'
 import { hole_key } from './PointScopeRadios'
-// import { RoundContext } from '../Round/RoundContainer'
-import { toast } from 'react-toastify'
 
-type NewPointSettingState = Omit<PointSetting, 'id' | 'value'> & {
-  value: string
-}
+// type NewPointSettingState = Omit<PointSetting, 'id' | 'value'> & {
+//   value: string
+// }
+type NewPointSettingState = Omit<PointSetting, 'id'>
 
 const defaultNewPointSettingState: NewPointSettingState = {
   name: '',
-  value: '',
+  value: 0,
   scope: hole_key,
-  // maxFrequencyPerScope: null,
   isLeagueSetting: true,
 }
 
@@ -46,7 +50,6 @@ export default function AddPointSetting({
     leagueId: string
     roundId: string
   }
-  // const { refreshRoundState } = useContext(RoundContext)
 
   async function handleCreatePointSetting(e) {
     e.preventDefault()
@@ -60,41 +63,93 @@ export default function AddPointSetting({
       return
     }
 
-    try {
-      const res = await createLeaguePointSetting(
+    if (pointContext === 'league') {
+      // TODO: move to function
+      const leaguePointDoesExist = await leaguePointSettingExists({
+        name: newPointSetting.name,
         leagueId,
-        newPointSetting,
-        roundId
-      )
-
-      if (res.status === 409) {
+      })
+      console.log('leaguePointDoesExist-', leaguePointDoesExist)
+      if (leaguePointDoesExist) {
         toast.error(
-          `A point setting named "${newPointSetting.name}" already exists for this round`
+          `A point setting named "${newPointSetting.name}" already exists for this league. Please choose a different name.`
         )
         return
+      } else {
+        try {
+          const res = await createLeaguePointSetting(newPointSetting, leagueId)
+          if (res.ok) {
+            setNewPointSetting(getDefaultPointSettingState(pointContext))
+            toast.success('Point successfully added')
+            inputRef.current && inputRef.current.focus()
+          }
+        } catch (err) {
+          console.log('create league point setting error: ', err)
+        }
       }
+      return
+    }
 
-      const leaguePointJson = await res.json()
-      const { id: pointId } = leaguePointJson
-      // TODO: should i just use roundId param instead?
-      if (pointContext === 'round') {
-        await createRoundPointSetting(pointId, roundId)
+    if (pointContext === 'round') {
+      const roundPointDoesExist = await roundPointSettingExists({
+        name: newPointSetting.name,
+        roundId,
+      })
+      console.log('roundPointDoesExist-', roundPointDoesExist)
+      if (roundPointDoesExist) {
+        toast.error(
+          `A point setting named "${newPointSetting.name}" already exists for this round. Please choose a different name.`
+        )
+        return
+      } else {
+        // TODO: do each of the await calls also need try/catch? Or is it ok to catch at the end?
+        try {
+          // check if league point setting exists with indentical settings
+          const leaguePointDoesExist = await leaguePointSettingExists({
+            name: newPointSetting.name,
+            leagueId,
+            value: newPointSetting.value,
+            scope: newPointSetting.scope,
+          })
+          console.log('leaguePointDoesExist-', leaguePointDoesExist)
+          if (leaguePointDoesExist) {
+            toast.error(
+              `An identical point setting already exists for this league. Please adjust this round point setting or activate the existing point setting for this round.`
+            )
+            return
+          } else {
+            // create league point setting first, then add it to round point setting
+            const res = await createLeaguePointSetting(
+              newPointSetting,
+              leagueId
+            )
+            if (res.ok) {
+              const createdLeaguePoint = await res.json()
+              const newRoundPointRes = await createRoundPointSetting(
+                createdLeaguePoint.id,
+                roundId
+              )
+              console.log('newRoundPointRes', {
+                newRoundPointRes,
+                data: await newRoundPointRes.json(),
+              })
+              if (newRoundPointRes.ok) {
+                setNewPointSetting(getDefaultPointSettingState(pointContext))
+                toast.success('Point successfully added')
+              }
+            }
+          }
+        } catch (err) {
+          console.log('create round point setting error: ', err)
+        }
       }
-
-      if (res.ok) {
-        setNewPointSetting(getDefaultPointSettingState(pointContext))
-        toast.success('Point successfully added')
-      }
-      inputRef.current && inputRef.current.focus()
-    } catch (err) {
-      console.log('create point setting error: ', err)
     }
   }
 
   function handlePointValueInputChange({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void {
-    setNewPointSetting({ ...newPointSetting, value: target.value })
+    setNewPointSetting({ ...newPointSetting, value: +target.value })
   }
 
   function handleInputChange({

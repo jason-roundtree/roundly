@@ -1,4 +1,5 @@
-import { useEffect, useState, createContext } from 'react'
+import { createContext } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Link, Outlet, useMatch, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight, faEdit } from '@fortawesome/free-solid-svg-icons'
@@ -8,7 +9,7 @@ import { fetchRound } from '../../data'
 import styles from './RoundContainer.module.css'
 import { sortArrayOfObjects } from '../shared/utils'
 
-const RoundContextDefault = {
+const RoundDataContextDefault = {
   id: '',
   name: '',
   location: '',
@@ -19,28 +20,35 @@ const RoundContextDefault = {
   leagueId: '',
 }
 
-type RoundContextDefaultType = typeof RoundContextDefault
+type RoundContextDefaultType = typeof RoundDataContextDefault
 
 export const RoundContext = createContext(
-  RoundContextDefault as RoundContextDefaultType
+  RoundDataContextDefault as RoundContextDefaultType
 )
 
+export function useRound(roundId?: string) {
+  return useQuery({
+    queryKey: ['round', roundId],
+    queryFn: () => (roundId ? fetchRound(roundId) : null),
+    enabled: !!roundId,
+  })
+}
+
 export default function RoundContainer(): JSX.Element {
-  const [roundData, setRoundData] = useState(RoundContextDefault)
-  const { id, name, location, date, players, pointSettings } = roundData || {}
   const { roundId, leagueId } = useParams() as Record<string, string>
   const isRoundHomePage = useMatch('/league/:id/round/:id')
+
+  const {
+    data: roundData = RoundDataContextDefault,
+    isLoading,
+    isError,
+    refetch: refreshRoundState,
+  } = useRound(roundId)
+
+  console.log('-- roundData --', roundData)
+  const { id, name, location, date, players, pointSettings } = roundData || {}
+
   const sortedPlayers = sortArrayOfObjects(players, 'name')
-
-  useEffect(() => {
-    refreshRoundState()
-  }, [])
-
-  async function refreshRoundState() {
-    const roundData = await fetchRound(roundId)
-    console.log('refreshRoundState roundData', roundData)
-    setRoundData(roundData)
-  }
 
   return (
     <RoundContext.Provider

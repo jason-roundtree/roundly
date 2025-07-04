@@ -164,9 +164,7 @@ export default function RoundScoring() {
                       // to={`/league/${leagueId}/round/${roundId}/player-scoring?playerId=${
                       //   player.id
                       // }&playerName=${encodeURIComponent(playerName)}`}
-                      to={`/league/${leagueId}/round/${roundId}/player-scoring/${encodeURIComponent(
-                        playerName
-                      )}`}
+                      to={`/league/${leagueId}/round/${roundId}/player-scoring/${player.id}`}
                       state={{ playerId: player.id, playerName }}
                     >
                       <button>Edit</button>

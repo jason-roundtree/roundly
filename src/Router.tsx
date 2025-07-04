@@ -97,11 +97,11 @@ export default function Router() {
         {/* <Route path="edit-round-info" element={<EditRoundInfo />} /> */}
         <Route path="scoring" element={<RoundScoring />} />
         <Route
-          path="player-scoring/:player"
+          path="player-scoring/:playerId"
           element={<PlayerRoundPointsAndScoring />}
         />
         <Route
-          path="player-scoring/:player/edit-point-earned"
+          path="player-scoring/:playerId/edit-point-earned"
           element={<EditPointEarned />}
         />
         <Route

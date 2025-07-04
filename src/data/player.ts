@@ -57,3 +57,20 @@ export async function createRoundPlayer(playerId, roundId): Promise<any> {
     return err
   }
 }
+
+export async function getPlayerById(playerId: string): Promise<any> {
+  try {
+    const res = await fetch(`http://localhost:3001/api/player/${playerId}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    if (res.status === 200) {
+      return await res.json()
+    } else {
+      return null
+    }
+  } catch (err) {
+    console.log('getPlayerById error: ', err)
+    return null
+  }
+}

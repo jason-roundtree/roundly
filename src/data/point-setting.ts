@@ -1,16 +1,23 @@
+import { PointScopes } from '../types'
+
 export async function createLeaguePointSetting(
-  leagueId: string,
+  // TODO: update type
   newPointSetting: Record<string, any>,
-  roundId?: string
+  leagueId: string
 ): Promise<any> {
-  console.log('newPointSetting: ', newPointSetting)
+  console.log('new league PointSetting: ', newPointSetting)
   try {
     const res = await fetch(
-      `http://localhost:3001/api/point-setting/${leagueId}?roundId=${roundId}`,
+      `http://localhost:3001/api/point-setting/create-league-point/`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPointSetting),
+        body: JSON.stringify({
+          ...newPointSetting,
+          leagueId: leagueId,
+          // TODO: hard bake this in to avoid having to add it from consumers?
+          // isLeagueSetting: true,
+        }),
       }
     )
     return res
@@ -58,14 +65,19 @@ export async function createRoundPointSetting(
   roundId
 ): Promise<any> {
   try {
-    const res = await fetch(`http://localhost:3001/api/round-point-setting/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        pointSettingId: pointSettingId,
-        roundId: roundId,
-      }),
-    })
+    const res = await fetch(
+      `http://localhost:3001/api/point-setting/create-round-point/`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pointSettingId: pointSettingId,
+          roundId: roundId,
+          // TODO: hard bake this in to avoid having to add it from consumers?
+          // isLeagueSetting: false,
+        }),
+      }
+    )
     return res
   } catch (err) {
     console.log('create round point settings error: ', err)
@@ -77,9 +89,9 @@ export async function removeRoundPointSetting(
   roundId
 ): Promise<any> {
   const roundPointSetting = { pointSettingId, roundId }
-  console.log('roundPointSetting', roundPointSetting)
   try {
-    const res = await fetch(`http://localhost:3001/api/round-point-setting`, {
+    // TODO: update "/round/" to be more descriptive eg. /delete-rount-point/ and maybe update deleteLeaguePointSetting and updateLeaguePointSetting to be more descriptive too
+    const res = await fetch(`http://localhost:3001/api/point-setting/round/`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(roundPointSetting),
@@ -102,5 +114,82 @@ export async function getPointSetting(pointSettingId): Promise<any> {
   } catch (err) {
     console.log('getPointSetting err: ', err)
     return err
+  }
+}
+
+// TODO: combine this with LeaguePointSettingExistsParams if they stay the same
+interface RoundPointSettingExistsParams {
+  name: string
+  roundId: string
+  value?: number
+  scope?: PointScopes
+}
+export async function roundPointSettingExists({
+  name,
+  roundId,
+  value,
+  scope,
+}: RoundPointSettingExistsParams): Promise<boolean> {
+  try {
+    const queryParams = new URLSearchParams({
+      name,
+      roundId,
+      ...(value !== undefined ? { value: value.toString() } : {}),
+      ...(scope !== undefined ? { scope } : {}),
+    }).toString()
+    const res = await fetch(
+      `http://localhost:3001/api/point-setting/round-check?${queryParams}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    if (res.status === 200) {
+      const result = await res.json()
+      console.log('roundPointSettingExists result: ', result)
+      return result.exists === true
+    }
+    return false
+  } catch (err) {
+    console.log('roundPointSettingExists error: ', err)
+    return false
+  }
+}
+
+interface LeaguePointSettingExistsParams {
+  name: string
+  leagueId: string
+  value?: number
+  scope?: PointScopes
+}
+export async function leaguePointSettingExists({
+  name,
+  leagueId,
+  value,
+  scope,
+}: LeaguePointSettingExistsParams): Promise<boolean> {
+  try {
+    const queryParams = new URLSearchParams({
+      name,
+      leagueId,
+      ...(value !== undefined ? { value: value.toString() } : {}),
+      ...(scope !== undefined ? { scope } : {}),
+    }).toString()
+    const res = await fetch(
+      `http://localhost:3001/api/point-setting/league-check?${queryParams}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    if (res.status === 200) {
+      const result = await res.json()
+      console.log('leaguePointSettingExists result: ', result)
+      return result.exists === true
+    }
+    return false
+  } catch (err) {
+    console.log('leaguePointSettingExists error: ', err)
+    return false
   }
 }

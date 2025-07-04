@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 
 import Select from '../shared/components/Select'
@@ -20,7 +20,6 @@ import {
 interface PointSettingEarnedState {
   id: string
   name: string
-  // maxFrequencyPerScope: number | null
   value: string | number
   // TODO: look into (string & {}) and remove it if it doesn't provide a benefit
   scope: PointScopes | (string & {})
@@ -29,7 +28,6 @@ interface PointSettingEarnedState {
 const defaultSelectedPointEarnedState: PointSettingEarnedState = {
   id: '',
   name: '',
-  // maxFrequencyPerScope: null,
   value: '',
   scope: '',
 }
@@ -47,13 +45,7 @@ export default function EnterPointEarned({
   )
   const [pointEarnedQuantity, setPointEarnedQuantity] = useState(1)
   const selectedPlayerId = selectedPlayer.id
-  const {
-    id: selectedPointSettingId,
-    scope,
-    // maxFrequencyPerScope,
-  } = selectedPointEarned
-  console.log('selectedPointEarned >> ', selectedPointEarned)
-  // const quantityRef = useRef<HTMLInputElement>(null)
+  const { id: selectedPointSettingId, scope } = selectedPointEarned
 
   function handleUpdatePointEarnedState(e) {
     const pointName = e.target.value

@@ -12,6 +12,8 @@ export {
   deleteLeaguePointSetting,
   createRoundPointSetting,
   removeRoundPointSetting,
+  leaguePointSettingExists,
+  roundPointSettingExists,
 } from './point-setting'
 export {
   createRoundPlayerPointEarned,

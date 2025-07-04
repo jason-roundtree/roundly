@@ -26,6 +26,7 @@ export default function EnterPointOrScore() {
 
   const location = useLocation()
   const playerFromLocation = location.state
+  console.log('playerFromLocation', playerFromLocation)
   const {
     id: roundId,
     players: playersFromContext,

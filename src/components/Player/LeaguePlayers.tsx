@@ -6,20 +6,17 @@ import { faAnglesRight } from '@fortawesome/free-solid-svg-icons'
 import { PlayerListEditable, AddPlayer } from '.'
 import { Player } from '../../types'
 import { fetchLeaguePlayers } from '../../data'
+import useLeaguePlayers from '../shared/hooks/useLeaguePlayers'
 
 export default function LeaguePlayers(): JSX.Element {
-  const [players, setPlayers] = useState<Player[]>([])
-
   const { leagueId } = useParams()
 
-  useEffect(() => {
-    refreshPlayersState()
-  }, [])
-
-  async function refreshPlayersState(): Promise<void> {
-    const players = await fetchLeaguePlayers(leagueId)
-    setPlayers(players)
-  }
+  const {
+    data: players = [],
+    isLoading,
+    isError,
+    refetch: refreshLeaguePlayersState,
+  } = useLeaguePlayers(leagueId)
 
   return (
     <>
@@ -38,7 +35,7 @@ export default function LeaguePlayers(): JSX.Element {
 
       <PlayerListEditable
         players={players}
-        refreshPlayerState={refreshPlayersState}
+        refreshLeaguePlayersState={refreshLeaguePlayersState}
       />
     </>
   )

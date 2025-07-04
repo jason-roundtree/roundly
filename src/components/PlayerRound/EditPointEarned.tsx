@@ -27,7 +27,6 @@ export default function EditPointEarned() {
   const params = useParams()
   const leagueId = params.leagueId as string
   const roundId = params.roundId as string
-  const playerName = params.player as string
   const location = useLocation()
   const { pointEarnedId } = location.state
 
@@ -39,7 +38,7 @@ export default function EditPointEarned() {
   ] = usePlayerPointBeingEdited(pointEarnedId)
   console.log('RRRRR originalPointEarned', originalPointEarned)
 
-  const { playerId, quantity } = originalPointEarned || {}
+  const { playerId, quantity, playerName } = originalPointEarned || {}
   const { hole } = originalPointEarned?.hole || {}
   const {
     name: pointName,
@@ -76,13 +75,7 @@ export default function EditPointEarned() {
   }, [originalPointEarned, hole, quantity])
 
   function navigateToPlayerRoundPointsEarned() {
-    navigate(
-      `/league/${leagueId}/round/${roundId}/player-scoring/${playerName}`,
-      {
-        state: { playerName, playerId },
-      }
-    )
-    // navigate(-1)
+    navigate(`/league/${leagueId}/round/${roundId}/player-scoring/${playerId}`)
   }
 
   async function handleUpdatePointEarned(e) {
@@ -119,7 +112,7 @@ export default function EditPointEarned() {
               playerId,
               pointSettingId,
               roundId,
-              hole,
+              hole: editedPoint.hole,
             })
 
           if (checkPlayerPointEarnedOnHoleRes.status === 200) {
@@ -208,6 +201,9 @@ export default function EditPointEarned() {
     )
   }
 
+  if (isPointEarnedError || !originalPointEarned) {
+    return <p>Point Earned does not exist</p>
+  }
   return (
     <>
       <h3 className="decrease-bottom-margin page-title">
